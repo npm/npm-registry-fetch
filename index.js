@@ -130,16 +130,11 @@ function getHeaders (registry, uri, opts) {
     'user-agent': opts.config.get('user-agent'),
     'referer': opts.refer
   }, opts.headers)
-  // check for auth settings specific to this registry
-  let auth = (opts.auth && opts.auth[registryKey(registry)]) ||
-    opts.auth
-  if (!auth) {
-    const fromConfig = getAuth(opts.config)
-    auth = fromConfig[registryKey(registry)] || fromConfig
-  }
+
+  const auth = getAuth(registry, opts.config)
   // If a tarball is hosted on a different place than the manifest, only send
   // credentials on `alwaysAuth`
-  const shouldAuth = auth && (
+  const shouldAuth = (
     auth.alwaysAuth ||
     url.parse(uri).host === url.parse(registry).host
   )
@@ -153,17 +148,8 @@ function getHeaders (registry, uri, opts) {
   } else if (shouldAuth && auth._auth) {
     headers.authorization = `Basic ${auth._auth}`
   }
+  if (shouldAuth && auth.otp) {
+    headers['npm-otp'] = auth.otp
+  }
   return headers
-}
-
-// Called a nerf dart in the main codebase. Used as a "safe"
-// key when fetching registry info from config.
-function registryKey (registry) {
-  const parsed = url.parse(registry)
-  const formatted = url.format({
-    host: parsed.host,
-    pathname: parsed.pathname,
-    slashes: parsed.slashes
-  })
-  return url.resolve(formatted, '.')
 }
