@@ -21,8 +21,8 @@ class HttpErrorGeneral extends HttpErrorBase {
     } ${
       this.spec || this.uri
     }${
-       (body && body.error) ? ' - ' + body.error : ''
-     }`
+      (body && body.error) ? ' - ' + body.error : ''
+    }`
     Error.captureStackTrace(this, HttpErrorGeneral)
   }
 }

@@ -66,32 +66,32 @@ function checkWarnings (res, registry, opts) {
 
 function checkErrors (method, res, startTime, opts) {
   return res.buffer()
-  .catch(() => null)
-  .then(body => {
-    try {
-      body = JSON.parse(body.toString('utf8'))
-    } catch (e) {}
-    if (res.status === 401 && res.headers.get('www-authenticate')) {
-      const auth = res.headers.get('www-authenticate')
-      .split(/,\s*/)
-      .map(s => s.toLowerCase())
-      if (auth.indexOf('ipaddress') !== -1) {
-        throw new errors.HttpErrorAuthIPAddress(
-          method, res, body, opts.spec
-        )
-      } else if (auth.indexOf('otp') !== -1) {
-        throw new errors.HttpErrorAuthOTP(
-          method, res, body, opts.spec
-        )
+    .catch(() => null)
+    .then(body => {
+      try {
+        body = JSON.parse(body.toString('utf8'))
+      } catch (e) {}
+      if (res.status === 401 && res.headers.get('www-authenticate')) {
+        const auth = res.headers.get('www-authenticate')
+          .split(/,\s*/)
+          .map(s => s.toLowerCase())
+        if (auth.indexOf('ipaddress') !== -1) {
+          throw new errors.HttpErrorAuthIPAddress(
+            method, res, body, opts.spec
+          )
+        } else if (auth.indexOf('otp') !== -1) {
+          throw new errors.HttpErrorAuthOTP(
+            method, res, body, opts.spec
+          )
+        } else {
+          throw new errors.HttpErrorAuthUnknown(
+            method, res, body, opts.spec
+          )
+        }
       } else {
-        throw new errors.HttpErrorAuthUnknown(
+        throw new errors.HttpErrorGeneral(
           method, res, body, opts.spec
         )
       }
-    } else {
-      throw new errors.HttpErrorGeneral(
-        method, res, body, opts.spec
-      )
-    }
-  })
+    })
 }
