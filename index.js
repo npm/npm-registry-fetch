@@ -6,20 +6,8 @@ const getAuth = require('./auth.js')
 const checkResponse = require('./check-response.js')
 const fetch = require('make-fetch-happen')
 const npa = require('npm-package-arg')
+const silentLog = require('./silentlog.js')
 const url = require('url')
-
-const noop = Function.prototype
-const silentLog = {
-  error: noop,
-  warn: noop,
-  notice: noop,
-  info: noop,
-  verbose: noop,
-  silly: noop,
-  http: noop,
-  pause: noop,
-  resume: noop
-}
 
 module.exports = regFetch
 function regFetch (uri, opts) {

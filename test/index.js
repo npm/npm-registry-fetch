@@ -4,6 +4,7 @@ const Buffer = require('safe-buffer').Buffer
 
 const npmlog = require('npmlog')
 const PassThrough = require('stream').PassThrough
+const silentLog = require('../silentlog.js')
 const test = require('tap').test
 const tnock = require('./util/tnock.js')
 
@@ -144,6 +145,25 @@ test('method configurable', t => {
     .then(res => {
       t.equal(res.status, 200, 'successfully used DELETE method')
     })
+})
+
+test('npm-notice header logging', t => {
+  tnock(t, OPTS.config.get('registry'))
+    .get('/hello')
+    .reply(200, {hello: 'world'}, {
+      'npm-notice': 'npm <3 u'
+    })
+  const opts = Object.assign({}, OPTS, {
+    log: Object.assign({}, silentLog, {
+      notice (header, msg) {
+        t.equal(header, '', 'empty log header thing')
+        t.equal(msg, 'npm <3 u', 'logged out npm-notice at NOTICE level')
+      }
+    })
+  })
+  t.plan(3)
+  return fetch('/hello', opts)
+    .then(res => t.equal(res.status, 200, 'got successful response'))
 })
 
 test('pickRegistry() utility')
