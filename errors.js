@@ -52,7 +52,6 @@ class HttpErrorAuthUnknown extends HttpErrorBase {
   constructor (method, res, body, spec) {
     super(method, res, body, spec)
     this.message = 'Unable to authenticate, need: ' + res.headers.get('www-authenticate')
-    this.code = 'EAUTHUNOWN'
     Error.captureStackTrace(this, HttpErrorAuthUnknown)
   }
 }
