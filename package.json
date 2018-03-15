@@ -41,6 +41,7 @@
     "npmlog": "^4.1.2",
     "nyc": "^11.1.0",
     "rimraf": "^2.6.2",
+    "ssri": "^5.3.0",
     "standard": "^10.0.2",
     "standard-version": "^4.2.0",
     "tap": "^10.7.3",

@@ -5,10 +5,9 @@ const Buffer = require('safe-buffer').Buffer
 const npmlog = require('npmlog')
 const PassThrough = require('stream').PassThrough
 const silentLog = require('../silentlog.js')
+const ssri = require('ssri')
 const test = require('tap').test
 const tnock = require('./util/tnock.js')
-
-// const testDir = require('./util/test-dir.js')(__filename)
 
 const fetch = require('../index.js')
 
@@ -164,6 +163,32 @@ test('npm-notice header logging', t => {
   t.plan(3)
   return fetch('/hello', opts)
     .then(res => t.equal(res.status, 200, 'got successful response'))
+})
+
+test('optionally verifies request body integrity', t => {
+  t.plan(3)
+  tnock(t, OPTS.config.get('registry'))
+    .get('/hello')
+    .times(2)
+    .reply(200, 'hello')
+  const integrity = ssri.fromData('hello')
+  return fetch('/hello', Object.assign({integrity}, OPTS))
+    .then(res => res.buffer())
+    .then(buf => t.equal(
+      buf.toString('utf8'), 'hello', 'successfully got the right data')
+    )
+    .then(() => {
+      return fetch('/hello', Object.assign({integrity: 'sha1-nope'}, OPTS))
+        .then(res => {
+          t.ok(res.body, 'no error until body starts getting read')
+          return res
+        })
+        .then(res => res.buffer())
+        .then(
+          () => { throw new Error('should not have succeeded') },
+          err => t.equal(err.code, 'EINTEGRITY', 'got EINTEGRITY error')
+        )
+    })
 })
 
 test('pickRegistry() utility')
