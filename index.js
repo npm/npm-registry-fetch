@@ -2,8 +2,9 @@
 
 const Buffer = require('safe-buffer').Buffer
 
-const getAuth = require('./auth.js')
 const checkResponse = require('./check-response.js')
+const config = require('./config.js')
+const getAuth = require('./auth.js')
 const fetch = require('make-fetch-happen')
 const npa = require('npm-package-arg')
 const silentLog = require('./silentlog.js')
@@ -11,12 +12,10 @@ const url = require('url')
 
 module.exports = regFetch
 function regFetch (uri, opts) {
-  opts = Object.assign({
-    log: silentLog,
-    config: new Map()
-  }, opts)
-  const registry = opts.registry ||
-    opts.config.get('registry') ||
+  opts = config(Object.assign({
+    log: silentLog
+  }, opts))
+  const registry = opts.get('registry') ||
     'https://registry.npmjs.org/'
   uri = url.parse(uri).protocol
     ? uri
@@ -27,9 +26,8 @@ function regFetch (uri, opts) {
     }`
   // through that takes into account the scope, the prefix of `uri`, etc
   const startTime = Date.now()
-  const conf = opts.config
   const headers = getHeaders(registry, uri, opts)
-  let body = opts.body
+  let body = opts.get('body')
   const bodyIsStream = body &&
     typeof body === 'object' &&
     typeof body.pipe === 'function'
@@ -40,40 +38,36 @@ function regFetch (uri, opts) {
     headers['content-type'] = 'application/octet-stream'
   }
   return fetch(uri, {
-    agent: opts.agent,
-    algorithms: opts.algorithms,
+    agent: opts.get('agent'),
+    algorithms: opts.get('algorithms'),
     body,
-    cache: getCacheMode(conf),
-    cacheManager: conf.get('cache'),
-    ca: conf.get('ca'),
-    cert: conf.get('cert'),
+    cache: getCacheMode(opts),
+    cacheManager: opts.get('cache'),
+    ca: opts.get('ca'),
+    cert: opts.get('cert'),
     headers,
-    integrity: opts.integrity,
-    key: conf.get('key'),
-    localAddress: conf.get('local-address'),
-    maxSockets: conf.get('maxsockets'),
-    memoize: opts.memoize,
-    method: opts.method || 'GET',
-    noProxy: conf.get('noproxy'),
-    Promise: opts.Promise,
-    proxy: conf.get('proxy'),
-    referer: opts.refer || conf.get('refer'),
-    retry: opts.retry != null
-      ? opts.retry
-      : {
-        retries: conf.get('fetch-retries'),
-        factor: conf.get('fetch-retry-factor'),
-        minTimeout: conf.get('fetch-retry-mintimeout'),
-        maxTimeout: conf.get('fetch-retry-maxtimeout')
-      },
-    strictSSL: !!conf.get('strict-ssl'),
-    timeout: opts.timeout != null
-      ? opts.timeout
-      : conf.get('timeout'),
-    uid: conf.get('uid'),
-    gid: conf.get('gid')
+    integrity: opts.get('integrity'),
+    key: opts.get('key'),
+    localAddress: opts.get('local-address'),
+    maxSockets: opts.get('maxsockets'),
+    memoize: opts.get('memoize'),
+    method: opts.get('method') || 'GET',
+    noProxy: opts.get('noproxy'),
+    Promise: opts.get('Promise'),
+    proxy: opts.get('proxy'),
+    referer: opts.get('refer'),
+    retry: opts.get('retry') || {
+      retries: opts.get('fetch-retries'),
+      factor: opts.get('fetch-retry-factor'),
+      minTimeout: opts.get('fetch-retry-mintimeout'),
+      maxTimeout: opts.get('fetch-retry-maxtimeout')
+    },
+    strictSSL: !!opts.get('strict-ssl'),
+    timeout: opts.get('timeout'),
+    uid: opts.get('uid'),
+    gid: opts.get('gid')
   }).then(res => checkResponse(
-    opts.method || 'GET', res, registry, startTime, opts
+    opts.get('method') || 'GET', res, registry, startTime, opts
   ))
 }
 
@@ -85,32 +79,32 @@ function fetchJSON (uri, opts) {
 module.exports.pickRegistry = pickRegistry
 function pickRegistry (spec, opts) {
   spec = npa(spec)
-  const config = (opts && opts.config) || new Map()
+  opts = config(opts)
   if (!spec.registry) {
     throw new Error(`${spec} is not a valid registry dependency spec`)
   }
   let registry = spec.scope &&
-    config.get(spec.scope.replace(/^@?/, '@') + ':registry')
+    opts.get(spec.scope.replace(/^@?/, '@') + ':registry')
 
-  if (!registry && config.get('scope')) {
-    registry = config.get(
-      config.get('scope').replace(/^@?/, '@') + ':registry'
+  if (!registry && opts.get('scope')) {
+    registry = opts.get(
+      opts.get('scope').replace(/^@?/, '@') + ':registry'
     )
   }
 
   if (!registry) {
-    registry = config.get('registry') || 'https://registry.npmjs.org/'
+    registry = opts.get('registry') || 'https://registry.npmjs.org/'
   }
 
   return registry
 }
 
-function getCacheMode (conf) {
-  return conf.get('offline')
+function getCacheMode (opts) {
+  return opts.get('offline')
     ? 'only-if-cached'
-    : conf.get('prefer-offline')
+    : opts.get('prefer-offline')
       ? 'force-cache'
-      : conf.get('prefer-online')
+      : opts.get('prefer-online')
         ? 'no-cache'
         : 'default'
 }
@@ -118,20 +112,20 @@ function getCacheMode (conf) {
 function getHeaders (registry, uri, opts) {
   const headers = Object.assign({
     'npm-in-ci': !!(
-      opts.isFromCI ||
+      opts.get('is-from-ci') ||
       process.env['CI'] === 'true' ||
       process.env['TDDIUM'] ||
       process.env['JENKINS_URL'] ||
       process.env['bamboo.buildKey'] ||
       process.env['GO_PIPELINE_NAME']
     ),
-    'npm-scope': opts.projectScope,
-    'npm-session': opts.npmSession,
-    'user-agent': opts.config.get('user-agent'),
-    'referer': opts.refer
-  }, opts.headers)
+    'npm-scope': opts.get('project-scope'),
+    'npm-session': opts.get('npm-session'),
+    'user-agent': opts.get('user-agent'),
+    'referer': opts.get('refer')
+  }, opts.get('headers'))
 
-  const auth = getAuth(registry, opts.config)
+  const auth = getAuth(registry, opts)
   // If a tarball is hosted on a different place than the manifest, only send
   // credentials on `alwaysAuth`
   const shouldAuth = (

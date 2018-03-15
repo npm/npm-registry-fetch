@@ -1,14 +1,15 @@
 'use strict'
 
+const config = require('./config.js')
 const url = require('url')
 
 module.exports = getAuth
-function getAuth (registry, conf) {
+function getAuth (registry, opts) {
   if (!registry) { throw new Error('registry is required') }
-  if (!conf) { conf = new Map() }
+  opts = config(opts)
   let AUTH = {}
   const regKey = registry && registryKey(registry)
-  const doKey = (key, alias) => addKey(conf, AUTH, regKey, key, alias)
+  const doKey = (key, alias) => addKey(opts, AUTH, regKey, key, alias)
   doKey('_authToken', 'token')
   doKey('username')
   doKey('password')
@@ -24,12 +25,12 @@ function getAuth (registry, conf) {
   return AUTH
 }
 
-function addKey (conf, obj, scope, key, objKey) {
-  if (conf.get(key)) {
-    obj[objKey || key] = conf.get(key)
+function addKey (opts, obj, scope, key, objKey) {
+  if (opts.get(key)) {
+    obj[objKey || key] = opts.get(key)
   }
-  if (scope && conf.get(`${scope}:${key}`)) {
-    obj[objKey || key] = conf.get(`${scope}:${key}`)
+  if (scope && opts.get(`${scope}:${key}`)) {
+    obj[objKey || key] = opts.get(`${scope}:${key}`)
   }
 }
 
