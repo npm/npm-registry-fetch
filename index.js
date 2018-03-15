@@ -40,14 +40,26 @@ function regFetch (uri, opts) {
   // through that takes into account the scope, the prefix of `uri`, etc
   const startTime = Date.now()
   const conf = opts.config
+  const headers = getHeaders(registry, uri, opts)
+  let body = opts.body
+  const bodyIsStream = body &&
+    typeof body === 'object' &&
+    typeof body.pipe === 'function'
+  if (body && !bodyIsStream && typeof body !== 'string' && !Buffer.isBuffer(body)) {
+    headers['content-type'] = headers['content-type'] || 'application/json'
+    body = JSON.stringify(body)
+  } else if (body && !headers['content-type']) {
+    headers['content-type'] = 'application/octet-stream'
+  }
   return fetch(uri, {
     agent: opts.agent,
     algorithms: opts.algorithms,
+    body,
     cache: getCacheMode(conf),
     cacheManager: conf.get('cache'),
     ca: conf.get('ca'),
     cert: conf.get('cert'),
-    headers: getHeaders(registry, uri, opts),
+    headers,
     integrity: opts.integrity,
     key: conf.get('key'),
     localAddress: conf.get('local-address'),
