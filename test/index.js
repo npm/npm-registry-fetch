@@ -191,7 +191,47 @@ test('optionally verifies request body integrity', t => {
     })
 })
 
-test('pickRegistry() utility')
+test('pickRegistry() utility', t => {
+  const pick = fetch.pickRegistry
+  t.equal(pick('foo@1.2.3'), 'https://registry.npmjs.org/', 'has good default')
+  t.equal(
+    pick('foo@1.2.3', {
+      config: new Map([
+        ['registry', 'https://my.registry/here/'],
+        ['scope', '@otherscope'],
+        ['@myscope:registry', 'https://my.scoped.registry/here/']
+      ])
+    }),
+    'https://my.registry/here/',
+    'unscoped package uses `registry` setting'
+  )
+  t.equal(
+    pick('@user/foo@1.2.3', {
+      config: new Map([
+        ['registry', 'https://my.registry/here/'],
+        ['scope', '@myscope'],
+        ['@myscope:registry', 'https://my.scoped.registry/here/']
+      ])
+    }),
+    'https://my.scoped.registry/here/',
+    'scoped package uses `@<scope>:registry` setting'
+  )
+  t.equal(
+    pick('@user/foo@1.2.3', {
+      config: new Map([
+        ['registry', 'https://my.registry/here/'],
+        ['scope', 'myscope'],
+        ['@myscope:registry', 'https://my.scoped.registry/here/']
+      ])
+    }),
+    'https://my.scoped.registry/here/',
+    'scope @ is option@l'
+  )
+  t.throws(() => {
+    pick('foo/bar#latest')
+  }, /not a valid registry dependency spec/, 'only registry types supported')
+  t.done()
+})
 
 // TODO
 // * npm-session
