@@ -236,7 +236,7 @@ test('always-auth', t => {
 test('scope-based auth', t => {
   const config = new Map([
     ['registry', 'https://my.custom.registry/here/'],
-    ['scope', 'myscope'],
+    ['scope', '@myscope'],
     ['@myscope:registry', 'https://my.custom.registry/here/'],
     ['token', 'deadbeef'],
     ['//my.custom.registry/here/:_authToken', 'c0ffee'],
@@ -246,6 +246,10 @@ test('scope-based auth', t => {
     alwaysAuth: false,
     token: 'c0ffee'
   }, 'correct auth token picked out')
+  t.deepEqual(getAuth(config.get('@myscope:registry'), config), {
+    alwaysAuth: false,
+    token: 'c0ffee'
+  }, 'correct auth token picked out without scope config having an @')
 
   const opts = Object.assign({}, OPTS, {config})
   tnock(t, opts.config.get('@myscope:registry'))
@@ -254,7 +258,11 @@ test('scope-based auth', t => {
       return auth[0] === 'Bearer c0ffee'
     })
     .get('/hello')
+    .times(2)
     .reply(200, '"success"')
   return fetch.json('/hello', opts)
     .then(res => t.equal(res, 'success', 'token auth succeeded'))
+    .then(() => config.set('scope', 'myscope'))
+    .then(() => fetch.json('/hello', opts))
+    .then(res => t.equal(res, 'success', 'token auth succeeded without @ in scope'))
 })
