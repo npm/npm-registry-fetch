@@ -40,7 +40,6 @@ function regFetch (uri, opts) {
   }
   if (opts.get('query')) {
     let q = opts.get('query')
-    console.log('got query:', q)
     if (typeof q === 'string') {
       q = qs.parse(q)
     }
