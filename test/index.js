@@ -125,6 +125,16 @@ test('stream body param', t => {
     .then(json => t.deepEqual(json, {hello: 'world'}))
 })
 
+test('query strings', t => {
+  tnock(t, OPTS.config.get('registry'))
+    .get('/hello?hi=there&who=wor%20ld')
+    .reply(200, {hello: 'world'})
+  return fetch.json('/hello?hi=there', Object.assign({
+    query: {who: 'wor ld'}
+  }, OPTS))
+    .then(json => t.equal(json.hello, 'world', 'query-string merged'))
+})
+
 test('json()', t => {
   tnock(t, OPTS.config.get('registry'))
     .get('/hello')

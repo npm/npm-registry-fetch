@@ -56,6 +56,7 @@ const RegFetchConfig = pudding({
   'project-scope': 'projectScope',
   'Promise': {},
   'proxy': {},
+  'query': {},
   'refer': {},
   'referer': 'refer',
   'registry': {

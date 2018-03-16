@@ -7,6 +7,7 @@ const config = require('./config.js')
 const getAuth = require('./auth.js')
 const fetch = require('make-fetch-happen')
 const npa = require('npm-package-arg')
+const qs = require('querystring')
 const silentLog = require('./silentlog.js')
 const url = require('url')
 
@@ -36,6 +37,20 @@ function regFetch (uri, opts) {
     body = JSON.stringify(body)
   } else if (body && !headers['content-type']) {
     headers['content-type'] = 'application/octet-stream'
+  }
+  if (opts.get('query')) {
+    let q = opts.get('query')
+    console.log('got query:', q)
+    if (typeof q === 'string') {
+      q = qs.parse(q)
+    }
+    const parsed = url.parse(uri)
+    parsed.search = '?' + qs.stringify(
+      parsed.query
+        ? Object.assign(qs.parse(parsed.query), q)
+        : q
+    )
+    uri = url.format(parsed)
   }
   return fetch(uri, {
     agent: opts.get('agent'),
