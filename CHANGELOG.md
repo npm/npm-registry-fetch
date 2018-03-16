@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/npm/registry-fetch/compare/v1.0.0...v1.0.1) (2018-03-16)
+
+
+### Bug Fixes
+
+* **query:** oops console.log ([870e4f5](https://github.com/npm/registry-fetch/commit/870e4f5))
+
+
+
 <a name="1.0.0"></a>
 # 1.0.0 (2018-03-16)
 
