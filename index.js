@@ -16,8 +16,11 @@ function regFetch (uri, opts) {
   opts = config(Object.assign({
     log: silentLog
   }, opts))
-  const registry = opts.get('registry') ||
+  const registry = (
+    (opts.get('spec') && pickRegistry(opts.get('spec'), opts)) ||
+    opts.get('registry') ||
     'https://registry.npmjs.org/'
+  )
   uri = url.parse(uri).protocol
     ? uri
     : `${

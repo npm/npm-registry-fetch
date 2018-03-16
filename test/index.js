@@ -243,6 +243,45 @@ test('pickRegistry() utility', t => {
   t.done()
 })
 
+test('pickRegistry through opts.spec', t => {
+  tnock(t, OPTS.config.get('registry'))
+    .get('/pkg')
+    .reply(200, {source: OPTS.config.get('registry')})
+  const scopedReg = 'https://scoped.mock.reg/'
+  tnock(t, scopedReg)
+    .get('/pkg')
+    .times(2)
+    .reply(200, {source: scopedReg})
+  return fetch.json('/pkg', Object.assign({
+    spec: 'pkg@1.2.3',
+    '@myscope:registry': scopedReg
+  }, OPTS))
+    .then(json => t.equal(
+      json.source,
+      OPTS.config.get('registry'),
+      'request made to main registry'
+    ))
+    .then(() => fetch.json('/pkg', Object.assign({
+      spec: 'pkg@1.2.3',
+      '@myscope:registry': scopedReg,
+      'scope': '@myscope'
+    })))
+    .then(json => t.equal(
+      json.source,
+      scopedReg,
+      'request made to scope registry using opts.scope'
+    ))
+    .then(() => fetch.json('/pkg', Object.assign({
+      spec: '@myscope/pkg@1.2.3',
+      '@myscope:registry': scopedReg
+    })))
+    .then(json => t.equal(
+      json.source,
+      scopedReg,
+      'request made to scope registry using spec scope'
+    ))
+})
+
 // TODO
 // * npm-session
 // * npm-in-ci
