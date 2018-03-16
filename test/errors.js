@@ -117,7 +117,7 @@ test('Unexpected www-authenticate error', t => {
       () => { throw new Error('Should not have succeeded!') },
       err => {
         t.match(err.body.error, /Pat-a-cake/ig, 'error body explains it')
-        t.equal(err.code, 'EAUTHUNOWN', 'got a special pokemon')
+        t.equal(err.code, 'E401', 'Unknown auth errors are generic 401s')
       }
     )
 })
