@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/npm/registry-fetch/compare/v2.0.0...v2.1.0) (2018-04-08)
+
+
+### Features
+
+* **token:** accept opts.token for opts._authToken ([108c9f0](https://github.com/npm/registry-fetch/commit/108c9f0))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/npm/registry-fetch/compare/v1.1.1...v2.0.0) (2018-04-08)
 
