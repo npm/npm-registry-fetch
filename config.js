@@ -4,7 +4,7 @@ const pkg = require('./package.json')
 const pudding = require('figgy-pudding')
 const silentLog = require('./silentlog.js')
 
-const AUTH_REGEX = /^(?:.*:)?(_authToken|username|_password|password|email|always-auth|_auth|otp)$/
+const AUTH_REGEX = /^(?:.*:)?(token|_authToken|username|_password|password|email|always-auth|_auth|otp)$/
 const SCOPE_REGISTRY_REGEX = /@.*:registry$/gi
 const RegFetchConfig = pudding({
   'agent': {},
