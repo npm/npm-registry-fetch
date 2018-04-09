@@ -1,12 +1,12 @@
 'use strict'
 
 const pkg = require('./package.json')
-const pudding = require('figgy-pudding')
+const figgyPudding = require('figgy-pudding')
 const silentLog = require('./silentlog.js')
 
 const AUTH_REGEX = /^(?:.*:)?(token|_authToken|username|_password|password|email|always-auth|_auth|otp)$/
 const SCOPE_REGISTRY_REGEX = /@.*:registry$/gi
-const RegFetchConfig = pudding({
+module.exports = figgyPudding({
   'agent': {},
   'algorithms': {},
   'body': {},
@@ -86,9 +86,3 @@ const RegFetchConfig = pudding({
     return key.match(AUTH_REGEX) || key.match(SCOPE_REGISTRY_REGEX)
   }
 })
-
-module.exports = config
-function config (opts) {
-  opts = opts || {}
-  return RegFetchConfig(opts, 'config' in opts && opts.config)
-}

@@ -11,12 +11,6 @@ const tnock = require('./util/tnock.js')
 
 const fetch = require('../index.js')
 
-function confFromObj (obj) {
-  const conf = new Map()
-  Object.keys(obj || {}).forEach(k => { conf.set(k, obj[k]) })
-  return conf
-}
-
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
   log: npmlog,
@@ -27,13 +21,11 @@ const OPTS = {
     minTimeout: 1,
     maxTimeout: 10
   },
-  config: confFromObj({
-    registry: 'https://mock.reg/'
-  })
+  registry: 'https://mock.reg/'
 }
 
 test('hello world', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, {hello: 'world'})
   return fetch('/hello', OPTS)
@@ -45,7 +37,7 @@ test('hello world', t => {
 })
 
 test('JSON body param', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/json', 'content-type automatically set')
       return ctype[0] === 'application/json'
@@ -70,7 +62,7 @@ test('JSON body param', t => {
 })
 
 test('buffer body param', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
       return ctype[0] === 'application/octet-stream'
@@ -99,7 +91,7 @@ test('buffer body param', t => {
 })
 
 test('stream body param', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
       return ctype[0] === 'application/octet-stream'
@@ -126,7 +118,7 @@ test('stream body param', t => {
 })
 
 test('query strings', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/hello?hi=there&who=wor%20ld')
     .reply(200, {hello: 'world'})
   return fetch.json('/hello?hi=there', Object.assign({
@@ -136,7 +128,7 @@ test('query strings', t => {
 })
 
 test('json()', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, {hello: 'world'})
   return fetch.json('/hello', OPTS)
@@ -144,7 +136,7 @@ test('json()', t => {
 })
 
 test('method configurable', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .delete('/hello')
     .reply(200)
   const opts = Object.assign({
@@ -157,7 +149,7 @@ test('method configurable', t => {
 })
 
 test('npm-notice header logging', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, {hello: 'world'}, {
       'npm-notice': 'npm <3 u'
@@ -177,7 +169,7 @@ test('npm-notice header logging', t => {
 
 test('optionally verifies request body integrity', t => {
   t.plan(3)
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/hello')
     .times(2)
     .reply(200, 'hello')
@@ -206,47 +198,38 @@ test('pickRegistry() utility', t => {
   t.equal(pick('foo@1.2.3'), 'https://registry.npmjs.org/', 'has good default')
   t.equal(
     pick('foo@1.2.3', {
-      config: new Map([
-        ['registry', 'https://my.registry/here/'],
-        ['scope', '@otherscope'],
-        ['@myscope:registry', 'https://my.scoped.registry/here/']
-      ])
+      registry: 'https://my.registry/here/',
+      scope: '@otherscope',
+      '@myscope:registry': 'https://my.scoped.registry/here/'
     }),
     'https://my.registry/here/',
     'unscoped package uses `registry` setting'
   )
   t.equal(
     pick('@user/foo@1.2.3', {
-      config: new Map([
-        ['registry', 'https://my.registry/here/'],
-        ['scope', '@myscope'],
-        ['@myscope:registry', 'https://my.scoped.registry/here/']
-      ])
+      registry: 'https://my.registry/here/',
+      scope: '@myscope',
+      '@myscope:registry': 'https://my.scoped.registry/here/'
     }),
     'https://my.scoped.registry/here/',
     'scoped package uses `@<scope>:registry` setting'
   )
   t.equal(
     pick('@user/foo@1.2.3', {
-      config: new Map([
-        ['registry', 'https://my.registry/here/'],
-        ['scope', 'myscope'],
-        ['@myscope:registry', 'https://my.scoped.registry/here/']
-      ])
+      registry: 'https://my.registry/here/',
+      scope: 'myscope',
+      '@myscope:registry': 'https://my.scoped.registry/here/'
     }),
     'https://my.scoped.registry/here/',
     'scope @ is option@l'
   )
-  t.throws(() => {
-    pick('foo/bar#latest')
-  }, /not a valid registry dependency spec/, 'only registry types supported')
   t.done()
 })
 
 test('pickRegistry through opts.spec', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/pkg')
-    .reply(200, {source: OPTS.config.get('registry')})
+    .reply(200, {source: OPTS.registry})
   const scopedReg = 'https://scoped.mock.reg/'
   tnock(t, scopedReg)
     .get('/pkg')
@@ -258,7 +241,7 @@ test('pickRegistry through opts.spec', t => {
   }, OPTS))
     .then(json => t.equal(
       json.source,
-      OPTS.config.get('registry'),
+      OPTS.registry,
       'request made to main registry'
     ))
     .then(() => fetch.json('/pkg', Object.assign({

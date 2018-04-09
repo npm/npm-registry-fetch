@@ -6,12 +6,6 @@ const tnock = require('./util/tnock.js')
 
 const fetch = require('../index.js')
 
-function confFromObj (obj) {
-  const conf = new Map()
-  Object.keys(obj || {}).forEach(k => { conf.set(k, obj[k]) })
-  return conf
-}
-
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
   log: npmlog,
@@ -22,13 +16,11 @@ const OPTS = {
     minTimeout: 1,
     maxTimeout: 10
   },
-  config: confFromObj({
-    registry: 'https://mock.reg/'
-  })
+  registry: 'https://mock.reg/'
 }
 
 test('generic request errors', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/ohno')
     .reply(400, 'failwhale!')
   return fetch('/ohno', OPTS)
@@ -37,7 +29,7 @@ test('generic request errors', t => {
       err => {
         t.equal(
           err.message,
-          `400 Bad Request - GET ${OPTS.config.get('registry')}ohno`,
+          `400 Bad Request - GET ${OPTS.registry}ohno`,
           'neatly printed message'
         )
         t.equal(err.code, 'E400', 'HTTP code used for err.code')
@@ -49,7 +41,7 @@ test('generic request errors', t => {
 })
 
 test('JSON error reporing', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/ohno')
     .reply(400, {error: 'badarg'})
   return fetch('/ohno', OPTS)
@@ -58,7 +50,7 @@ test('JSON error reporing', t => {
       err => {
         t.equal(
           err.message,
-          `400 Bad Request - GET ${OPTS.config.get('registry')}ohno - badarg`,
+          `400 Bad Request - GET ${OPTS.registry}ohno - badarg`,
           'neatly printed message'
         )
         t.equal(err.code, 'E400', 'HTTP code used for err.code')
@@ -72,7 +64,7 @@ test('JSON error reporing', t => {
 })
 
 test('OTP error', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/otplease')
     .reply(401, {error: 'needs an otp, please'}, {
       'www-authenticate': 'otp'
@@ -87,7 +79,7 @@ test('OTP error', t => {
 })
 
 test('Bad IP address error', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/badaddr')
     .reply(401, {error: 'you are using the wrong IP address, friend'}, {
       'www-authenticate': 'ipaddress'
@@ -102,7 +94,7 @@ test('Bad IP address error', t => {
 })
 
 test('Unexpected www-authenticate error', t => {
-  tnock(t, OPTS.config.get('registry'))
+  tnock(t, OPTS.registry)
     .get('/unown')
     .reply(401, {error: `
       Pat-a-cake, pat-a-cake, baker's man.
