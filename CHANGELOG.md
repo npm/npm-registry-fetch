@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/npm/registry-fetch/compare/v2.1.0...v3.0.0) (2018-04-09)
+
+
+### Bug Fixes
+
+* **api:** pacote integration-related fixes ([a29de4f](https://github.com/npm/registry-fetch/commit/a29de4f))
+* **config:** stop caring about opts.config ([5856a6f](https://github.com/npm/registry-fetch/commit/5856a6f))
+
+
+### BREAKING CHANGES
+
+* **config:** opts.config is no longer supported. Pass the options down in opts itself.
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/npm/registry-fetch/compare/v2.0.0...v2.1.0) (2018-04-08)
 
