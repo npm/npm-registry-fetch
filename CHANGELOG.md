@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/npm/registry-fetch/compare/v3.0.0...v3.1.0) (2018-04-09)
+
+
+### Features
+
+* **config:** support no-proxy and https-proxy options ([9aa906b](https://github.com/npm/registry-fetch/commit/9aa906b))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/npm/registry-fetch/compare/v2.1.0...v3.0.0) (2018-04-09)
 
