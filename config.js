@@ -19,6 +19,7 @@ module.exports = figgyPudding({
   'fetch-retry-mintimeout': {},
   'gid': {},
   'headers': {},
+  'https-proxy': {},
   'integrity': {},
   'is-from-ci': 'isFromCI',
   'isFromCI': {
@@ -45,6 +46,7 @@ module.exports = figgyPudding({
   'method': {
     default: 'GET'
   },
+  'no-proxy': {},
   'noproxy': {},
   'npm-session': 'npmSession',
   'npmSession': {},

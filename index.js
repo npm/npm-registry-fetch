@@ -66,9 +66,9 @@ function regFetch (uri, opts) {
     maxSockets: opts.get('maxsockets'),
     memoize: opts.get('memoize'),
     method: opts.get('method') || 'GET',
-    noProxy: opts.get('noproxy'),
+    noProxy: opts.get('no-proxy') || opts.get('noproxy'),
     Promise: opts.get('Promise'),
-    proxy: opts.get('proxy'),
+    proxy: opts.get('https-proxy') || opts.get('proxy'),
     referer: opts.get('refer'),
     retry: opts.get('retry') || {
       retries: opts.get('fetch-retries'),
