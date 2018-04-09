@@ -8,14 +8,11 @@ const getAuth = require('./auth.js')
 const fetch = require('make-fetch-happen')
 const npa = require('npm-package-arg')
 const qs = require('querystring')
-const silentLog = require('./silentlog.js')
 const url = require('url')
 
 module.exports = regFetch
 function regFetch (uri, opts) {
-  opts = config(Object.assign({
-    log: silentLog
-  }, opts))
+  opts = config(opts)
   const registry = (
     (opts.get('spec') && pickRegistry(opts.get('spec'), opts)) ||
     opts.get('registry') ||
@@ -97,9 +94,6 @@ module.exports.pickRegistry = pickRegistry
 function pickRegistry (spec, opts) {
   spec = npa(spec)
   opts = config(opts)
-  if (!spec.registry) {
-    throw new Error(`${spec} is not a valid registry dependency spec`)
-  }
   let registry = spec.scope &&
     opts.get(spec.scope.replace(/^@?/, '@') + ':registry')
 

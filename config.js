@@ -90,5 +90,5 @@ const RegFetchConfig = pudding({
 module.exports = config
 function config (opts) {
   opts = opts || {}
-  return RegFetchConfig(opts, opts.config)
+  return RegFetchConfig(opts, 'config' in opts && opts.config)
 }
