@@ -27,11 +27,11 @@ function getAuth (registry, opts) {
 }
 
 function addKey (opts, obj, scope, key, objKey) {
-  if (opts.get(key)) {
-    obj[objKey || key] = opts.get(key)
+  if (opts[key]) {
+    obj[objKey || key] = opts[key]
   }
-  if (scope && opts.get(`${scope}:${key}`)) {
-    obj[objKey || key] = opts.get(`${scope}:${key}`)
+  if (scope && opts[`${scope}:${key}`]) {
+    obj[objKey || key] = opts[`${scope}:${key}`]
   }
 }
 

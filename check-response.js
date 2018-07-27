@@ -8,7 +8,7 @@ module.exports = checkResponse
 function checkResponse (method, res, registry, startTime, opts) {
   opts = config(opts)
   if (res.headers.has('npm-notice') && !res.headers.has('x-local-cache')) {
-    opts.get('log').notice('', res.headers.get('npm-notice'))
+    opts.log.notice('', res.headers.get('npm-notice'))
   }
   checkWarnings(res, registry, opts)
   if (res.status >= 400) {
@@ -25,7 +25,7 @@ function logRequest (method, res, startTime, opts) {
   const attempt = res.headers.get('x-fetch-attempts')
   const attemptStr = attempt && attempt > 1 ? ` attempt #${attempt}` : ''
   const cacheStr = res.headers.get('x-local-cache') ? ' (from cache)' : ''
-  opts.get('log').http(
+  opts.log.http(
     'fetch',
     `${method.toUpperCase()} ${res.status} ${res.url} ${elapsedTime}ms${attemptStr}${cacheStr}`
   )
@@ -51,14 +51,14 @@ function checkWarnings (res, registry, opts) {
     BAD_HOSTS.set(registry, true)
     if (warnings['199']) {
       if (warnings['199'].message.match(/ENOTFOUND/)) {
-        opts.get('log').warn('registry', `Using stale data from ${registry} because the host is inaccessible -- are you offline?`)
+        opts.log.warn('registry', `Using stale data from ${registry} because the host is inaccessible -- are you offline?`)
       } else {
-        opts.get('log').warn('registry', `Unexpected warning for ${registry}: ${warnings['199'].message}`)
+        opts.log.warn('registry', `Unexpected warning for ${registry}: ${warnings['199'].message}`)
       }
     }
     if (warnings['111']) {
       // 111 Revalidation failed -- we're using stale data
-      opts.get('log').warn(
+      opts.log.warn(
         'registry',
         `Using stale data from ${registry} due to a request error during revalidation.`
       )
