@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.2.0"></a>
+# [3.2.0](https://github.com/npm/registry-fetch/compare/v3.1.1...v3.2.0) (2018-07-27)
+
+
+### Features
+
+* **gzip:** add opts.gzip convenience opt ([340abe0](https://github.com/npm/registry-fetch/commit/340abe0))
+
+
+
 <a name="3.1.1"></a>
 ## [3.1.1](https://github.com/npm/registry-fetch/compare/v3.1.0...v3.1.1) (2018-04-09)
 
