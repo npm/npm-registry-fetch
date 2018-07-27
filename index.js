@@ -9,6 +9,7 @@ const fetch = require('make-fetch-happen')
 const npa = require('npm-package-arg')
 const qs = require('querystring')
 const url = require('url')
+const zlib = require('zlib')
 
 module.exports = regFetch
 function regFetch (uri, opts) {
@@ -38,6 +39,18 @@ function regFetch (uri, opts) {
   } else if (body && !headers['content-type']) {
     headers['content-type'] = 'application/octet-stream'
   }
+  if (opts.gzip) {
+    headers['content-encoding'] = 'gzip'
+    if (bodyIsStream) {
+      const gz = zlib.createGzip()
+      body.on('error', err => gz.emit('error', err))
+      body = body.pipe(gz)
+    } else {
+      body = new opts.Promise((resolve, reject) => {
+        zlib.gzip(body, (err, gz) => err ? reject(err) : resolve(gz))
+      })
+    }
+  }
   if (opts.get('query')) {
     let q = opts.get('query')
     if (typeof q === 'string') {
@@ -51,7 +64,7 @@ function regFetch (uri, opts) {
     )
     uri = url.format(parsed)
   }
-  return fetch(uri, {
+  return opts.Promise.resolve(body).then(body => fetch(uri, {
     agent: opts.get('agent'),
     algorithms: opts.get('algorithms'),
     body,
@@ -82,7 +95,7 @@ function regFetch (uri, opts) {
     gid: opts.get('gid')
   }).then(res => checkResponse(
     opts.get('method') || 'GET', res, registry, startTime, opts
-  ))
+  )))
 }
 
 module.exports.json = fetchJSON

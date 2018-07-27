@@ -8,6 +8,7 @@ const silentLog = require('../silentlog.js')
 const ssri = require('ssri')
 const test = require('tap').test
 const tnock = require('./util/tnock.js')
+const zlib = require('zlib')
 
 const fetch = require('../index.js')
 
@@ -108,6 +109,98 @@ test('stream body param', t => {
   const opts = Object.assign({
     method: 'POST',
     body: stream
+  }, OPTS)
+  return fetch('/hello', opts)
+    .then(res => {
+      t.equal(res.status, 200)
+      return res.json()
+    })
+    .then(json => t.deepEqual(json, {hello: 'world'}))
+})
+
+test('JSON body param', t => {
+  tnock(t, OPTS.registry)
+    .matchHeader('content-type', ctype => {
+      t.equal(ctype[0], 'application/json', 'content-type automatically set')
+      return ctype[0] === 'application/json'
+    })
+    .matchHeader('content-encoding', enc => {
+      t.equal(enc[0], 'gzip', 'content-encoding automatically set')
+      return enc[0] === 'gzip'
+    })
+    .post('/hello')
+    // NOTE: can't really test the body itself here because nock freaks out.
+    .reply(200)
+  const opts = Object.assign({
+    method: 'POST',
+    body: {hello: 'world'},
+    gzip: true
+  }, OPTS)
+  return fetch('/hello', opts)
+    .then(res => {
+      t.equal(res.status, 200, 'request succeeded')
+    })
+})
+
+test('gzip + buffer body param', t => {
+  tnock(t, OPTS.registry)
+    .matchHeader('content-type', ctype => {
+      t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
+      return ctype[0] === 'application/octet-stream'
+    })
+    .matchHeader('content-encoding', enc => {
+      t.equal(enc[0], 'gzip', 'content-encoding automatically set')
+      return enc[0] === 'gzip'
+    })
+    .post('/hello')
+    .reply(200, (uri, reqBody) => {
+      reqBody = zlib.gunzipSync(Buffer.from(reqBody, 'hex'))
+      t.deepEqual(
+        Buffer.from(reqBody, 'utf8').toString('utf8'),
+        'hello',
+        'got the JSON version of the body'
+      )
+      return reqBody
+    })
+  const opts = Object.assign({
+    method: 'POST',
+    body: Buffer.from('hello', 'utf8'),
+    gzip: true
+  }, OPTS)
+  return fetch('/hello', opts)
+    .then(res => {
+      t.equal(res.status, 200)
+      return res.buffer()
+    })
+    .then(buf =>
+      t.deepEqual(buf, Buffer.from('hello', 'utf8'), 'got response')
+    )
+})
+
+test('gzip + stream body param', t => {
+  tnock(t, OPTS.registry)
+    .matchHeader('content-type', ctype => {
+      t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
+      return ctype[0] === 'application/octet-stream'
+    })
+    .matchHeader('content-encoding', enc => {
+      t.equal(enc[0], 'gzip', 'content-encoding automatically set')
+      return enc[0] === 'gzip'
+    })
+    .post('/hello')
+    .reply(200, (uri, reqBody) => {
+      reqBody = zlib.gunzipSync(Buffer.from(reqBody, 'hex'))
+      t.deepEqual(JSON.parse(reqBody.toString('utf8')), {
+        hello: 'world'
+      }, 'got the stringified version of the body')
+      return reqBody
+    })
+  const stream = new PassThrough()
+  setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
+  const opts = Object.assign({
+    method: 'POST',
+    body: stream,
+    gzip: true
   }, OPTS)
   return fetch('/hello', opts)
     .then(res => {

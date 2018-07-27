@@ -214,6 +214,15 @@ packages.
 See also [`opts.retry`](#opts-retry) to provide all retry options as a single
 object.
 
+##### <a name="opts-gzip"></a> `opts.gzip`
+
+* Type: Boolean
+* Default: false
+
+If true, `npm-registry-fetch` will set the `Content-Encoding` header to `gzip`
+and use `zlib.gzip()` or `zlib.createGzip()` to gzip-encode
+[`opts.body`](#opts-body).
+
 ##### <a name="opts-headers"></a> `opts.headers`
 
 * Type: Object
