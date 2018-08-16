@@ -83,7 +83,7 @@ function regFetch (uri, opts) {
     Promise: opts.Promise,
     proxy: opts['https-proxy'] || opts.proxy,
     referer: opts.refer,
-    retry: opts.retry || {
+    retry: opts.retry != null ? opts.retry : {
       retries: opts['fetch-retries'],
       factor: opts['fetch-retry-factor'],
       minTimeout: opts['fetch-retry-mintimeout'],
