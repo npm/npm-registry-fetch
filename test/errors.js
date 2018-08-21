@@ -78,6 +78,19 @@ test('OTP error', t => {
     )
 })
 
+test('OTP error when missing www-authenticate', t => {
+  tnock(t, OPTS.registry)
+    .get('/otplease')
+    .reply(401, {error: 'needs a one-time password'})
+  return fetch('/otplease', OPTS)
+    .then(
+      () => { throw new Error('Should not have succeeded!') },
+      err => {
+        t.equal(err.code, 'EOTP', 'got special OTP error code even with missing www-authenticate header')
+      }
+    )
+})
+
 test('Bad IP address error', t => {
   tnock(t, OPTS.registry)
     .get('/badaddr')

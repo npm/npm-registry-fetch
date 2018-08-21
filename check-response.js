@@ -70,8 +70,9 @@ function checkErrors (method, res, startTime, opts) {
   return res.buffer()
     .catch(() => null)
     .then(body => {
+      let parsed = body
       try {
-        body = JSON.parse(body.toString('utf8'))
+        parsed = JSON.parse(body.toString('utf8'))
       } catch (e) {}
       if (res.status === 401 && res.headers.get('www-authenticate')) {
         const auth = res.headers.get('www-authenticate')
@@ -79,20 +80,25 @@ function checkErrors (method, res, startTime, opts) {
           .map(s => s.toLowerCase())
         if (auth.indexOf('ipaddress') !== -1) {
           throw new errors.HttpErrorAuthIPAddress(
-            method, res, body, opts.spec
+            method, res, parsed, opts.spec
           )
         } else if (auth.indexOf('otp') !== -1) {
           throw new errors.HttpErrorAuthOTP(
-            method, res, body, opts.spec
+            method, res, parsed, opts.spec
           )
         } else {
           throw new errors.HttpErrorAuthUnknown(
-            method, res, body, opts.spec
+            method, res, parsed, opts.spec
           )
         }
+      } else if (res.status === 401 && /one-time pass/.test(body.toString('utf8'))) {
+        // Heuristic for malformed OTP responses that don't include the www-authenticate header.
+        throw new errors.HttpErrorAuthOTP(
+          method, res, parsed, opts.spec
+        )
       } else {
         throw new errors.HttpErrorGeneral(
-          method, res, body, opts.spec
+          method, res, parsed, opts.spec
         )
       }
     })
