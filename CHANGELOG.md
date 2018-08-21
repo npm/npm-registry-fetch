@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.3.0"></a>
+# [3.3.0](https://github.com/npm/registry-fetch/compare/v3.2.1...v3.3.0) (2018-08-21)
+
+
+### Bug Fixes
+
+* **query:** stop including undefined keys ([4718b1b](https://github.com/npm/registry-fetch/commit/4718b1b))
+
+
+### Features
+
+* **otp:** use heuristic detection for malformed EOTP responses ([f035194](https://github.com/npm/registry-fetch/commit/f035194))
+
+
+
 <a name="3.2.1"></a>
 ## [3.2.1](https://github.com/npm/registry-fetch/compare/v3.2.0...v3.2.1) (2018-08-16)
 
