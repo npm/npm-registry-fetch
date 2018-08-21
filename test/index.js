@@ -220,6 +220,16 @@ test('query strings', t => {
     .then(json => t.equal(json.hello, 'world', 'query-string merged'))
 })
 
+test('query strings - undefined values', t => {
+  tnock(t, OPTS.registry)
+    .get('/hello?who=wor%20ld')
+    .reply(200, {ok: true})
+  return fetch.json('/hello', Object.assign({
+    query: {hi: undefined, who: 'wor ld'}
+  }, OPTS))
+    .then(json => t.ok(json.ok, 'undefined keys not included in query string'))
+})
+
 test('json()', t => {
   tnock(t, OPTS.registry)
     .get('/hello')

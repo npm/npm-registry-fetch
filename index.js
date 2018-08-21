@@ -56,13 +56,20 @@ function regFetch (uri, opts) {
     if (typeof q === 'string') {
       q = qs.parse(q)
     }
-    const parsed = url.parse(uri)
-    parsed.search = '?' + qs.stringify(
-      parsed.query
-        ? Object.assign(qs.parse(parsed.query), q)
-        : q
-    )
-    uri = url.format(parsed)
+    Object.keys(q).forEach(key => {
+      if (q[key] === undefined) {
+        delete q[key]
+      }
+    })
+    if (Object.keys(q).length) {
+      const parsed = url.parse(uri)
+      parsed.search = '?' + qs.stringify(
+        parsed.query
+          ? Object.assign(qs.parse(parsed.query), q)
+          : q
+      )
+      uri = url.format(parsed)
+    }
   }
   return opts.Promise.resolve(body).then(body => fetch(uri, {
     agent: opts.agent,
