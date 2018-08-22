@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.5.0"></a>
+# [3.5.0](https://github.com/npm/registry-fetch/compare/v3.4.0...v3.5.0) (2018-08-22)
+
+
+### Features
+
+* **pkgid:** heuristic pkgid calculation for errors ([2e789a5](https://github.com/npm/registry-fetch/commit/2e789a5))
+
+
+
 <a name="3.4.0"></a>
 # [3.4.0](https://github.com/npm/registry-fetch/compare/v3.3.0...v3.4.0) (2018-08-22)
 
