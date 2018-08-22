@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.4.0"></a>
+# [3.4.0](https://github.com/npm/registry-fetch/compare/v3.3.0...v3.4.0) (2018-08-22)
+
+
+### Bug Fixes
+
+* **deps:** use new figgy-pudding with aliases fix ([0308f54](https://github.com/npm/registry-fetch/commit/0308f54))
+
+
+### Features
+
+* **auth:** add forceAuth option to force a specific auth mechanism ([4524d17](https://github.com/npm/registry-fetch/commit/4524d17))
+
+
+
 <a name="3.3.0"></a>
 # [3.3.0](https://github.com/npm/registry-fetch/compare/v3.2.1...v3.3.0) (2018-08-21)
 
