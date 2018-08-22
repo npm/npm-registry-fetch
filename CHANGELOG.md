@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.6.0"></a>
+# [3.6.0](https://github.com/npm/registry-fetch/compare/v3.5.0...v3.6.0) (2018-08-22)
+
+
+### Bug Fixes
+
+* **docs:** document opts.forceAuth ([40bcd65](https://github.com/npm/registry-fetch/commit/40bcd65))
+
+
+### Features
+
+* **opts.ignoreBody:** add a boolean to throw away response bodies ([6923702](https://github.com/npm/registry-fetch/commit/6923702))
+
+
+
 <a name="3.5.0"></a>
 # [3.5.0](https://github.com/npm/registry-fetch/compare/v3.4.0...v3.5.0) (2018-08-22)
 
