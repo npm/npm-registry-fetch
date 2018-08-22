@@ -1,5 +1,7 @@
 'use strict'
 
+const config = require('../config.js')
+const npa = require('npm-package-arg')
 const npmlog = require('npmlog')
 const test = require('tap').test
 const tnock = require('./util/tnock.js')
@@ -7,7 +9,7 @@ const tnock = require('./util/tnock.js')
 const fetch = require('../index.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
-const OPTS = {
+const OPTS = config({
   log: npmlog,
   timeout: 0,
   retry: {
@@ -17,26 +19,62 @@ const OPTS = {
     maxTimeout: 10
   },
   registry: 'https://mock.reg/'
-}
+})
 
 test('generic request errors', t => {
   tnock(t, OPTS.registry)
-    .get('/ohno')
+    .get('/ohno/oops')
     .reply(400, 'failwhale!')
-  return fetch('/ohno', OPTS)
+  return fetch('/ohno/oops', OPTS)
     .then(
       () => { throw new Error('should not have succeeded!') },
       err => {
         t.equal(
           err.message,
-          `400 Bad Request - GET ${OPTS.registry}ohno`,
+          `400 Bad Request - GET ${OPTS.registry}ohno/oops`,
           'neatly printed message'
         )
         t.equal(err.code, 'E400', 'HTTP code used for err.code')
         t.equal(err.statusCode, 400, 'numerical HTTP code available')
         t.equal(err.method, 'GET', 'method in error object')
         t.equal(err.body.toString('utf8'), 'failwhale!', 'req body reported')
+        t.equal(err.pkgid, 'oops', 'base path used for pkgid')
       }
+    )
+})
+
+test('pkgid tie fighter', t => {
+  tnock(t, OPTS.registry)
+    .get('/-/ohno/_rewrite/ohyeah/maybe')
+    .reply(400, 'failwhale!')
+  return fetch('/-/ohno/_rewrite/ohyeah/maybe', OPTS)
+    .then(
+      () => { throw new Error('should not have succeeded!') },
+      err => t.equal(err.pkgid, undefined, 'no pkgid on tie fighters')
+    )
+})
+
+test('pkgid _rewrite', t => {
+  tnock(t, OPTS.registry)
+    .get('/ohno/_rewrite/ohyeah/maybe')
+    .reply(400, 'failwhale!')
+  return fetch('/ohno/_rewrite/ohyeah/maybe', OPTS)
+    .then(
+      () => { throw new Error('should not have succeeded!') },
+      err => t.equal(err.pkgid, 'ohyeah', '_rewrite filtered for pkgid')
+    )
+})
+
+test('pkgid with `opts.spec`', t => {
+  tnock(t, OPTS.registry)
+    .get('/ohno/_rewrite/ohyeah')
+    .reply(400, 'failwhale!')
+  return fetch('/ohno/_rewrite/ohyeah', OPTS.concat({
+    spec: npa('foo@1.2.3')
+  }))
+    .then(
+      () => { throw new Error('should not have succeeded!') },
+      err => t.equal(err.pkgid, 'foo@1.2.3', 'opts.spec used for pkgid')
     )
 })
 
