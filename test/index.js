@@ -2,6 +2,7 @@
 
 const Buffer = require('safe-buffer').Buffer
 
+const config = require('../config.js')
 const npmlog = require('npmlog')
 const PassThrough = require('stream').PassThrough
 const silentLog = require('../silentlog.js')
@@ -13,7 +14,7 @@ const zlib = require('zlib')
 const fetch = require('../index.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
-const OPTS = {
+const OPTS = config({
   log: npmlog,
   timeout: 0,
   retry: {
@@ -23,7 +24,7 @@ const OPTS = {
     maxTimeout: 10
   },
   registry: 'https://mock.reg/'
-}
+})
 
 test('hello world', t => {
   tnock(t, OPTS.registry)
@@ -50,10 +51,10 @@ test('JSON body param', t => {
       }, 'got the JSON version of the body')
       return reqBody
     })
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'POST',
     body: {hello: 'world'}
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -77,10 +78,10 @@ test('buffer body param', t => {
       )
       return reqBody
     })
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'POST',
     body: Buffer.from('hello', 'utf8')
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -106,10 +107,10 @@ test('stream body param', t => {
     })
   const stream = new PassThrough()
   setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'POST',
     body: stream
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -131,11 +132,11 @@ test('JSON body param', t => {
     .post('/hello')
     // NOTE: can't really test the body itself here because nock freaks out.
     .reply(200)
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'POST',
     body: {hello: 'world'},
     gzip: true
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200, 'request succeeded')
@@ -162,11 +163,11 @@ test('gzip + buffer body param', t => {
       )
       return reqBody
     })
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'POST',
     body: Buffer.from('hello', 'utf8'),
     gzip: true
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -197,11 +198,11 @@ test('gzip + stream body param', t => {
     })
   const stream = new PassThrough()
   setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'POST',
     body: stream,
     gzip: true
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -214,20 +215,18 @@ test('query strings', t => {
   tnock(t, OPTS.registry)
     .get('/hello?hi=there&who=wor%20ld')
     .reply(200, {hello: 'world'})
-  return fetch.json('/hello?hi=there', Object.assign({
+  return fetch.json('/hello?hi=there', OPTS.concat({
     query: {who: 'wor ld'}
-  }, OPTS))
-    .then(json => t.equal(json.hello, 'world', 'query-string merged'))
+  })).then(json => t.equal(json.hello, 'world', 'query-string merged'))
 })
 
 test('query strings - undefined values', t => {
   tnock(t, OPTS.registry)
     .get('/hello?who=wor%20ld')
     .reply(200, {ok: true})
-  return fetch.json('/hello', Object.assign({
+  return fetch.json('/hello', OPTS.concat({
     query: {hi: undefined, who: 'wor ld'}
-  }, OPTS))
-    .then(json => t.ok(json.ok, 'undefined keys not included in query string'))
+  })).then(json => t.ok(json.ok, 'undefined keys not included in query string'))
 })
 
 test('json()', t => {
@@ -242,9 +241,9 @@ test('method configurable', t => {
   tnock(t, OPTS.registry)
     .delete('/hello')
     .reply(200)
-  const opts = Object.assign({
+  const opts = OPTS.concat({
     method: 'DELETE'
-  }, OPTS)
+  })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200, 'successfully used DELETE method')
@@ -257,7 +256,7 @@ test('npm-notice header logging', t => {
     .reply(200, {hello: 'world'}, {
       'npm-notice': 'npm <3 u'
     })
-  const opts = Object.assign({}, OPTS, {
+  const opts = OPTS.concat({
     log: Object.assign({}, silentLog, {
       notice (header, msg) {
         t.equal(header, '', 'empty log header thing')
@@ -277,13 +276,13 @@ test('optionally verifies request body integrity', t => {
     .times(2)
     .reply(200, 'hello')
   const integrity = ssri.fromData('hello')
-  return fetch('/hello', Object.assign({integrity}, OPTS))
+  return fetch('/hello', OPTS.concat({integrity}))
     .then(res => res.buffer())
     .then(buf => t.equal(
       buf.toString('utf8'), 'hello', 'successfully got the right data')
     )
     .then(() => {
-      return fetch('/hello', Object.assign({integrity: 'sha1-nope'}, OPTS))
+      return fetch('/hello', OPTS.concat({integrity: 'sha1-nope'}))
         .then(res => {
           t.ok(res.body, 'no error until body starts getting read')
           return res
@@ -338,34 +337,29 @@ test('pickRegistry through opts.spec', t => {
     .get('/pkg')
     .times(2)
     .reply(200, {source: scopedReg})
-  return fetch.json('/pkg', Object.assign({
+  return fetch.json('/pkg', OPTS.concat({
     spec: 'pkg@1.2.3',
     '@myscope:registry': scopedReg
-  }, OPTS))
-    .then(json => t.equal(
-      json.source,
-      OPTS.registry,
-      'request made to main registry'
-    ))
-    .then(() => fetch.json('/pkg', Object.assign({
-      spec: 'pkg@1.2.3',
-      '@myscope:registry': scopedReg,
-      'scope': '@myscope'
-    })))
-    .then(json => t.equal(
-      json.source,
-      scopedReg,
-      'request made to scope registry using opts.scope'
-    ))
-    .then(() => fetch.json('/pkg', Object.assign({
-      spec: '@myscope/pkg@1.2.3',
-      '@myscope:registry': scopedReg
-    })))
-    .then(json => t.equal(
-      json.source,
-      scopedReg,
-      'request made to scope registry using spec scope'
-    ))
+  })).then(json => t.equal(
+    json.source,
+    OPTS.registry,
+    'request made to main registry'
+  )).then(() => fetch.json('/pkg', OPTS.concat({
+    spec: 'pkg@1.2.3',
+    '@myscope:registry': scopedReg,
+    'scope': '@myscope'
+  }))).then(json => t.equal(
+    json.source,
+    scopedReg,
+    'request made to scope registry using opts.scope'
+  )).then(() => fetch.json('/pkg', Object.assign({
+    spec: '@myscope/pkg@1.2.3',
+    '@myscope:registry': scopedReg
+  }))).then(json => t.equal(
+    json.source,
+    scopedReg,
+    'request made to scope registry using spec scope'
+  ))
 })
 
 // TODO
