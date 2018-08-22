@@ -237,6 +237,16 @@ test('json()', t => {
     .then(json => t.deepEqual(json, {hello: 'world'}, 'got json body'))
 })
 
+test('opts.ignoreBody', t => {
+  tnock(t, OPTS.registry)
+    .get('/hello')
+    .reply(200, {hello: 'world'})
+  return fetch('/hello', OPTS.concat({ignoreBody: true}))
+    .then(res => {
+      t.equal(res.body, null, 'body omitted')
+    })
+})
+
 test('method configurable', t => {
   tnock(t, OPTS.registry)
     .delete('/hello')

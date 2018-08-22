@@ -16,6 +16,10 @@ function checkResponse (method, res, registry, startTime, opts) {
     return checkErrors(method, res, startTime, opts)
   } else {
     res.body.on('end', () => logRequest(method, res, startTime, opts))
+    if (opts.ignoreBody) {
+      res.body.resume()
+      res.body = null
+    }
     return res
   }
 }

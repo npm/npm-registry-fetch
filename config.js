@@ -23,6 +23,8 @@ module.exports = figgyPudding({
   'gzip': {},
   'headers': {},
   'https-proxy': {},
+  'ignore-body': {},
+  ignoreBody: 'ignore-body',
   'integrity': {},
   'is-from-ci': 'isFromCI',
   'isFromCI': {
