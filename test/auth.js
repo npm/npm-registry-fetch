@@ -76,6 +76,40 @@ test('token auth', t => {
     .then(res => t.equal(res, 'success', 'token auth succeeded'))
 })
 
+test('forceAuth', t => {
+  const config = {
+    'registry': 'https://my.custom.registry/here/',
+    'token': 'deadbeef',
+    'always-auth': false,
+    '//my.custom.registry/here/:_authToken': 'c0ffee',
+    '//my.custom.registry/here/:token': 'nope',
+    'forceAuth': {
+      'username': 'user',
+      'password': Buffer.from('pass', 'utf8').toString('base64'),
+      'email': 'e@ma.il',
+      'always-auth': true
+    }
+  }
+  t.deepEqual(getAuth(config.registry, config), {
+    alwaysAuth: true,
+    username: 'user',
+    password: 'pass',
+    email: 'e@ma.il'
+  }, 'only forceAuth details included')
+
+  const opts = Object.assign({}, OPTS, config)
+  const encoded = Buffer.from(`user:pass`, 'utf8').toString('base64')
+  tnock(t, opts.registry)
+    .matchHeader('authorization', auth => {
+      t.equal(auth[0], `Basic ${encoded}`, 'got encoded basic auth')
+      return auth[0] === `Basic ${encoded}`
+    })
+    .get('/hello')
+    .reply(200, '"success"')
+  return fetch.json('/hello', opts)
+    .then(res => t.equal(res, 'success', 'used forced auth details'))
+})
+
 test('_auth auth', t => {
   const config = {
     'registry': 'https://my.custom.registry/here/',

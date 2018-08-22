@@ -9,6 +9,9 @@ function getAuth (registry, opts) {
   opts = config(opts)
   let AUTH = {}
   const regKey = registry && registryKey(registry)
+  if (opts.forceAuth) {
+    opts = opts.forceAuth
+  }
   const doKey = (key, alias) => addKey(opts, AUTH, regKey, key, alias)
   doKey('token')
   doKey('_authToken', 'token')

@@ -17,6 +17,8 @@ module.exports = figgyPudding({
   'fetch-retry-factor': {},
   'fetch-retry-maxtimeout': {},
   'fetch-retry-mintimeout': {},
+  'force-auth': {},
+  forceAuth: 'force-auth',
   'gid': {},
   'gzip': {},
   'headers': {},
