@@ -214,6 +214,16 @@ packages.
 See also [`opts.retry`](#opts-retry) to provide all retry options as a single
 object.
 
+##### <a name="opts-force-auth"></a> `opts.force-auth`
+
+* Alias: `opts.forceAuth`
+* Type: Object
+* Default: null
+
+If present, other auth-related values in `opts` will be completely ignored,
+including `alwaysAuth`, `email`, and `otp`, when calculating auth for a request,
+and the auth details in `opts.forceAuth` will be used instead.
+
 ##### <a name="opts-gzip"></a> `opts.gzip`
 
 * Type: Boolean
