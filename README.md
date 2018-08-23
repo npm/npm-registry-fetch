@@ -82,6 +82,27 @@ const res = await fetch.json('/-/ping')
 console.log(res) // Body parsed as JSON
 ```
 
+#### <a name="fetch-json-stream"></a> `> fetch.json.stream(url, jsonPath, [opts]) -> Stream`
+
+Performs a request to a given registry URL and parses the body of the response
+as JSON, with each entry being emitted through the stream.
+
+The `jsonPath` argument is a [`JSONStream.parse()`
+path](https://github.com/dominictarr/JSONStream#jsonstreamparsepath), and the
+returned stream (unlike default `JSONStream`s), has a valid
+`Symbol.asyncIterator` implementation.
+
+For available options, please see the section on [`fetch` options](#fetch-opts).
+
+##### Example
+
+```javascript
+console.log('https://npm.im/~zkat has access to the following packages:')
+for await (let {key, value} of fetch.json.stream('/-/user/zkat/package', '$*')) {
+  console.log(`https://npm.im/${key} (perms: ${value})`)
+}
+```
+
 #### <a name="fetch-opts"></a> `fetch` Options
 
 Fetch options are optional, and can be passed in as either a Map-like object

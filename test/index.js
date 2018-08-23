@@ -3,6 +3,7 @@
 const Buffer = require('safe-buffer').Buffer
 
 const config = require('../config.js')
+const getStream = require('get-stream')
 const npmlog = require('npmlog')
 const PassThrough = require('stream').PassThrough
 const silentLog = require('../silentlog.js')
@@ -235,6 +236,23 @@ test('json()', t => {
     .reply(200, {hello: 'world'})
   return fetch.json('/hello', OPTS)
     .then(json => t.deepEqual(json, {hello: 'world'}, 'got json body'))
+})
+
+test('fetch.json.stream()', t => {
+  tnock(t, OPTS.registry).get('/hello').reply(200, {
+    a: 1,
+    b: 2,
+    c: 3
+  })
+  return getStream.array(
+    fetch.json.stream('/hello', '$*', OPTS)
+  ).then(data => {
+    t.deepEqual(data, [
+      {key: 'a', value: 1},
+      {key: 'b', value: 2},
+      {key: 'c', value: 3}
+    ], 'got a streamed JSON body')
+  })
 })
 
 test('opts.ignoreBody', t => {

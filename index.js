@@ -6,7 +6,9 @@ const checkResponse = require('./check-response.js')
 const config = require('./config.js')
 const getAuth = require('./auth.js')
 const fetch = require('make-fetch-happen')
+const JSONStream = require('JSONStream')
 const npa = require('npm-package-arg')
+const {PassThrough} = require('stream')
 const qs = require('querystring')
 const url = require('url')
 const zlib = require('zlib')
@@ -108,6 +110,18 @@ function regFetch (uri, opts) {
 module.exports.json = fetchJSON
 function fetchJSON (uri, opts) {
   return regFetch(uri, opts).then(res => res.json())
+}
+
+module.exports.json.stream = fetchJSONStream
+function fetchJSONStream (uri, jsonPath, opts) {
+  const parser = JSONStream.parse(jsonPath)
+  const pt = parser.pipe(new PassThrough({objectMode: true}))
+  parser.on('error', err => pt.emit('error', err))
+  regFetch(uri, opts).then(res => {
+    res.body.on('error', err => parser.emit('error', err))
+    res.body.pipe(parser)
+  }, err => pt.emit('error', err))
+  return pt
 }
 
 module.exports.pickRegistry = pickRegistry
