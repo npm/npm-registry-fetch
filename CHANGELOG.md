@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.7.0"></a>
+# [3.7.0](https://github.com/npm/registry-fetch/compare/v3.6.0...v3.7.0) (2018-08-23)
+
+
+### Features
+
+* **json.stream:** add utility function for streamed JSON parsing ([051d969](https://github.com/npm/registry-fetch/commit/051d969))
+
+
+
 <a name="3.6.0"></a>
 # [3.6.0](https://github.com/npm/registry-fetch/compare/v3.5.0...v3.6.0) (2018-08-22)
 
