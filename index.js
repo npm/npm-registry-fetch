@@ -114,7 +114,8 @@ function fetchJSON (uri, opts) {
 
 module.exports.json.stream = fetchJSONStream
 function fetchJSONStream (uri, jsonPath, opts) {
-  const parser = JSONStream.parse(jsonPath)
+  opts = config(opts)
+  const parser = JSONStream.parse(jsonPath, opts.mapJson)
   const pt = parser.pipe(new PassThrough({objectMode: true}))
   parser.on('error', err => pt.emit('error', err))
   regFetch(uri, opts).then(res => {

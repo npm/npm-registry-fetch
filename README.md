@@ -336,6 +336,16 @@ See also [`opts.proxy`](#opts-proxy)
 Logger object to use for logging operation details. Must have the same methods
 as `npmlog`.
 
+##### <a name="opts-map-json"></a> `opts.map-json`
+
+* Alias: `mapJson`, `mapJSON`
+* Type: Function
+* Default: undefined
+
+When using `fetch.json.stream()` (NOT `fetch.json()`), this will be passed down
+to [`JSONStream`](https://npm.im/JSONStream) as the second argument to
+`JSONStream.parse`, and can be used to transform stream data before output.
+
 ##### <a name="opts-maxsockets"></a> `opts.maxsockets`
 
 * Alias: `opts.max-sockets`

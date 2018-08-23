@@ -43,6 +43,9 @@ module.exports = figgyPudding({
   'log': {
     default: silentLog
   },
+  'map-json': 'mapJson',
+  'mapJSON': 'mapJson',
+  'mapJson': {},
   'max-sockets': 'maxsockets',
   'maxsockets': {
     default: 12

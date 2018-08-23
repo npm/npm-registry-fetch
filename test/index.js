@@ -255,6 +255,27 @@ test('fetch.json.stream()', t => {
   })
 })
 
+test('fetch.json.stream opts.mapJson', t => {
+  tnock(t, OPTS.registry).get('/hello').reply(200, {
+    a: 1,
+    b: 2,
+    c: 3
+  })
+  return getStream.array(
+    fetch.json.stream('/hello', '*', OPTS.concat({
+      mapJson (value, [key]) {
+        return [key, value]
+      }
+    }))
+  ).then(data => {
+    t.deepEqual(data, [
+      ['a', 1],
+      ['b', 2],
+      ['c', 3]
+    ], 'data mapped')
+  })
+})
+
 test('opts.ignoreBody', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
