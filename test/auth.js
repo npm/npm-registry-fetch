@@ -116,7 +116,7 @@ test('_auth auth', t => {
     '_auth': 'deadbeef',
     '//my.custom.registry/here/:_auth': 'c0ffee'
   }
-  t.deepEqual(getAuth(config.registry, config), {
+  t.like(getAuth(config.registry, config), {
     alwaysAuth: false,
     _auth: 'c0ffee'
   }, 'correct _auth picked out')
@@ -124,6 +124,31 @@ test('_auth auth', t => {
   const opts = Object.assign({}, OPTS, config)
   tnock(t, opts.registry)
     .matchHeader('authorization', `Basic c0ffee`)
+    .get('/hello')
+    .reply(200, '"success"')
+  return fetch.json('/hello', opts)
+    .then(res => t.equal(res, 'success', '_auth auth succeeded'))
+})
+
+test('_auth username:pass auth', t => {
+  const username = 'foo'
+  const password = 'bar'
+  const auth = Buffer.from(`${username}:${password}`, 'utf8').toString('base64')
+  const config = {
+    'registry': 'https://my.custom.registry/here/',
+    '_auth': 'foobarbaz',
+    '//my.custom.registry/here/:_auth': auth
+  }
+  t.like(getAuth(config.registry, config), {
+    alwaysAuth: false,
+    username,
+    password,
+    '_auth': auth
+  }, 'correct _auth picked out')
+
+  const opts = Object.assign({}, OPTS, config)
+  tnock(t, opts.registry)
+    .matchHeader('authorization', `Basic ${auth}`)
     .get('/hello')
     .reply(200, '"success"')
   return fetch.json('/hello', opts)
@@ -163,7 +188,7 @@ test('globally-configured auth', t => {
     '_auth': 'deadbeef',
     '//my.custom.registry/here/:_auth': 'c0ffee'
   }
-  t.deepEqual(getAuth(_authConfig.registry, _authConfig), {
+  t.like(getAuth(_authConfig.registry, _authConfig), {
     alwaysAuth: false,
     _auth: 'deadbeef'
   }, 'correct global _auth picked out')
