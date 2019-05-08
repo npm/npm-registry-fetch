@@ -34,7 +34,8 @@
     "figgy-pudding": "^3.4.1",
     "lru-cache": "^5.1.1",
     "make-fetch-happen": "^5.0.0",
-    "npm-package-arg": "^6.1.0"
+    "npm-package-arg": "^6.1.0",
+    "safe-buffer": "^5.2.0"
   },
   "devDependencies": {
     "cacache": "^12.0.0",
