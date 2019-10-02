@@ -7,7 +7,7 @@ module.exports = getAuth
 function getAuth (registry, opts) {
   if (!registry) { throw new Error('registry is required') }
   opts = config(opts)
-  let AUTH = {}
+  const AUTH = {}
   const regKey = registry && registryKey(registry)
   if (opts.forceAuth) {
     opts = opts.forceAuth
