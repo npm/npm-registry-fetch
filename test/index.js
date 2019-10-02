@@ -3,9 +3,8 @@
 const Buffer = require('safe-buffer').Buffer
 
 const config = require('../config.js')
-const getStream = require('get-stream')
+const Minipass = require('minipass')
 const npmlog = require('npmlog')
-const PassThrough = require('stream').PassThrough
 const silentLog = require('../silentlog.js')
 const ssri = require('ssri')
 const test = require('tap').test
@@ -106,7 +105,7 @@ test('stream body param', t => {
       }, 'got the stringified version of the body')
       return reqBody
     })
-  const stream = new PassThrough()
+  const stream = new Minipass()
   setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
   const opts = OPTS.concat({
     method: 'POST',
@@ -197,7 +196,7 @@ test('gzip + stream body param', t => {
       }, 'got the stringified version of the body')
       return reqBody
     })
-  const stream = new PassThrough()
+  const stream = new Minipass()
   setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
   const opts = OPTS.concat({
     method: 'POST',
@@ -244,9 +243,7 @@ test('fetch.json.stream()', t => {
     b: 2,
     c: 3
   })
-  return getStream.array(
-    fetch.json.stream('/hello', '$*', OPTS)
-  ).then(data => {
+  return fetch.json.stream('/hello', '$*', OPTS).collect().then(data => {
     t.deepEqual(data, [
       {key: 'a', value: 1},
       {key: 'b', value: 2},
@@ -261,13 +258,11 @@ test('fetch.json.stream opts.mapJson', t => {
     b: 2,
     c: 3
   })
-  return getStream.array(
-    fetch.json.stream('/hello', '*', OPTS.concat({
-      mapJson (value, [key]) {
-        return [key, value]
-      }
-    }))
-  ).then(data => {
+  return fetch.json.stream('/hello', '*', OPTS.concat({
+    mapJson (value, [key]) {
+      return [key, value]
+    }
+  })).collect().then(data => {
     t.deepEqual(data, [
       ['a', 1],
       ['b', 2],
