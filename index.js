@@ -10,7 +10,7 @@ const JSONStream = require('minipass-json-stream')
 const npa = require('npm-package-arg')
 const qs = require('querystring')
 const url = require('url')
-const zlib = require('zlib')
+const zlib = require('minizlib')
 
 module.exports = regFetch
 function regFetch (uri, opts) {
@@ -40,18 +40,19 @@ function regFetch (uri, opts) {
   } else if (body && !headers['content-type']) {
     headers['content-type'] = 'application/octet-stream'
   }
+
   if (opts.gzip) {
     headers['content-encoding'] = 'gzip'
     if (bodyIsStream) {
-      const gz = zlib.createGzip()
-      body.on('error', err => gz.emit('error', err))
+      const gz = new zlib.Gzip()
+      body.on('error', /* istanbul ignore next: unlikely and hard to test */
+        err => gz.emit('error', err))
       body = body.pipe(gz)
     } else {
-      body = new Promise((resolve, reject) => {
-        zlib.gzip(body, (err, gz) => err ? reject(err) : resolve(gz))
-      })
+      body = new zlib.Gzip().end(body).concat()
     }
   }
+
   if (opts.query) {
     let q = opts.query
     if (typeof q === 'string') {
