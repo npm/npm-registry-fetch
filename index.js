@@ -47,7 +47,7 @@ function regFetch (uri, opts) {
       body.on('error', err => gz.emit('error', err))
       body = body.pipe(gz)
     } else {
-      body = new opts.Promise((resolve, reject) => {
+      body = new Promise((resolve, reject) => {
         zlib.gzip(body, (err, gz) => err ? reject(err) : resolve(gz))
       })
     }
@@ -72,7 +72,7 @@ function regFetch (uri, opts) {
       uri = url.format(parsed)
     }
   }
-  return opts.Promise.resolve(body).then(body => fetch(uri, {
+  return Promise.resolve(body).then(body => fetch(uri, {
     agent: opts.agent,
     algorithms: opts.algorithms,
     body,
@@ -88,7 +88,6 @@ function regFetch (uri, opts) {
     memoize: opts.memoize,
     method: opts.method || 'GET',
     noProxy: opts['no-proxy'] || opts.noproxy,
-    Promise: opts.Promise,
     proxy: opts['https-proxy'] || opts.proxy,
     referer: opts.refer,
     retry: opts.retry != null ? opts.retry : {

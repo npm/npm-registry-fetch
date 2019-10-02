@@ -63,7 +63,6 @@ module.exports = figgyPudding({
   'prefer-online': {},
   'projectScope': {},
   'project-scope': 'projectScope',
-  'Promise': {default: () => Promise},
   'proxy': {},
   'query': {},
   'refer': {},
