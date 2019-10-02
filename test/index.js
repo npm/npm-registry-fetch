@@ -216,7 +216,7 @@ test('query strings', t => {
     .get('/hello?hi=there&who=wor%20ld')
     .reply(200, {hello: 'world'})
   return fetch.json('/hello?hi=there', OPTS.concat({
-    query: {who: 'wor ld'}
+    query: 'who=wor ld'
   })).then(json => t.equal(json.hello, 'world', 'query-string merged'))
 })
 
