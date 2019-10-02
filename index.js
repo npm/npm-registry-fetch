@@ -11,6 +11,7 @@ const npa = require('npm-package-arg')
 const qs = require('querystring')
 const url = require('url')
 const zlib = require('minizlib')
+const Minipass = require('minipass')
 
 module.exports = regFetch
 function regFetch (uri, opts) {
@@ -18,8 +19,10 @@ function regFetch (uri, opts) {
   const registry = (
     (opts.spec && pickRegistry(opts.spec, opts)) ||
     opts.registry ||
+    /* istanbul ignore next: default set in figgy pudding config  */
     'https://registry.npmjs.org/'
   )
+
   uri = url.parse(uri).protocol
     ? uri
     : `${
@@ -27,14 +30,21 @@ function regFetch (uri, opts) {
     }/${
       uri.trim().replace(/^\//, '')
     }`
+
+  const method = opts.method ||
+    /* istanbul ignore next: default set in figgy pudding config */
+    'GET'
+
   // through that takes into account the scope, the prefix of `uri`, etc
   const startTime = Date.now()
   const headers = getHeaders(registry, uri, opts)
   let body = opts.body
-  const bodyIsStream = body &&
+  const bodyIsStream = Minipass.isStream(body)
+  const bodyIsPromise = body &&
     typeof body === 'object' &&
-    typeof body.pipe === 'function'
-  if (body && !bodyIsStream && typeof body !== 'string' && !Buffer.isBuffer(body)) {
+    typeof body.then === 'function'
+
+  if (body && !bodyIsStream && !bodyIsPromise && typeof body !== 'string' && !Buffer.isBuffer(body)) {
     headers['content-type'] = headers['content-type'] || 'application/json'
     body = JSON.stringify(body)
   } else if (body && !headers['content-type']) {
@@ -48,7 +58,7 @@ function regFetch (uri, opts) {
       body.on('error', /* istanbul ignore next: unlikely and hard to test */
         err => gz.emit('error', err))
       body = body.pipe(gz)
-    } else {
+    } else if (!bodyIsPromise) {
       body = new zlib.Gzip().end(body).concat()
     }
   }
@@ -73,7 +83,8 @@ function regFetch (uri, opts) {
       uri = url.format(parsed)
     }
   }
-  return Promise.resolve(body).then(body => fetch(uri, {
+
+  const doFetch = (body) => fetch(uri, {
     agent: opts.agent,
     algorithms: opts.algorithms,
     body,
@@ -87,7 +98,7 @@ function regFetch (uri, opts) {
     localAddress: opts['local-address'],
     maxSockets: opts.maxsockets,
     memoize: opts.memoize,
-    method: opts.method || 'GET',
+    method: method,
     noProxy: opts['no-proxy'] || opts.noproxy,
     proxy: opts['https-proxy'] || opts.proxy,
     referer: opts.refer,
@@ -100,8 +111,10 @@ function regFetch (uri, opts) {
     strictSSL: !!opts['strict-ssl'],
     timeout: opts.timeout
   }).then(res => checkResponse(
-    opts.method || 'GET', res, registry, startTime, opts
-  )))
+    method, res, registry, startTime, opts
+  ))
+
+  return Promise.resolve(body).then(doFetch)
 }
 
 module.exports.json = fetchJSON
@@ -114,7 +127,9 @@ function fetchJSONStream (uri, jsonPath, opts) {
   opts = config(opts)
   const parser = JSONStream.parse(jsonPath, opts.mapJson)
   regFetch(uri, opts).then(res =>
-    res.body.on('error', er => parser.emit('error', er)).pipe(parser)
+    res.body.on('error',
+      /* istanbul ignore next: unlikely and difficult to test */
+      er => parser.emit('error', er)).pipe(parser)
   ).catch(er => parser.emit('error', er))
   return parser
 }
@@ -131,7 +146,9 @@ function pickRegistry (spec, opts) {
   }
 
   if (!registry) {
-    registry = opts.registry || 'https://registry.npmjs.org/'
+    registry = opts.registry ||
+      /* istanbul ignore next: default set by figgy pudding config */
+      'https://registry.npmjs.org/'
   }
 
   return registry

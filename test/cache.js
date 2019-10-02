@@ -42,6 +42,19 @@ test('can cache GET requests', t => {
     .then(val => t.deepEqual(val, {obj: 'value'}, 'response was cached'))
 })
 
+test('prefer-offline', t => {
+  tnock(t, REGISTRY)
+    .get('/hello')
+    .times(1)
+    .reply(200, {obj: 'value'})
+  return fetch.json('/hello', OPTS.concat({'prefer-offline': true}))
+    .then(val => t.deepEqual(val, {obj: 'value'}, 'got expected response'))
+    .then(() => fs.statAsync(OPTS.get('cache')))
+    .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
+    .then(() => fetch.json('/hello', OPTS.concat({'prefer-offline': true})))
+    .then(val => t.deepEqual(val, {obj: 'value'}, 'response was cached'))
+})
+
 test('offline', t => {
   tnock(t, REGISTRY)
     .get('/hello')
@@ -51,9 +64,22 @@ test('offline', t => {
     .then(val => t.deepEqual(val, {obj: 'value'}, 'got expected response'))
     .then(() => fs.statAsync(OPTS.get('cache')))
     .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
-    .then(() => fetch.json('/hello', OPTS))
+    .then(() => fetch.json('/hello', OPTS.concat({ offline: true })))
     .then(val => t.deepEqual(val, {obj: 'value'}, 'response was cached'))
 })
 
-test('prefer-online')
-test('prefer-offline')
+test('offline fails if not cached', t =>
+  t.rejects(fetch.json('/hello', OPTS.concat({offline: true}))))
+
+test('prefer-online', t => {
+  tnock(t, REGISTRY)
+    .get('/hello')
+    .times(2)
+    .reply(200, {obj: 'value'})
+  return fetch.json('/hello', OPTS)
+    .then(val => t.deepEqual(val, {obj: 'value'}, 'got expected response'))
+    .then(() => fs.statAsync(OPTS.get('cache')))
+    .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
+    .then(() => fetch.json('/hello', OPTS.concat({ 'prefer-online': true })))
+    .then(val => t.deepEqual(val, {obj: 'value'}, 'response was refetched'))
+})

@@ -201,7 +201,11 @@ test('gzip + stream body param', t => {
   const opts = OPTS.concat({
     method: 'POST',
     body: stream,
-    gzip: true
+    gzip: true,
+    query: {
+      everything: undefined,
+      is: undefined
+    }
   })
   return fetch('/hello', opts)
     .then(res => {
@@ -268,6 +272,16 @@ test('fetch.json.stream opts.mapJson', t => {
       ['b', 2],
       ['c', 3]
     ], 'data mapped')
+  })
+})
+
+test('fetch.json.stream gets fetch error on stream', t => {
+  return t.rejects(fetch.json.stream('/hello', '*', OPTS.concat({
+    body: Promise.reject(new Error('no body for you')),
+    method: 'POST',
+    gzip: true // make sure we don't gzip the promise, lol!
+  })).collect(), {
+    message: 'no body for you'
   })
 })
 

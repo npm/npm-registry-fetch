@@ -155,6 +155,29 @@ test('_auth username:pass auth', t => {
     .then(res => t.equal(res, 'success', '_auth auth succeeded'))
 })
 
+test('_auth only sets user/pass when not already set', t => {
+  const username = 'foo'
+  const password = Buffer.from('bar', 'utf8').toString('base64')
+  const _auth = Buffer.from('not:foobar', 'utf8').toString('base64')
+  const config = {
+    _auth,
+    username,
+    password,
+    'always-auth': 'false'
+  }
+
+  const expect = {
+    _auth,
+    username,
+    password: 'bar',
+    alwaysAuth: false
+  }
+
+  t.match(getAuth('http://registry/', config), expect)
+
+  t.end()
+})
+
 test('globally-configured auth', t => {
   const basicConfig = {
     'registry': 'https://different.registry/',
@@ -317,4 +340,9 @@ test('scope-based auth', t => {
       scope: 'myscope'
     })))
     .then(res => t.equal(res, 'success', 'token auth succeeded without @ in scope'))
+})
+
+test('auth needs a registry', t => {
+  t.throws(() => getAuth(null), { message: 'registry is required' })
+  t.end()
 })
