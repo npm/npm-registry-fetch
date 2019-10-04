@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.0.0"></a>
+# [5.0.0](https://github.com/npm/registry-fetch/compare/v4.0.2...v5.0.0) (2019-10-04)
+
+
+### Bug Fixes
+
+* prefer const in getAuth function ([90ac7b1](https://github.com/npm/registry-fetch/commit/90ac7b1))
+* use minizlib instead of core zlib ([e64702e](https://github.com/npm/registry-fetch/commit/e64702e))
+
+
+### Features
+
+* refactor to use Minipass streams ([bb37f20](https://github.com/npm/registry-fetch/commit/bb37f20))
+
+
+### BREAKING CHANGES
+
+* this replaces all core streams (except for some
+PassThrough streams in a few tests) with Minipass streams, and updates
+all deps to the latest and greatest Minipass versions of things.
+
+
+
 <a name="4.0.2"></a>
 ## [4.0.2](https://github.com/npm/registry-fetch/compare/v4.0.0...v4.0.2) (2019-10-04)
 
