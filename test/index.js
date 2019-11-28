@@ -437,9 +437,23 @@ test('log warning header info', t => {
     .then(res => t.equal(res.status, 200, 'got successful response'))
 })
 
+test('npm-in-ci header with forced CI=false', t => {
+  const CI = process.env.CI
+  process.env.CI = false
+  t.teardown(t => {
+    process.env.CI = CI
+  })
+  tnock(t, OPTS.registry)
+    .get('/hello')
+    .reply(200, {hello: 'world'})
+  return fetch('/hello', OPTS)
+    .then(res => {
+      t.equal(res.status, 200, 'got successful response')
+    })
+})
+
 // TODO
 // * npm-session
-// * npm-in-ci
 // * npm-scope
 // * referer (opts.refer)
 // * user-agent
