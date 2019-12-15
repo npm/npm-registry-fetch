@@ -81,7 +81,7 @@ test('pkgid with `opts.spec`', t => {
 test('JSON error reporing', t => {
   tnock(t, OPTS.registry)
     .get('/ohno')
-    .reply(400, {error: 'badarg'})
+    .reply(400, { error: 'badarg' })
   return fetch('/ohno', OPTS)
     .then(
       () => { throw new Error('should not have succeeded!') },
@@ -104,7 +104,7 @@ test('JSON error reporing', t => {
 test('OTP error', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
-    .reply(401, {error: 'needs an otp, please'}, {
+    .reply(401, { error: 'needs an otp, please' }, {
       'www-authenticate': 'otp'
     })
   return fetch('/otplease', OPTS)
@@ -119,7 +119,7 @@ test('OTP error', t => {
 test('OTP error when missing www-authenticate', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
-    .reply(401, {error: 'needs a one-time password'})
+    .reply(401, { error: 'needs a one-time password' })
   return fetch('/otplease', OPTS)
     .then(
       () => { throw new Error('Should not have succeeded!') },
@@ -132,7 +132,7 @@ test('OTP error when missing www-authenticate', t => {
 test('Bad IP address error', t => {
   tnock(t, OPTS.registry)
     .get('/badaddr')
-    .reply(401, {error: 'you are using the wrong IP address, friend'}, {
+    .reply(401, { error: 'you are using the wrong IP address, friend' }, {
       'www-authenticate': 'ipaddress'
     })
   return fetch('/badaddr', OPTS)
@@ -147,12 +147,14 @@ test('Bad IP address error', t => {
 test('Unexpected www-authenticate error', t => {
   tnock(t, OPTS.registry)
     .get('/unown')
-    .reply(401, {error: `
+    .reply(401, {
+      error: `
       Pat-a-cake, pat-a-cake, baker's man.
       Bake me a cake as fast as you can
       Pat it, and prick it, and mark it with a "B"
       And put it in the oven for baby and me!
-    `}, {
+    `
+    }, {
       'www-authenticate': 'pattie-cake-protocol'
     })
   return fetch('/unown', OPTS)

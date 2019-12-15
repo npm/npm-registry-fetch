@@ -3,7 +3,7 @@
 const config = require('./config.js')
 const errors = require('./errors.js')
 const LRU = require('lru-cache')
-const {Response} = require('minipass-fetch')
+const { Response } = require('minipass-fetch')
 module.exports = checkResponse
 function checkResponse (method, res, registry, startTime, opts) {
   opts = config(opts)

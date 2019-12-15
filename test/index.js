@@ -29,13 +29,13 @@ const OPTS = config({
 test('hello world', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
-    .reply(200, {hello: 'world'})
+    .reply(200, { hello: 'world' })
   return fetch('/hello', OPTS)
     .then(res => {
       t.equal(res.status, 200, 'got successful response')
       return res.json()
     })
-    .then(json => t.deepEqual(json, {hello: 'world'}, 'got correct body'))
+    .then(json => t.deepEqual(json, { hello: 'world' }, 'got correct body'))
 })
 
 test('JSON body param', t => {
@@ -53,14 +53,14 @@ test('JSON body param', t => {
     })
   const opts = OPTS.concat({
     method: 'POST',
-    body: {hello: 'world'}
+    body: { hello: 'world' }
   })
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
       return res.json()
     })
-    .then(json => t.deepEqual(json, {hello: 'world'}))
+    .then(json => t.deepEqual(json, { hello: 'world' }))
 })
 
 test('buffer body param', t => {
@@ -106,7 +106,7 @@ test('stream body param', t => {
       return reqBody
     })
   const stream = new Minipass()
-  setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
+  setImmediate(() => stream.end(JSON.stringify({ hello: 'world' })))
   const opts = OPTS.concat({
     method: 'POST',
     body: stream
@@ -116,7 +116,7 @@ test('stream body param', t => {
       t.equal(res.status, 200)
       return res.json()
     })
-    .then(json => t.deepEqual(json, {hello: 'world'}))
+    .then(json => t.deepEqual(json, { hello: 'world' }))
 })
 
 test('JSON body param', t => {
@@ -134,7 +134,7 @@ test('JSON body param', t => {
     .reply(200)
   const opts = OPTS.concat({
     method: 'POST',
-    body: {hello: 'world'},
+    body: { hello: 'world' },
     gzip: true
   })
   return fetch('/hello', opts)
@@ -197,7 +197,7 @@ test('gzip + stream body param', t => {
       return reqBody
     })
   const stream = new Minipass()
-  setImmediate(() => stream.end(JSON.stringify({hello: 'world'})))
+  setImmediate(() => stream.end(JSON.stringify({ hello: 'world' })))
   const opts = OPTS.concat({
     method: 'POST',
     body: stream,
@@ -212,13 +212,13 @@ test('gzip + stream body param', t => {
       t.equal(res.status, 200)
       return res.json()
     })
-    .then(json => t.deepEqual(json, {hello: 'world'}))
+    .then(json => t.deepEqual(json, { hello: 'world' }))
 })
 
 test('query strings', t => {
   tnock(t, OPTS.registry)
     .get('/hello?hi=there&who=wor%20ld')
-    .reply(200, {hello: 'world'})
+    .reply(200, { hello: 'world' })
   return fetch.json('/hello?hi=there', OPTS.concat({
     query: 'who=wor ld'
   })).then(json => t.equal(json.hello, 'world', 'query-string merged'))
@@ -227,18 +227,18 @@ test('query strings', t => {
 test('query strings - undefined values', t => {
   tnock(t, OPTS.registry)
     .get('/hello?who=wor%20ld')
-    .reply(200, {ok: true})
+    .reply(200, { ok: true })
   return fetch.json('/hello', OPTS.concat({
-    query: {hi: undefined, who: 'wor ld'}
+    query: { hi: undefined, who: 'wor ld' }
   })).then(json => t.ok(json.ok, 'undefined keys not included in query string'))
 })
 
 test('json()', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
-    .reply(200, {hello: 'world'})
+    .reply(200, { hello: 'world' })
   return fetch.json('/hello', OPTS)
-    .then(json => t.deepEqual(json, {hello: 'world'}, 'got json body'))
+    .then(json => t.deepEqual(json, { hello: 'world' }, 'got json body'))
 })
 
 test('fetch.json.stream()', t => {
@@ -249,9 +249,9 @@ test('fetch.json.stream()', t => {
   })
   return fetch.json.stream('/hello', '$*', OPTS).collect().then(data => {
     t.deepEqual(data, [
-      {key: 'a', value: 1},
-      {key: 'b', value: 2},
-      {key: 'c', value: 3}
+      { key: 'a', value: 1 },
+      { key: 'b', value: 2 },
+      { key: 'c', value: 3 }
     ], 'got a streamed JSON body')
   })
 })
@@ -288,8 +288,8 @@ test('fetch.json.stream gets fetch error on stream', t => {
 test('opts.ignoreBody', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
-    .reply(200, {hello: 'world'})
-  return fetch('/hello', OPTS.concat({ignoreBody: true}))
+    .reply(200, { hello: 'world' })
+  return fetch('/hello', OPTS.concat({ ignoreBody: true }))
     .then(res => {
       t.equal(res.body, null, 'body omitted')
     })
@@ -311,7 +311,7 @@ test('method configurable', t => {
 test('npm-notice header logging', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
-    .reply(200, {hello: 'world'}, {
+    .reply(200, { hello: 'world' }, {
       'npm-notice': 'npm <3 u'
     })
   const opts = OPTS.concat({
@@ -334,13 +334,13 @@ test('optionally verifies request body integrity', t => {
     .times(2)
     .reply(200, 'hello')
   const integrity = ssri.fromData('hello')
-  return fetch('/hello', OPTS.concat({integrity}))
+  return fetch('/hello', OPTS.concat({ integrity }))
     .then(res => res.buffer())
     .then(buf => t.equal(
       buf.toString('utf8'), 'hello', 'successfully got the right data')
     )
     .then(() => {
-      return fetch('/hello', OPTS.concat({integrity: 'sha1-nope'}))
+      return fetch('/hello', OPTS.concat({ integrity: 'sha1-nope' }))
         .then(res => {
           t.ok(res.body, 'no error until body starts getting read')
           return res
@@ -389,12 +389,12 @@ test('pickRegistry() utility', t => {
 test('pickRegistry through opts.spec', t => {
   tnock(t, OPTS.registry)
     .get('/pkg')
-    .reply(200, {source: OPTS.registry})
+    .reply(200, { source: OPTS.registry })
   const scopedReg = 'https://scoped.mock.reg/'
   tnock(t, scopedReg)
     .get('/pkg')
     .times(2)
-    .reply(200, {source: scopedReg})
+    .reply(200, { source: scopedReg })
   return fetch.json('/pkg', OPTS.concat({
     spec: 'pkg@1.2.3',
     '@myscope:registry': scopedReg
@@ -405,7 +405,7 @@ test('pickRegistry through opts.spec', t => {
   )).then(() => fetch.json('/pkg', OPTS.concat({
     spec: 'pkg@1.2.3',
     '@myscope:registry': scopedReg,
-    'scope': '@myscope'
+    scope: '@myscope'
   }))).then(json => t.equal(
     json.source,
     scopedReg,
@@ -423,7 +423,7 @@ test('pickRegistry through opts.spec', t => {
 test('log warning header info', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
-    .reply(200, {hello: 'world'}, { Warning: '199 - "ENOTFOUND" "Wed, 21 Oct 2015 07:28:00 GMT"' })
+    .reply(200, { hello: 'world' }, { Warning: '199 - "ENOTFOUND" "Wed, 21 Oct 2015 07:28:00 GMT"' })
   const opts = OPTS.concat({
     log: Object.assign({}, silentLog, {
       warn (header, msg) {

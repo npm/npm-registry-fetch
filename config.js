@@ -7,74 +7,74 @@ const silentLog = require('./silentlog.js')
 const AUTH_REGEX = /^(?:.*:)?(token|_authToken|username|_password|password|email|always-auth|_auth|otp)$/
 const SCOPE_REGISTRY_REGEX = /@.*:registry$/gi
 module.exports = figgyPudding({
-  'agent': {},
-  'algorithms': {},
-  'body': {},
-  'ca': {},
-  'cache': {},
-  'cert': {},
+  agent: {},
+  algorithms: {},
+  body: {},
+  ca: {},
+  cache: {},
+  cert: {},
   'fetch-retries': {},
   'fetch-retry-factor': {},
   'fetch-retry-maxtimeout': {},
   'fetch-retry-mintimeout': {},
   'force-auth': {},
   forceAuth: 'force-auth',
-  'gzip': {},
-  'headers': {},
+  gzip: {},
+  headers: {},
   'https-proxy': {},
   'ignore-body': {},
   ignoreBody: 'ignore-body',
-  'integrity': {},
+  integrity: {},
   'is-from-ci': 'isFromCI',
-  'isFromCI': {
+  isFromCI: {
     default () {
       return (
-        process.env['CI'] === 'true' ||
-        process.env['TDDIUM'] ||
-        process.env['JENKINS_URL'] ||
+        process.env.CI === 'true' ||
+        process.env.TDDIUM ||
+        process.env.JENKINS_URL ||
         process.env['bamboo.buildKey'] ||
-        process.env['GO_PIPELINE_NAME']
+        process.env.GO_PIPELINE_NAME
       )
     }
   },
-  'key': {},
+  key: {},
   'local-address': {},
-  'log': {
+  log: {
     default: silentLog
   },
   'map-json': 'mapJson',
-  'mapJSON': 'mapJson',
-  'mapJson': {},
+  mapJSON: 'mapJson',
+  mapJson: {},
   'max-sockets': 'maxsockets',
-  'maxsockets': {
+  maxsockets: {
     default: 12
   },
-  'memoize': {},
-  'method': {
+  memoize: {},
+  method: {
     default: 'GET'
   },
   'no-proxy': {},
-  'noproxy': {},
+  noproxy: {},
   'npm-session': 'npmSession',
-  'npmSession': {},
-  'offline': {},
-  'otp': {},
+  npmSession: {},
+  offline: {},
+  otp: {},
   'prefer-offline': {},
   'prefer-online': {},
-  'projectScope': {},
+  projectScope: {},
   'project-scope': 'projectScope',
-  'proxy': {},
-  'query': {},
-  'refer': {},
-  'referer': 'refer',
-  'registry': {
+  proxy: {},
+  query: {},
+  refer: {},
+  referer: 'refer',
+  registry: {
     default: 'https://registry.npmjs.org/'
   },
-  'retry': {},
-  'scope': {},
-  'spec': {},
+  retry: {},
+  scope: {},
+  spec: {},
   'strict-ssl': {},
-  'timeout': {},
+  timeout: {},
   'user-agent': {
     default: `${
       pkg.name

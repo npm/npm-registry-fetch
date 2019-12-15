@@ -168,16 +168,16 @@ function getHeaders (registry, uri, opts) {
   const headers = Object.assign({
     'npm-in-ci': !!(
       opts['is-from-ci'] ||
-      process.env['CI'] === 'true' ||
-      process.env['TDDIUM'] ||
-      process.env['JENKINS_URL'] ||
+      process.env.CI === 'true' ||
+      process.env.TDDIUM ||
+      process.env.JENKINS_URL ||
       process.env['bamboo.buildKey'] ||
-      process.env['GO_PIPELINE_NAME']
+      process.env.GO_PIPELINE_NAME
     ),
     'npm-scope': opts['project-scope'],
     'npm-session': opts['npm-session'],
     'user-agent': opts['user-agent'],
-    'referer': opts.refer
+    referer: opts.refer
   }, opts.headers)
 
   const auth = getAuth(registry, opts)

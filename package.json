@@ -8,13 +8,12 @@
     "lib"
   ],
   "scripts": {
+    "postrelease": "npm publish",
+    "posttest": "standard",
+    "prepublishOnly": "git push --follow-tags",
     "prerelease": "npm t",
-    "postrelease": "npm publish && git push --follow-tags",
-    "pretest": "standard",
     "release": "standard-version -s",
-    "test": "tap -J --coverage test/*.js",
-    "update-coc": "weallbehave -o . && git add CODE_OF_CONDUCT.md && git commit -m 'docs(coc): updated CODE_OF_CONDUCT.md'",
-    "update-contrib": "weallcontribute -o . && git add CONTRIBUTING.md && git commit -m 'docs(contributing): updated CONTRIBUTING.md'"
+    "test": "tap test/*.js"
   },
   "repository": "https://github.com/npm/registry-fetch",
   "keywords": [
@@ -29,29 +28,27 @@
   },
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.5.1",
     "figgy-pudding": "^3.4.1",
     "lru-cache": "^5.1.1",
-    "make-fetch-happen": "^6.0.0",
+    "make-fetch-happen": "^6.1.0",
     "minipass": "^3.0.0",
     "minipass-fetch": "^1.1.2",
     "minipass-json-stream": "^1.0.1",
     "minizlib": "^2.0.0",
-    "npm-package-arg": "^7.0.0",
-    "safe-buffer": "^5.2.0"
+    "npm-package-arg": "^8.0.0",
+    "safe-buffer": "^5.2.0",
+    "semver": "^7.0.0"
   },
   "devDependencies": {
     "cacache": "^13.0.1",
     "mkdirp": "^0.5.1",
-    "nock": "^9.4.3",
+    "nock": "^11.7.0",
     "npmlog": "^4.1.2",
     "rimraf": "^2.6.2",
     "ssri": "^6.0.0",
-    "standard": "^11.0.1",
-    "standard-version": "^4.4.0",
-    "tap": "^14.6.9",
-    "weallbehave": "^1.2.0",
-    "weallcontribute": "^1.0.8"
+    "standard": "^14.3.1",
+    "standard-version": "^7.0.1",
+    "tap": "^14.10.2"
   },
   "config": {
     "nyc": {
@@ -60,5 +57,8 @@
         "test/**"
       ]
     }
+  },
+  "engines": {
+    "node": ">=10"
   }
 }
