@@ -15,6 +15,9 @@ const fetch = require('../index.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = config({
+  // just to make sure we hit the second branch when
+  // we are ACTUALLY in CI
+  isFromCI: false,
   log: npmlog,
   timeout: 0,
   retry: {

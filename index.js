@@ -2,6 +2,7 @@
 
 const Buffer = require('safe-buffer').Buffer
 
+const ciDetect = require('@npmcli/ci-detect')
 const checkResponse = require('./check-response.js')
 const config = require('./config.js')
 const getAuth = require('./auth.js')
@@ -169,12 +170,7 @@ function getCacheMode (opts) {
 function getHeaders (registry, uri, opts) {
   const headers = Object.assign({
     'npm-in-ci': !!(
-      opts['is-from-ci'] ||
-      process.env.CI === 'true' ||
-      process.env.TDDIUM ||
-      process.env.JENKINS_URL ||
-      process.env['bamboo.buildKey'] ||
-      process.env.GO_PIPELINE_NAME
+      opts['is-from-ci'] || ciDetect()
     ),
     'npm-scope': opts['project-scope'],
     'npm-session': opts['npm-session'],

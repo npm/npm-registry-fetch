@@ -28,6 +28,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@npmcli/ci-detect": "^1.0.0",
     "figgy-pudding": "^3.4.1",
     "lru-cache": "^5.1.1",
     "make-fetch-happen": "^7.0.0",
@@ -48,7 +49,7 @@
     "ssri": "^7.1.0",
     "standard": "^14.3.1",
     "standard-version": "^7.0.1",
-    "tap": "^14.10.2"
+    "tap": "^14.10.4"
   },
   "tap": {
     "check-coverage": true,

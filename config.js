@@ -3,6 +3,7 @@
 const pkg = require('./package.json')
 const figgyPudding = require('figgy-pudding')
 const silentLog = require('./silentlog.js')
+const ciDetect = require('@npmcli/ci-detect')
 
 const AUTH_REGEX = /^(?:.*:)?(token|_authToken|username|_password|password|email|always-auth|_auth|otp)$/
 const SCOPE_REGISTRY_REGEX = /@.*:registry$/gi
@@ -28,13 +29,7 @@ module.exports = figgyPudding({
   'is-from-ci': 'isFromCI',
   isFromCI: {
     default () {
-      return (
-        process.env.CI === 'true' ||
-        process.env.TDDIUM ||
-        process.env.JENKINS_URL ||
-        process.env['bamboo.buildKey'] ||
-        process.env.GO_PIPELINE_NAME
-      )
+      return ciDetect()
     }
   },
   key: {},
