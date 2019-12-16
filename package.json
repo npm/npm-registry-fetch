@@ -13,7 +13,7 @@
     "prepublishOnly": "git push --follow-tags",
     "prerelease": "npm t",
     "release": "standard-version -s",
-    "test": "tap test/*.js"
+    "test": "tap"
   },
   "repository": "https://github.com/npm/registry-fetch",
   "keywords": [
@@ -50,13 +50,9 @@
     "standard-version": "^7.0.1",
     "tap": "^14.10.2"
   },
-  "config": {
-    "nyc": {
-      "exclude": [
-        "node_modules/**",
-        "test/**"
-      ]
-    }
+  "tap": {
+    "check-coverage": true,
+    "test-ignore": "test[\\\\/](util|cache)[\\\\/]"
   },
   "engines": {
     "node": ">=10"
