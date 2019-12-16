@@ -13,6 +13,15 @@ const url = require('url')
 const zlib = require('minizlib')
 const Minipass = require('minipass')
 
+// WhatWG URL throws if it's not fully resolved
+const urlIsValid = u => {
+  try {
+    return !!new url.URL(u)
+  } catch (_) {
+    return false
+  }
+}
+
 module.exports = regFetch
 function regFetch (uri, opts) {
   opts = config(opts)
@@ -23,13 +32,13 @@ function regFetch (uri, opts) {
     'https://registry.npmjs.org/'
   )
 
-  uri = url.parse(uri).protocol
-    ? uri
-    : `${
+  if (!urlIsValid(uri)) {
+    uri = `${
       registry.trim().replace(/\/?$/g, '')
     }/${
       uri.trim().replace(/^\//, '')
     }`
+  }
 
   const method = opts.method ||
     /* istanbul ignore next: default set in figgy pudding config */
@@ -64,24 +73,17 @@ function regFetch (uri, opts) {
   }
 
   if (opts.query) {
-    let q = opts.query
-    if (typeof q === 'string') {
-      q = qs.parse(q)
-    }
+    const q = typeof opts.query === 'string'
+      ? qs.parse(opts.query)
+      : opts.query
+
+    const parsed = new url.URL(uri)
     Object.keys(q).forEach(key => {
-      if (q[key] === undefined) {
-        delete q[key]
+      if (q[key] !== undefined) {
+        parsed.searchParams.set(key, q[key])
       }
     })
-    if (Object.keys(q).length) {
-      const parsed = url.parse(uri)
-      parsed.search = '?' + qs.stringify(
-        parsed.query
-          ? Object.assign(qs.parse(parsed.query), q)
-          : q
-      )
-      uri = url.format(parsed)
-    }
+    uri = url.format(parsed)
   }
 
   const doFetch = (body) => fetch(uri, {
@@ -185,7 +187,7 @@ function getHeaders (registry, uri, opts) {
   // credentials on `alwaysAuth`
   const shouldAuth = (
     auth.alwaysAuth ||
-    url.parse(uri).host === url.parse(registry).host
+    new url.URL(uri).host === new url.URL(registry).host
   )
   if (shouldAuth && auth.token) {
     headers.authorization = `Bearer ${auth.token}`

@@ -47,11 +47,12 @@ function addKey (opts, obj, scope, key, objKey) {
 // Called a nerf dart in the main codebase. Used as a "safe"
 // key when fetching registry info from config.
 function registryKey (registry) {
-  const parsed = url.parse(registry)
+  const parsed = new url.URL(registry)
   const formatted = url.format({
+    protocol: parsed.protocol,
     host: parsed.host,
     pathname: parsed.pathname,
-    slashes: parsed.slashes
+    slashes: true
   })
-  return url.resolve(formatted, '.')
+  return url.format(new url.URL('.', formatted)).replace(/^[^:]+:/, '')
 }
