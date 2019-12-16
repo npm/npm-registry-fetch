@@ -30,7 +30,7 @@
   "dependencies": {
     "figgy-pudding": "^3.4.1",
     "lru-cache": "^5.1.1",
-    "make-fetch-happen": "^6.1.0",
+    "make-fetch-happen": "^7.0.0",
     "minipass": "^3.0.0",
     "minipass-fetch": "^1.1.2",
     "minipass-json-stream": "^1.0.1",
