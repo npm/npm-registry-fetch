@@ -1,6 +1,26 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [6.0.0](https://github.com/npm/registry-fetch/compare/v5.0.1...v6.0.0) (2019-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* This drops support for node < 10.
+
+There are some lint failures due to standard pushing for using WhatWG URL
+objects instead of url.parse/url.resolve.  However, the code in this lib
+does some fancy things with the query/search portions of the parsed url
+object, so it'll take a bit of care to make it work properly.
+
+### Bug Fixes
+
+* detect CI so our tests don't fail in CI ([5813da6](https://github.com/npm/registry-fetch/commit/5813da634cef73b12e40373972d7937e6934fce0))
+* Use WhatWG URLs instead of url.parse ([8ccfa8a](https://github.com/npm/registry-fetch/commit/8ccfa8a72c38cfedb0f525b7f453644fd4444f99))
+
+
+* normalize settings, drop old nodes, update deps ([510b125](https://github.com/npm/registry-fetch/commit/510b1255cc7ed4bb397a34e0007757dae33e2275))
 
 <a name="5.0.1"></a>
 ## [5.0.1](https://github.com/npm/registry-fetch/compare/v5.0.0...v5.0.1) (2019-11-11)
