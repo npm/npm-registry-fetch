@@ -244,6 +244,30 @@ test('json()', t => {
     .then(json => t.deepEqual(json, { hello: 'world' }, 'got json body'))
 })
 
+test('query string with ?write=true', t => {
+  const cache = t.testdir()
+  const opts = OPTS.concat({ 'prefer-offline': true, cache })
+  const qsString = opts.concat({ query: { write: 'true' } })
+  const qsBool = opts.concat({ query: { write: true } })
+  tnock(t, opts.registry)
+    .get('/hello?write=true')
+    .times(6)
+    .reply(200, { write: 'go for it' })
+
+  return fetch.json('/hello?write=true', opts)
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello?write=true', opts))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsString))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsString))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsBool))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsBool))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+})
+
 test('fetch.json.stream()', t => {
   tnock(t, OPTS.registry).get('/hello').reply(200, {
     a: 1,
