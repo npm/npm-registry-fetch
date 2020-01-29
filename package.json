@@ -45,6 +45,7 @@
     "mkdirp": "^0.5.1",
     "nock": "^11.7.0",
     "npmlog": "^4.1.2",
+    "require-inject": "^1.4.4",
     "rimraf": "^2.6.2",
     "ssri": "^7.1.0",
     "standard": "^14.3.1",
