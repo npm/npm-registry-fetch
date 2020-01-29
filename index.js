@@ -73,18 +73,30 @@ function regFetch (uri, opts) {
     }
   }
 
+  const parsed = new url.URL(uri)
+
   if (opts.query) {
     const q = typeof opts.query === 'string'
       ? qs.parse(opts.query)
       : opts.query
 
-    const parsed = new url.URL(uri)
     Object.keys(q).forEach(key => {
       if (q[key] !== undefined) {
         parsed.searchParams.set(key, q[key])
       }
     })
     uri = url.format(parsed)
+  }
+
+  if (parsed.searchParams.get('write') === 'true' && method === 'GET') {
+    // do not cache, because this GET is fetching a rev that will be
+    // used for a subsequent PUT or DELETE, so we need to conditionally
+    // update cache.
+    opts = opts.concat({
+      offline: false,
+      'prefer-offline': false,
+      'prefer-online': true
+    })
   }
 
   const doFetch = (body) => fetch(uri, {
