@@ -428,6 +428,36 @@ test('log warning header info', t => {
     .then(res => t.equal(res.status, 200, 'got successful response'))
 })
 
+test('query string with ?write=true', t => {
+  const {resolve} = require('path')
+  const cache = resolve(__dirname, 'index-query-string-with-write-true')
+  const mkdirp = require('mkdirp').sync
+  mkdirp(cache)
+  const rimraf = require('rimraf')
+  t.teardown(() => rimraf.sync(cache))
+
+  const opts = OPTS.concat({ 'prefer-offline': true, cache })
+  const qsString = opts.concat({ query: { write: 'true' } })
+  const qsBool = opts.concat({ query: { write: true } })
+  tnock(t, opts.registry)
+    .get('/hello?write=true')
+    .times(6)
+    .reply(200, { write: 'go for it' })
+
+  return fetch.json('/hello?write=true', opts)
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello?write=true', opts))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsString))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsString))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsBool))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+    .then(() => fetch.json('/hello', qsBool))
+    .then(res => t.strictSame(res, { write: 'go for it' }))
+})
+
 // TODO
 // * npm-session
 // * npm-in-ci
