@@ -20,3 +20,13 @@ test('isFromCI config option', t => {
   t.notOk(OPTS.isFromCI, 'should be false if not on a CI env')
   t.end()
 })
+
+test('default timeout', t => {
+  const DEFAULT_OPTS = config({})
+  t.equal(DEFAULT_OPTS.timeout, 30 * 1000, 'default timeout is 30s')
+  const SPECIFIED_OPTS = config({
+    timeout: 15 * 1000
+  })
+  t.equal(SPECIFIED_OPTS.timeout, 15 * 1000, 'default timeout can be overridden')
+  t.end()
+})
