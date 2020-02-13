@@ -7,6 +7,9 @@
     "*.js",
     "lib"
   ],
+  "publishConfig": {
+    "tag": "latest-v4"
+  },
   "scripts": {
     "prerelease": "npm t",
     "postrelease": "npm publish && git push --follow-tags",
