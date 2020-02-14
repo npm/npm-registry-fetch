@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.2](https://github.com/npm/registry-fetch/compare/v6.0.1...v6.0.2) (2020-02-14)
+
+
+### Bug Fixes
+
+* always bypass cache when ?write=true ([83f89f3](https://github.com/npm/registry-fetch/commit/83f89f35abd2ed0507c869e37f90ed746375772c))
+
 ### [6.0.1](https://github.com/npm/registry-fetch/compare/v6.0.0...v6.0.1) (2020-02-14)
 
 
