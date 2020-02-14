@@ -1,7 +1,6 @@
 const { Readable } = require('stream')
 const test = require('tap').test
 
-const config = require('../config.js')
 const checkResponse = require('../check-response.js')
 const errors = require('./errors.js')
 const silentLog = require('../silentlog.js')
@@ -27,7 +26,16 @@ test('any response error should be silent', t => {
     status: 400
   })
   t.rejects(checkResponse('get', res, 'registry', Date.now(), { ignoreBody: true }), errors.HttpErrorGeneral)
-  t.done()
+  t.end()
+})
+
+test('all checks are ok, nothing to report', t => {
+  const res = Object.assign({}, mockFetchRes, {
+    buffer: () => Promise.resolve(Buffer.from('ok')),
+    status: 400
+  })
+  t.rejects(checkResponse('get', res, 'registry', Date.now()), errors.HttpErrorGeneral)
+  t.end()
 })
 
 test('log x-fetch-attempts header value', t => {
@@ -37,13 +45,13 @@ test('log x-fetch-attempts header value', t => {
     headers,
     status: 400
   })
-  t.rejects(checkResponse('get', res, 'registry', Date.now(), config({
+  t.rejects(checkResponse('get', res, 'registry', Date.now(), {
     log: Object.assign({}, silentLog, {
       http (header, msg) {
         t.ok(msg.endsWith('attempt #3'), 'should log correct number of attempts')
       }
     })
-  })))
+  }))
   t.plan(2)
 })
 
@@ -56,12 +64,12 @@ test('bad-formatted warning headers', t => {
   const res = Object.assign({}, mockFetchRes, {
     headers
   })
-  t.ok(checkResponse('get', res, 'registry', Date.now(), config({
+  t.ok(checkResponse('get', res, 'registry', Date.now(), {
     log: Object.assign({}, silentLog, {
       warn (header, msg) {
         t.fail('should not log warnings')
       }
     })
-  })))
+  }))
   t.plan(1)
 })

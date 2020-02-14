@@ -2,7 +2,6 @@
 
 const Buffer = require('safe-buffer').Buffer
 
-const config = require('../config.js')
 const Minipass = require('minipass')
 const npmlog = require('npmlog')
 const silentLog = require('../silentlog.js')
@@ -14,7 +13,7 @@ const zlib = require('zlib')
 const fetch = require('../index.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
-const OPTS = config({
+const OPTS = {
   // just to make sure we hit the second branch when
   // we are ACTUALLY in CI
   isFromCI: false,
@@ -27,13 +26,16 @@ const OPTS = config({
     maxTimeout: 10
   },
   registry: 'https://mock.reg/'
-})
+}
 
 test('hello world', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
-  return fetch('/hello', OPTS)
+  return fetch('/hello', {
+    method: false, // will fall back to GET if falsey,
+    ...OPTS
+  })
     .then(res => {
       t.equal(res.status, 200, 'got successful response')
       return res.json()
@@ -54,10 +56,11 @@ test('JSON body param', t => {
       }, 'got the JSON version of the body')
       return reqBody
     })
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'POST',
     body: { hello: 'world' }
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -81,10 +84,11 @@ test('buffer body param', t => {
       )
       return reqBody
     })
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'POST',
     body: Buffer.from('hello', 'utf8')
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -110,10 +114,11 @@ test('stream body param', t => {
     })
   const stream = new Minipass()
   setImmediate(() => stream.end(JSON.stringify({ hello: 'world' })))
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'POST',
     body: stream
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -135,11 +140,12 @@ test('JSON body param', t => {
     .post('/hello')
     // NOTE: can't really test the body itself here because nock freaks out.
     .reply(200)
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'POST',
     body: { hello: 'world' },
     gzip: true
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200, 'request succeeded')
@@ -166,11 +172,12 @@ test('gzip + buffer body param', t => {
       )
       return reqBody
     })
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'POST',
     body: Buffer.from('hello', 'utf8'),
     gzip: true
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -201,7 +208,8 @@ test('gzip + stream body param', t => {
     })
   const stream = new Minipass()
   setImmediate(() => stream.end(JSON.stringify({ hello: 'world' })))
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'POST',
     body: stream,
     gzip: true,
@@ -209,7 +217,7 @@ test('gzip + stream body param', t => {
       everything: undefined,
       is: undefined
     }
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200)
@@ -222,18 +230,20 @@ test('query strings', t => {
   tnock(t, OPTS.registry)
     .get('/hello?hi=there&who=wor%20ld')
     .reply(200, { hello: 'world' })
-  return fetch.json('/hello?hi=there', OPTS.concat({
+  return fetch.json('/hello?hi=there', {
+    ...OPTS,
     query: 'who=wor ld'
-  })).then(json => t.equal(json.hello, 'world', 'query-string merged'))
+  }).then(json => t.equal(json.hello, 'world', 'query-string merged'))
 })
 
 test('query strings - undefined values', t => {
   tnock(t, OPTS.registry)
     .get('/hello?who=wor%20ld')
     .reply(200, { ok: true })
-  return fetch.json('/hello', OPTS.concat({
+  return fetch.json('/hello', {
+    ...OPTS,
     query: { hi: undefined, who: 'wor ld' }
-  })).then(json => t.ok(json.ok, 'undefined keys not included in query string'))
+  }).then(json => t.ok(json.ok, 'undefined keys not included in query string'))
 })
 
 test('json()', t => {
@@ -246,25 +256,25 @@ test('json()', t => {
 
 test('query string with ?write=true', t => {
   const cache = t.testdir()
-  const opts = OPTS.concat({ 'prefer-offline': true, cache })
-  const qsString = opts.concat({ query: { write: 'true' } })
-  const qsBool = opts.concat({ query: { write: true } })
+  const opts = { ...OPTS, preferOffline: true, cache }
+  const qsString = { ...opts, query: { write: 'true' } }
+  const qsBool = { ...opts, query: { write: true } }
   tnock(t, opts.registry)
-    .get('/hello?write=true')
+    .get('/writeTrueTest?write=true')
     .times(6)
     .reply(200, { write: 'go for it' })
 
-  return fetch.json('/hello?write=true', opts)
+  return fetch.json('/writeTrueTest?write=true', opts)
     .then(res => t.strictSame(res, { write: 'go for it' }))
-    .then(() => fetch.json('/hello?write=true', opts))
+    .then(() => fetch.json('/writeTrueTest?write=true', opts))
     .then(res => t.strictSame(res, { write: 'go for it' }))
-    .then(() => fetch.json('/hello', qsString))
+    .then(() => fetch.json('/writeTrueTest', qsString))
     .then(res => t.strictSame(res, { write: 'go for it' }))
-    .then(() => fetch.json('/hello', qsString))
+    .then(() => fetch.json('/writeTrueTest', qsString))
     .then(res => t.strictSame(res, { write: 'go for it' }))
-    .then(() => fetch.json('/hello', qsBool))
+    .then(() => fetch.json('/writeTrueTest', qsBool))
     .then(res => t.strictSame(res, { write: 'go for it' }))
-    .then(() => fetch.json('/hello', qsBool))
+    .then(() => fetch.json('/writeTrueTest', qsBool))
     .then(res => t.strictSame(res, { write: 'go for it' }))
 })
 
@@ -283,17 +293,18 @@ test('fetch.json.stream()', t => {
   })
 })
 
-test('fetch.json.stream opts.mapJson', t => {
+test('fetch.json.stream opts.mapJSON', t => {
   tnock(t, OPTS.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
     c: 3
   })
-  return fetch.json.stream('/hello', '*', OPTS.concat({
-    mapJson (value, [key]) {
+  return fetch.json.stream('/hello', '*', {
+    ...OPTS,
+    mapJSON (value, [key]) {
       return [key, value]
     }
-  })).collect().then(data => {
+  }).collect().then(data => {
     t.deepEqual(data, [
       ['a', 1],
       ['b', 2],
@@ -303,11 +314,12 @@ test('fetch.json.stream opts.mapJson', t => {
 })
 
 test('fetch.json.stream gets fetch error on stream', t => {
-  return t.rejects(fetch.json.stream('/hello', '*', OPTS.concat({
+  return t.rejects(fetch.json.stream('/hello', '*', {
+    ...OPTS,
     body: Promise.reject(new Error('no body for you')),
     method: 'POST',
     gzip: true // make sure we don't gzip the promise, lol!
-  })).collect(), {
+  }).collect(), {
     message: 'no body for you'
   })
 })
@@ -316,7 +328,7 @@ test('opts.ignoreBody', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
-  return fetch('/hello', OPTS.concat({ ignoreBody: true }))
+  return fetch('/hello', { ...OPTS, ignoreBody: true })
     .then(res => {
       t.equal(res.body, null, 'body omitted')
     })
@@ -326,9 +338,10 @@ test('method configurable', t => {
   tnock(t, OPTS.registry)
     .delete('/hello')
     .reply(200)
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     method: 'DELETE'
-  })
+  }
   return fetch('/hello', opts)
     .then(res => {
       t.equal(res.status, 200, 'successfully used DELETE method')
@@ -341,14 +354,15 @@ test('npm-notice header logging', t => {
     .reply(200, { hello: 'world' }, {
       'npm-notice': 'npm <3 u'
     })
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     log: Object.assign({}, silentLog, {
       notice (header, msg) {
         t.equal(header, '', 'empty log header thing')
         t.equal(msg, 'npm <3 u', 'logged out npm-notice at NOTICE level')
       }
     })
-  })
+  }
   t.plan(3)
   return fetch('/hello', opts)
     .then(res => t.equal(res.status, 200, 'got successful response'))
@@ -361,13 +375,13 @@ test('optionally verifies request body integrity', t => {
     .times(2)
     .reply(200, 'hello')
   const integrity = ssri.fromData('hello')
-  return fetch('/hello', OPTS.concat({ integrity }))
+  return fetch('/hello', { ...OPTS, integrity })
     .then(res => res.buffer())
     .then(buf => t.equal(
       buf.toString('utf8'), 'hello', 'successfully got the right data')
     )
     .then(() => {
-      return fetch('/hello', OPTS.concat({ integrity: 'sha1-nope' }))
+      return fetch('/hello', { ...OPTS, integrity: 'sha1-nope' })
         .then(res => {
           t.ok(res.body, 'no error until body starts getting read')
           return res
@@ -422,18 +436,20 @@ test('pickRegistry through opts.spec', t => {
     .get('/pkg')
     .times(2)
     .reply(200, { source: scopedReg })
-  return fetch.json('/pkg', OPTS.concat({
+  return fetch.json('/pkg', {
+    ...OPTS,
     spec: 'pkg@1.2.3',
     '@myscope:registry': scopedReg
-  })).then(json => t.equal(
+  }).then(json => t.equal(
     json.source,
     OPTS.registry,
     'request made to main registry'
-  )).then(() => fetch.json('/pkg', OPTS.concat({
+  )).then(() => fetch.json('/pkg', {
+    ...OPTS,
     spec: 'pkg@1.2.3',
     '@myscope:registry': scopedReg,
     scope: '@myscope'
-  }))).then(json => t.equal(
+  })).then(json => t.equal(
     json.source,
     scopedReg,
     'request made to scope registry using opts.scope'
@@ -451,14 +467,15 @@ test('log warning header info', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, { hello: 'world' }, { Warning: '199 - "ENOTFOUND" "Wed, 21 Oct 2015 07:28:00 GMT"' })
-  const opts = OPTS.concat({
+  const opts = {
+    ...OPTS,
     log: Object.assign({}, silentLog, {
       warn (header, msg) {
         t.equal(header, 'registry', 'expected warn log header')
         t.equal(msg, `Using stale data from ${OPTS.registry} because the host is inaccessible -- are you offline?`, 'logged out at WARNING level')
       }
     })
-  })
+  }
   t.plan(3)
   return fetch('/hello', opts)
     .then(res => t.equal(res.status, 200, 'got successful response'))

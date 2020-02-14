@@ -2,7 +2,6 @@
 
 const { promisify } = require('util')
 const statAsync = promisify(require('fs').stat)
-const config = require('../config.js')
 const npmlog = require('npmlog')
 const path = require('path')
 const test = require('tap').test
@@ -14,7 +13,7 @@ const testDir = require('./util/test-dir.js')(__filename)
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const REGISTRY = 'https://mock.reg'
-const OPTS = config({
+const OPTS = {
   log: npmlog,
   memoize: false,
   timeout: 0,
@@ -26,7 +25,7 @@ const OPTS = config({
   },
   cache: path.join(testDir, '_cacache'),
   registry: REGISTRY
-})
+}
 
 test('can cache GET requests', t => {
   tnock(t, REGISTRY)
@@ -35,22 +34,22 @@ test('can cache GET requests', t => {
     .reply(200, { obj: 'value' })
   return fetch.json('/normal', OPTS)
     .then(val => t.deepEqual(val, { obj: 'value' }, 'got expected response'))
-    .then(() => statAsync(OPTS.get('cache')))
+    .then(() => statAsync(OPTS.cache))
     .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
     .then(() => fetch.json('/normal', OPTS))
     .then(val => t.deepEqual(val, { obj: 'value' }, 'response was cached'))
 })
 
-test('prefer-offline', t => {
+test('preferOffline', t => {
   tnock(t, REGISTRY)
-    .get('/prefer-offline')
+    .get('/preferOffline')
     .times(1)
     .reply(200, { obj: 'value' })
-  return fetch.json('/prefer-offline', OPTS.concat({ 'prefer-offline': true }))
+  return fetch.json('/preferOffline', { ...OPTS, preferOffline: true })
     .then(val => t.deepEqual(val, { obj: 'value' }, 'got expected response'))
-    .then(() => statAsync(OPTS.get('cache')))
+    .then(() => statAsync(OPTS.cache))
     .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
-    .then(() => fetch.json('/prefer-offline', OPTS.concat({ 'prefer-offline': true })))
+    .then(() => fetch.json('/preferOffline', { ...OPTS, preferOffline: true }))
     .then(val => t.deepEqual(val, { obj: 'value' }, 'response was cached'))
 })
 
@@ -61,24 +60,24 @@ test('offline', t => {
     .reply(200, { obj: 'value' })
   return fetch.json('/offline', OPTS)
     .then(val => t.deepEqual(val, { obj: 'value' }, 'got expected response'))
-    .then(() => statAsync(OPTS.get('cache')))
+    .then(() => statAsync(OPTS.cache))
     .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
-    .then(() => fetch.json('/offline', OPTS.concat({ offline: true })))
+    .then(() => fetch.json('/offline', { ...OPTS, offline: true }))
     .then(val => t.deepEqual(val, { obj: 'value' }, 'response was cached'))
 })
 
 test('offline fails if not cached', t =>
-  t.rejects(() => fetch('/offline-fails', OPTS.concat({ offline: true }))))
+  t.rejects(() => fetch('/offline-fails', { ...OPTS, offline: true })))
 
-test('prefer-online', t => {
+test('preferOnline', t => {
   tnock(t, REGISTRY)
-    .get('/prefer-online')
+    .get('/preferOnline')
     .times(2)
     .reply(200, { obj: 'value' })
-  return fetch.json('/prefer-online', OPTS)
+  return fetch.json('/preferOnline', OPTS)
     .then(val => t.deepEqual(val, { obj: 'value' }, 'got expected response'))
-    .then(() => statAsync(OPTS.get('cache')))
+    .then(() => statAsync(OPTS.cache))
     .then(stat => t.ok(stat.isDirectory(), 'cache directory created'))
-    .then(() => fetch.json('/prefer-online', OPTS.concat({ 'prefer-online': true })))
+    .then(() => fetch.json('/preferOnline', { ...OPTS, preferOnline: true }))
     .then(val => t.deepEqual(val, { obj: 'value' }, 'response was refetched'))
 })

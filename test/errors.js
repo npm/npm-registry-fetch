@@ -1,6 +1,5 @@
 'use strict'
 
-const config = require('../config.js')
 const npa = require('npm-package-arg')
 const npmlog = require('npmlog')
 const test = require('tap').test
@@ -9,7 +8,7 @@ const tnock = require('./util/tnock.js')
 const fetch = require('../index.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
-const OPTS = config({
+const OPTS = {
   log: npmlog,
   timeout: 0,
   retry: {
@@ -19,7 +18,7 @@ const OPTS = config({
     maxTimeout: 10
   },
   registry: 'https://mock.reg/'
-})
+}
 
 test('generic request errors', t => {
   tnock(t, OPTS.registry)
@@ -69,9 +68,10 @@ test('pkgid with `opts.spec`', t => {
   tnock(t, OPTS.registry)
     .get('/ohno/_rewrite/ohyeah')
     .reply(400, 'failwhale!')
-  return fetch('/ohno/_rewrite/ohyeah', OPTS.concat({
+  return fetch('/ohno/_rewrite/ohyeah', {
+    ...OPTS,
     spec: npa('foo@1.2.3')
-  }))
+  })
     .then(
       () => { throw new Error('should not have succeeded!') },
       err => t.equal(err.pkgid, 'foo@1.2.3', 'opts.spec used for pkgid')
