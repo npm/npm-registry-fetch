@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://github.com/npm/registry-fetch/compare/v6.0.0...v6.0.1) (2020-02-14)
+
+
+### Bug Fixes
+
+* use 30s default for timeout as per README ([50e8afc](https://github.com/npm/registry-fetch/commit/50e8afc6ff850542feb588f9f9c64ebae59e72a0)), closes [#20](https://github.com/npm/registry-fetch/issues/20)
+
 ## [6.0.0](https://github.com/npm/registry-fetch/compare/v5.0.1...v6.0.0) (2019-12-17)
 
 
