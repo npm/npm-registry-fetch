@@ -1,7 +1,5 @@
 'use strict'
 
-const Buffer = require('safe-buffer').Buffer
-
 const npmlog = require('npmlog')
 const test = require('tap').test
 const tnock = require('./util/tnock.js')

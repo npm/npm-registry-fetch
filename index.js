@@ -1,7 +1,5 @@
 'use strict'
 
-const Buffer = require('safe-buffer').Buffer
-
 const checkResponse = require('./check-response.js')
 const getAuth = require('./auth.js')
 const fetch = require('make-fetch-happen')

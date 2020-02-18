@@ -1,7 +1,5 @@
 'use strict'
 
-const Buffer = require('safe-buffer').Buffer
-
 const Minipass = require('minipass')
 const npmlog = require('npmlog')
 const silentLog = require('../silentlog.js')
