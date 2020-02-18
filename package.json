@@ -36,8 +36,7 @@
     "minipass-json-stream": "^1.0.1",
     "minizlib": "^2.0.0",
     "npm-package-arg": "^8.0.0",
-    "safe-buffer": "^5.2.0",
-    "semver": "^7.0.0"
+    "safe-buffer": "^5.2.0"
   },
   "devDependencies": {
     "cacache": "^13.0.1",
