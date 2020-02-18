@@ -30,7 +30,7 @@
   "dependencies": {
     "@npmcli/ci-detect": "^1.0.0",
     "lru-cache": "^5.1.1",
-    "make-fetch-happen": "^7.1.0",
+    "make-fetch-happen": "^8.0.1",
     "minipass": "^3.0.0",
     "minipass-fetch": "^1.1.2",
     "minipass-json-stream": "^1.0.1",
@@ -38,13 +38,13 @@
     "npm-package-arg": "^8.0.0"
   },
   "devDependencies": {
-    "cacache": "^13.0.1",
+    "cacache": "^15.0.0",
     "mkdirp": "^0.5.1",
     "nock": "^11.7.0",
     "npmlog": "^4.1.2",
     "require-inject": "^1.4.4",
     "rimraf": "^2.6.2",
-    "ssri": "^7.1.0",
+    "ssri": "^8.0.0",
     "standard": "^14.3.1",
     "standard-version": "^7.0.1",
     "tap": "^14.10.4"
