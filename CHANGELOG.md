@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/npm/registry-fetch/compare/v6.0.2...v7.0.0) (2020-02-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* figgy pudding is now nowhere to be found.
+* this removes figgy-pudding, and drops several option
+aliases.
+
+Defaults and behavior are all the same, and this module is now using the
+canonical camelCase option names that npm v7 will provide to all its
+deps.
+
+Related to: https://github.com/npm/rfcs/pull/102
+
+PR-URL: https://github.com/npm/npm-registry-fetch/pull/22
+Credit: @isaacs
+
+### Bug Fixes
+
+* Remove figgy-pudding, use canonical option names ([ede3c08](https://github.com/npm/registry-fetch/commit/ede3c087007fd1808e02b1af70562220d03b18a9)), closes [#22](https://github.com/npm/registry-fetch/issues/22)
+
+
+* update cacache, ssri, make-fetch-happen ([57fcc88](https://github.com/npm/registry-fetch/commit/57fcc889bee03edcc0a2025d96a171039108c231))
+
 ### [6.0.2](https://github.com/npm/registry-fetch/compare/v6.0.1...v6.0.2) (2020-02-14)
 
 
