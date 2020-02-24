@@ -497,6 +497,26 @@ test('npm-in-ci header with forced CI=false', t => {
 // TODO
 // * npm-session
 // * npm-scope
-// * referer (opts.refer)
 // * user-agent
-test('miscellaneous headers')
+test('miscellaneous headers', t => {
+  tnock(t, OPTS.registry)
+    .matchHeader('npm-session', session =>
+      t.strictSame(session, ['foobarbaz'], 'session set from options'))
+    .matchHeader('npm-scope', scope =>
+      t.strictSame(scope, ['@foo'], 'scope set from options'))
+    .matchHeader('user-agent', ua =>
+      t.strictSame(ua, ['agent of use'], 'UA set from options'))
+    .matchHeader('npm-in-ci', ci =>
+      t.strictSame(ci, ['false'], 'CI set from options'))
+    .get('/hello')
+    .reply(200, { hello: 'world' })
+
+  return fetch('/hello', {
+    ...OPTS,
+    npmSession: 'foobarbaz',
+    projectScope: '@foo',
+    userAgent: 'agent of use'
+  }).then(res => {
+    t.equal(res.status, 200, 'got successful response')
+  })
+})
