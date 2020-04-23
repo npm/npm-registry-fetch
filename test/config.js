@@ -23,7 +23,7 @@ test('isFromCI config option', t => {
 
 test('default timeout', t => {
   const DEFAULT_OPTS = config({})
-  t.equal(DEFAULT_OPTS.timeout, 30 * 1000, 'default timeout is 30s')
+  t.equal(DEFAULT_OPTS.timeout, 0, 'default timeout is 0 (no timeout)')
   const SPECIFIED_OPTS = config({
     timeout: 15 * 1000
   })
