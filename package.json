@@ -45,9 +45,9 @@
     "require-inject": "^1.4.4",
     "rimraf": "^2.6.2",
     "ssri": "^8.0.0",
-    "standard": "^14.3.1",
-    "standard-version": "^7.0.1",
-    "tap": "^14.10.4"
+    "standard": "^14.3.3",
+    "standard-version": "^7.1.0",
+    "tap": "^14.10.7"
   },
   "tap": {
     "check-coverage": true,
