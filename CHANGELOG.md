@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.0.3](https://github.com/npm/registry-fetch/compare/v8.0.2...v8.0.3) (2020-05-13)
+
+
+### Bug Fixes
+
+* update minipass and make-fetch-happen to latest ([3b6c5d0](https://github.com/npm/registry-fetch/commit/3b6c5d0d8ccd4c4a97862a65acef956f19aec127)), closes [#23](https://github.com/npm/registry-fetch/issues/23)
+
 ### [8.0.2](https://github.com/npm/registry-fetch/compare/v8.0.1...v8.0.2) (2020-05-04)
 
 
