@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.1.0](https://github.com/npm/registry-fetch/compare/v8.0.3...v8.1.0) (2020-05-20)
+
+
+### Features
+
+* add npm-command HTTP header ([1bb4eb2](https://github.com/npm/registry-fetch/commit/1bb4eb2c66ee8a0dc62558bdcff1b548e2bb9820))
+
 ### [8.0.3](https://github.com/npm/registry-fetch/compare/v8.0.2...v8.0.3) (2020-05-13)
 
 
