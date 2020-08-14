@@ -32,7 +32,7 @@ function logRequest (method, res, startTime, opts) {
 
   let urlStr
   try {
-    const URL = require('url')
+    const { URL } = require('url')
     const url = new URL(res.url)
     urlStr = res.url.replace(url.password, '***')
   } catch (er) {
