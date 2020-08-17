@@ -55,6 +55,48 @@ test('log x-fetch-attempts header value', t => {
   t.plan(2)
 })
 
+test('log the url fetched', async t => {
+  const headers = new Headers()
+  const EE = require('events')
+  headers.get = header => undefined
+  const res = Object.assign({}, mockFetchRes, {
+    headers,
+    status: 200,
+    url: 'http://example.com/foo/bar/baz',
+    body: new EE()
+  })
+  checkResponse('get', res, 'registry', Date.now(), {
+    log: Object.assign({}, silentLog, {
+      http (header, msg) {
+        t.equal(header, 'fetch')
+        t.equal(msg, 'GET 200 http://example.com/foo/bar/baz 0ms')
+      }
+    })
+  })
+  res.body.emit('end')
+})
+
+test('redact password from log', async t => {
+  const headers = new Headers()
+  const EE = require('events')
+  headers.get = header => undefined
+  const res = Object.assign({}, mockFetchRes, {
+    headers,
+    status: 200,
+    url: 'http://username:password@example.com/foo/bar/baz',
+    body: new EE()
+  })
+  checkResponse('get', res, 'registry', Date.now(), {
+    log: Object.assign({}, silentLog, {
+      http (header, msg) {
+        t.equal(header, 'fetch')
+        t.equal(msg, 'GET 200 http://username:***@example.com/foo/bar/baz 0ms')
+      }
+    })
+  })
+  res.body.emit('end')
+})
+
 test('bad-formatted warning headers', t => {
   const headers = new Headers()
   headers.has = header => header === 'warning' ? 'foo' : undefined
