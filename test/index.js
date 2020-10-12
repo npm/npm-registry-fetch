@@ -422,6 +422,18 @@ test('pickRegistry() utility', t => {
     'https://my.scoped.registry/here/',
     'scope @ is option@l'
   )
+  t.equal(
+    pick('foo@1.2.3', {
+      registry: 'https://my.registry/here/',
+      scope: '@otherscope',
+      '@myscope:registry': 'https://my.scoped.registry/here/',
+      publishConfig: {
+        registry: 'https://my.package.registry'
+      }
+    }),
+    'https://my.package.registry',
+    'respects publishConfig setting'
+  )
   t.done()
 })
 
@@ -459,6 +471,34 @@ test('pickRegistry through opts.spec', t => {
     scopedReg,
     'request made to scope registry using spec scope'
   ))
+})
+
+test('pickRegistry through publishConfig', t => {
+  tnock(t, OPTS.registry)
+    .get('/pkg')
+    .reply(200, { source: OPTS.registry })
+  const publishRegistry = 'https://my.publish.registry'
+  tnock(t, publishRegistry)
+    .get('/pkg')
+    .reply(200, { source: publishRegistry })
+
+  return fetch.json('/pkg', {
+    ...OPTS,
+    publishConfig: {}
+  }).then(json => t.equal(
+    json.source,
+    OPTS.registry,
+    'request made to default registry when publishConfig specifies no registry'
+  )).then(() => fetch.json('/pkg', {
+    ...OPTS,
+    publishConfig: {
+      registry: publishRegistry
+    }
+  }).then(json => t.equal(
+    json.source,
+    publishRegistry,
+    'request made to publishConfig.registry when one is specified'
+  )))
 })
 
 test('log warning header info', t => {
