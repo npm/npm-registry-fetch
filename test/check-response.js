@@ -71,7 +71,7 @@ test('log the url fetched', async t => {
     log: Object.assign({}, silentLog, {
       http (header, msg) {
         t.equal(header, 'fetch')
-        t.equal(msg, 'GET 200 http://example.com/foo/bar/baz 0ms')
+        t.match(msg, /^GET 200 http:\/\/example.com\/foo\/bar\/baz [0-9]+m?s/)
       },
     }),
   })
@@ -92,7 +92,7 @@ test('redact password from log', async t => {
     log: Object.assign({}, silentLog, {
       http (header, msg) {
         t.equal(header, 'fetch')
-        t.equal(msg, 'GET 200 http://username:***@example.com/foo/bar/baz 0ms')
+        t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s/)
       },
     }),
   })

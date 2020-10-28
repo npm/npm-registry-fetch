@@ -29,7 +29,6 @@ function regFetch (uri, /* istanbul ignore next */ opts_ = {}) {
   }
   const registry = opts.registry = (
     (opts.spec && pickRegistry(opts.spec, opts)) ||
-    (opts.publishConfig && opts.publishConfig.registry) ||
     opts.registry ||
     /* istanbul ignore next */
     'https://registry.npmjs.org/'
@@ -151,9 +150,6 @@ function pickRegistry (spec, opts = {}) {
   if (!registry && opts.scope)
     registry = opts[opts.scope.replace(/^@?/, '@') + ':registry']
 
-  if (!registry && opts.publishConfig)
-    registry = opts.publishConfig.registry
-
   if (!registry)
     registry = opts.registry || 'https://registry.npmjs.org/'
 
@@ -163,7 +159,8 @@ function pickRegistry (spec, opts = {}) {
 function getCacheMode (opts) {
   return opts.offline ? 'only-if-cached'
     : opts.preferOffline ? 'force-cache'
-    : opts.preferOnline ? 'no-cache' : 'default'
+    : opts.preferOnline ? 'no-cache'
+    : 'default'
 }
 
 function getHeaders (registry, uri, opts) {
