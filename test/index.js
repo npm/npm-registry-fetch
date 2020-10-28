@@ -21,9 +21,9 @@ const OPTS = {
     retries: 1,
     factor: 1,
     minTimeout: 1,
-    maxTimeout: 10
+    maxTimeout: 10,
   },
-  registry: 'https://mock.reg/'
+  registry: 'https://mock.reg/',
 }
 
 test('hello world', t => {
@@ -32,7 +32,7 @@ test('hello world', t => {
     .reply(200, { hello: 'world' })
   return fetch('/hello', {
     method: false, // will fall back to GET if falsey,
-    ...OPTS
+    ...OPTS,
   })
     .then(res => {
       t.equal(res.status, 200, 'got successful response')
@@ -50,14 +50,14 @@ test('JSON body param', t => {
     .post('/hello')
     .reply(200, (uri, reqBody) => {
       t.deepEqual(reqBody, {
-        hello: 'world'
+        hello: 'world',
       }, 'got the JSON version of the body')
       return reqBody
     })
   const opts = {
     ...OPTS,
     method: 'POST',
-    body: { hello: 'world' }
+    body: { hello: 'world' },
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -85,7 +85,7 @@ test('buffer body param', t => {
   const opts = {
     ...OPTS,
     method: 'POST',
-    body: Buffer.from('hello', 'utf8')
+    body: Buffer.from('hello', 'utf8'),
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -106,7 +106,7 @@ test('stream body param', t => {
     .post('/hello')
     .reply(200, (uri, reqBody) => {
       t.deepEqual(JSON.parse(reqBody), {
-        hello: 'world'
+        hello: 'world',
       }, 'got the stringified version of the body')
       return reqBody
     })
@@ -115,7 +115,7 @@ test('stream body param', t => {
   const opts = {
     ...OPTS,
     method: 'POST',
-    body: stream
+    body: stream,
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -142,7 +142,7 @@ test('JSON body param', t => {
     ...OPTS,
     method: 'POST',
     body: { hello: 'world' },
-    gzip: true
+    gzip: true,
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -174,7 +174,7 @@ test('gzip + buffer body param', t => {
     ...OPTS,
     method: 'POST',
     body: Buffer.from('hello', 'utf8'),
-    gzip: true
+    gzip: true,
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -200,7 +200,7 @@ test('gzip + stream body param', t => {
     .reply(200, (uri, reqBody) => {
       reqBody = zlib.gunzipSync(Buffer.from(reqBody, 'hex'))
       t.deepEqual(JSON.parse(reqBody.toString('utf8')), {
-        hello: 'world'
+        hello: 'world',
       }, 'got the stringified version of the body')
       return reqBody
     })
@@ -213,8 +213,8 @@ test('gzip + stream body param', t => {
     gzip: true,
     query: {
       everything: undefined,
-      is: undefined
-    }
+      is: undefined,
+    },
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -230,7 +230,7 @@ test('query strings', t => {
     .reply(200, { hello: 'world' })
   return fetch.json('/hello?hi=there', {
     ...OPTS,
-    query: 'who=wor ld'
+    query: 'who=wor ld',
   }).then(json => t.equal(json.hello, 'world', 'query-string merged'))
 })
 
@@ -240,7 +240,7 @@ test('query strings - undefined values', t => {
     .reply(200, { ok: true })
   return fetch.json('/hello', {
     ...OPTS,
-    query: { hi: undefined, who: 'wor ld' }
+    query: { hi: undefined, who: 'wor ld' },
   }).then(json => t.ok(json.ok, 'undefined keys not included in query string'))
 })
 
@@ -280,13 +280,13 @@ test('fetch.json.stream()', t => {
   tnock(t, OPTS.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
-    c: 3
+    c: 3,
   })
   return fetch.json.stream('/hello', '$*', OPTS).collect().then(data => {
     t.deepEqual(data, [
       { key: 'a', value: 1 },
       { key: 'b', value: 2 },
-      { key: 'c', value: 3 }
+      { key: 'c', value: 3 },
     ], 'got a streamed JSON body')
   })
 })
@@ -295,18 +295,18 @@ test('fetch.json.stream opts.mapJSON', t => {
   tnock(t, OPTS.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
-    c: 3
+    c: 3,
   })
   return fetch.json.stream('/hello', '*', {
     ...OPTS,
     mapJSON (value, [key]) {
       return [key, value]
-    }
+    },
   }).collect().then(data => {
     t.deepEqual(data, [
       ['a', 1],
       ['b', 2],
-      ['c', 3]
+      ['c', 3],
     ], 'data mapped')
   })
 })
@@ -316,9 +316,9 @@ test('fetch.json.stream gets fetch error on stream', t => {
     ...OPTS,
     body: Promise.reject(new Error('no body for you')),
     method: 'POST',
-    gzip: true // make sure we don't gzip the promise, lol!
+    gzip: true, // make sure we don't gzip the promise, lol!
   }).collect(), {
-    message: 'no body for you'
+    message: 'no body for you',
   })
 })
 
@@ -338,7 +338,7 @@ test('method configurable', t => {
     .reply(200)
   const opts = {
     ...OPTS,
-    method: 'DELETE'
+    method: 'DELETE',
   }
   return fetch('/hello', opts)
     .then(res => {
@@ -350,7 +350,7 @@ test('npm-notice header logging', t => {
   tnock(t, OPTS.registry)
     .get('/hello')
     .reply(200, { hello: 'world' }, {
-      'npm-notice': 'npm <3 u'
+      'npm-notice': 'npm <3 u',
     })
   const opts = {
     ...OPTS,
@@ -358,8 +358,8 @@ test('npm-notice header logging', t => {
       notice (header, msg) {
         t.equal(header, '', 'empty log header thing')
         t.equal(msg, 'npm <3 u', 'logged out npm-notice at NOTICE level')
-      }
-    })
+      },
+    }),
   }
   t.plan(3)
   return fetch('/hello', opts)
@@ -386,7 +386,9 @@ test('optionally verifies request body integrity', t => {
         })
         .then(res => res.buffer())
         .then(
-          () => { throw new Error('should not have succeeded') },
+          () => {
+            throw new Error('should not have succeeded')
+          },
           err => t.equal(err.code, 'EINTEGRITY', 'got EINTEGRITY error')
         )
     })
@@ -399,7 +401,7 @@ test('pickRegistry() utility', t => {
     pick('foo@1.2.3', {
       registry: 'https://my.registry/here/',
       scope: '@otherscope',
-      '@myscope:registry': 'https://my.scoped.registry/here/'
+      '@myscope:registry': 'https://my.scoped.registry/here/',
     }),
     'https://my.registry/here/',
     'unscoped package uses `registry` setting'
@@ -408,7 +410,7 @@ test('pickRegistry() utility', t => {
     pick('@user/foo@1.2.3', {
       registry: 'https://my.registry/here/',
       scope: '@myscope',
-      '@myscope:registry': 'https://my.scoped.registry/here/'
+      '@myscope:registry': 'https://my.scoped.registry/here/',
     }),
     'https://my.scoped.registry/here/',
     'scoped package uses `@<scope>:registry` setting'
@@ -417,7 +419,7 @@ test('pickRegistry() utility', t => {
     pick('@user/foo@1.2.3', {
       registry: 'https://my.registry/here/',
       scope: 'myscope',
-      '@myscope:registry': 'https://my.scoped.registry/here/'
+      '@myscope:registry': 'https://my.scoped.registry/here/',
     }),
     'https://my.scoped.registry/here/',
     'scope @ is option@l'
@@ -428,8 +430,8 @@ test('pickRegistry() utility', t => {
       scope: '@otherscope',
       '@myscope:registry': 'https://my.scoped.registry/here/',
       publishConfig: {
-        registry: 'https://my.package.registry'
-      }
+        registry: 'https://my.package.registry',
+      },
     }),
     'https://my.package.registry',
     'respects publishConfig setting'
@@ -449,7 +451,7 @@ test('pickRegistry through opts.spec', t => {
   return fetch.json('/pkg', {
     ...OPTS,
     spec: 'pkg@1.2.3',
-    '@myscope:registry': scopedReg
+    '@myscope:registry': scopedReg,
   }).then(json => t.equal(
     json.source,
     OPTS.registry,
@@ -458,14 +460,14 @@ test('pickRegistry through opts.spec', t => {
     ...OPTS,
     spec: 'pkg@1.2.3',
     '@myscope:registry': scopedReg,
-    scope: '@myscope'
+    scope: '@myscope',
   })).then(json => t.equal(
     json.source,
     scopedReg,
     'request made to scope registry using opts.scope'
   )).then(() => fetch.json('/pkg', Object.assign({
     spec: '@myscope/pkg@1.2.3',
-    '@myscope:registry': scopedReg
+    '@myscope:registry': scopedReg,
   }))).then(json => t.equal(
     json.source,
     scopedReg,
@@ -484,7 +486,7 @@ test('pickRegistry through publishConfig', t => {
 
   return fetch.json('/pkg', {
     ...OPTS,
-    publishConfig: {}
+    publishConfig: {},
   }).then(json => t.equal(
     json.source,
     OPTS.registry,
@@ -492,8 +494,8 @@ test('pickRegistry through publishConfig', t => {
   )).then(() => fetch.json('/pkg', {
     ...OPTS,
     publishConfig: {
-      registry: publishRegistry
-    }
+      registry: publishRegistry,
+    },
   }).then(json => t.equal(
     json.source,
     publishRegistry,
@@ -511,8 +513,8 @@ test('log warning header info', t => {
       warn (header, msg) {
         t.equal(header, 'registry', 'expected warn log header')
         t.equal(msg, `Using stale data from ${OPTS.registry} because the host is inaccessible -- are you offline?`, 'logged out at WARNING level')
-      }
-    })
+      },
+    }),
   }
   t.plan(3)
   return fetch('/hello', opts)
@@ -554,7 +556,7 @@ test('miscellaneous headers', t => {
     npmSession: 'foobarbaz',
     projectScope: '@foo',
     userAgent: 'agent of use',
-    npmCommand: 'hello-world'
+    npmCommand: 'hello-world',
   }).then(res => {
     t.equal(res.status, 200, 'got successful response')
   })

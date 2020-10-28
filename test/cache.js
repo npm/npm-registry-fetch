@@ -21,10 +21,10 @@ const OPTS = {
     retries: 1,
     factor: 1,
     minTimeout: 1,
-    maxTimeout: 10
+    maxTimeout: 10,
   },
   cache: path.join(testDir, '_cacache'),
-  registry: REGISTRY
+  registry: REGISTRY,
 }
 
 test('can cache GET requests', t => {

@@ -15,9 +15,9 @@ const OPTS = {
     retries: 1,
     factor: 1,
     minTimeout: 1,
-    maxTimeout: 10
+    maxTimeout: 10,
   },
-  registry: 'https://mock.reg/'
+  registry: 'https://mock.reg/',
 }
 
 test('basic auth', t => {
@@ -28,13 +28,13 @@ test('basic auth', t => {
     email: 'global@ma.il',
     '//my.custom.registry/here/:username': 'user',
     '//my.custom.registry/here/:password': Buffer.from('pass', 'utf8').toString('base64'),
-    '//my.custom.registry/here/:email': 'e@ma.il'
+    '//my.custom.registry/here/:email': 'e@ma.il',
   }
   t.deepEqual(getAuth(config.registry, config), {
     alwaysAuth: false,
     username: 'user',
     password: 'pass',
-    email: 'e@ma.il'
+    email: 'e@ma.il',
   }, 'basic auth details generated')
 
   const opts = Object.assign({}, OPTS, config)
@@ -55,11 +55,11 @@ test('token auth', t => {
     registry: 'https://my.custom.registry/here/',
     token: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
   t.deepEqual(getAuth(config.registry, config), {
     alwaysAuth: false,
-    token: 'c0ffee'
+    token: 'c0ffee',
   }, 'correct auth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -85,14 +85,14 @@ test('forceAuth', t => {
       username: 'user',
       password: Buffer.from('pass', 'utf8').toString('base64'),
       email: 'e@ma.il',
-      'always-auth': true
-    }
+      'always-auth': true,
+    },
   }
   t.deepEqual(getAuth(config.registry, config), {
     alwaysAuth: true,
     username: 'user',
     password: 'pass',
-    email: 'e@ma.il'
+    email: 'e@ma.il',
   }, 'only forceAuth details included')
 
   const opts = Object.assign({}, OPTS, config)
@@ -112,11 +112,11 @@ test('_auth auth', t => {
   const config = {
     registry: 'https://my.custom.registry/here/',
     _auth: 'deadbeef',
-    '//my.custom.registry/here/:_auth': 'c0ffee'
+    '//my.custom.registry/here/:_auth': 'c0ffee',
   }
   t.like(getAuth(config.registry, config), {
     alwaysAuth: false,
-    _auth: 'c0ffee'
+    _auth: 'c0ffee',
   }, 'correct _auth picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -135,13 +135,13 @@ test('_auth username:pass auth', t => {
   const config = {
     registry: 'https://my.custom.registry/here/',
     _auth: 'foobarbaz',
-    '//my.custom.registry/here/:_auth': auth
+    '//my.custom.registry/here/:_auth': auth,
   }
   t.like(getAuth(config.registry, config), {
     alwaysAuth: false,
     username,
     password,
-    _auth: auth
+    _auth: auth,
   }, 'correct _auth picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -161,14 +161,14 @@ test('_auth only sets user/pass when not already set', t => {
     _auth,
     username,
     password,
-    'always-auth': 'false'
+    'always-auth': 'false',
   }
 
   const expect = {
     _auth,
     username,
     password: 'bar',
-    alwaysAuth: false
+    alwaysAuth: false,
   }
 
   t.match(getAuth('http://registry/', config), expect)
@@ -184,34 +184,34 @@ test('globally-configured auth', t => {
     email: 'global@ma.il',
     '//my.custom.registry/here/:username': 'user',
     '//my.custom.registry/here/:password': Buffer.from('pass', 'utf8').toString('base64'),
-    '//my.custom.registry/here/:email': 'e@ma.il'
+    '//my.custom.registry/here/:email': 'e@ma.il',
   }
   t.deepEqual(getAuth(basicConfig.registry, basicConfig), {
     alwaysAuth: false,
     username: 'globaluser',
     password: 'globalpass',
-    email: 'global@ma.il'
+    email: 'global@ma.il',
   }, 'basic auth details generated from global settings')
 
   const tokenConfig = {
     registry: 'https://different.registry/',
     _authToken: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
   t.deepEqual(getAuth(tokenConfig.registry, tokenConfig), {
     alwaysAuth: false,
-    token: 'deadbeef'
+    token: 'deadbeef',
   }, 'correct global auth token picked out')
 
   const _authConfig = {
     registry: 'https://different.registry/',
     _auth: 'deadbeef',
-    '//my.custom.registry/here/:_auth': 'c0ffee'
+    '//my.custom.registry/here/:_auth': 'c0ffee',
   }
   t.like(getAuth(_authConfig.registry, _authConfig), {
     alwaysAuth: false,
-    _auth: 'deadbeef'
+    _auth: 'deadbeef',
   }, 'correct global _auth picked out')
 
   t.done()
@@ -223,12 +223,12 @@ test('otp token passed through', t => {
     token: 'deadbeef',
     otp: '694201',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
   t.deepEqual(getAuth(config.registry, config), {
     alwaysAuth: false,
     token: 'c0ffee',
-    otp: '694201'
+    otp: '694201',
   }, 'correct auth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -250,7 +250,7 @@ test('different hosts for uri vs registry', t => {
     registry: 'https://my.custom.registry/here/',
     token: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
 
   const opts = Object.assign({}, OPTS, config)
@@ -271,7 +271,7 @@ test('http vs https auth sending', t => {
     registry: 'https://my.custom.registry/here/',
     token: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
 
   const opts = Object.assign({}, OPTS, config)
@@ -289,11 +289,11 @@ test('always-auth', t => {
     'always-auth': 'true',
     token: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
   t.deepEqual(getAuth(config.registry, config), {
     alwaysAuth: true,
-    token: 'c0ffee'
+    token: 'c0ffee',
   }, 'correct auth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -312,15 +312,15 @@ test('scope-based auth', t => {
     '@myscope:registry': 'https://my.custom.registry/here/',
     token: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
-    '//my.custom.registry/here/:token': 'nope'
+    '//my.custom.registry/here/:token': 'nope',
   }
   t.deepEqual(getAuth(config['@myscope:registry'], config), {
     alwaysAuth: false,
-    token: 'c0ffee'
+    token: 'c0ffee',
   }, 'correct auth token picked out')
   t.deepEqual(getAuth(config['@myscope:registry'], config), {
     alwaysAuth: false,
-    token: 'c0ffee'
+    token: 'c0ffee',
   }, 'correct auth token picked out without scope config having an @')
 
   const opts = Object.assign({}, OPTS, config)
@@ -335,7 +335,7 @@ test('scope-based auth', t => {
   return fetch.json('/hello', opts)
     .then(res => t.equal(res, 'success', 'token auth succeeded'))
     .then(() => fetch.json('/hello', Object.assign({}, opts, {
-      scope: 'myscope'
+      scope: 'myscope',
     })))
     .then(res => t.equal(res, 'success', 'token auth succeeded without @ in scope'))
 })
