@@ -4,9 +4,16 @@ const Minipass = require('minipass')
 const npmlog = require('npmlog')
 const silentLog = require('../silentlog.js')
 const ssri = require('ssri')
-const test = require('tap').test
+const t = require('tap')
 const tnock = require('./util/tnock.js')
 const zlib = require('zlib')
+const defaultOpts = require('../default-opts.js')
+
+t.equal(defaultOpts.registry, 'https://registry.npmjs.org/',
+  'default registry is the npm public registry')
+
+// ok, now change it for the tests
+defaultOpts.registry = 'https://mock.reg/'
 
 const fetch = require('../index.js')
 
@@ -23,11 +30,10 @@ const OPTS = {
     minTimeout: 1,
     maxTimeout: 10,
   },
-  registry: 'https://mock.reg/',
 }
 
-test('hello world', t => {
-  tnock(t, OPTS.registry)
+t.test('hello world', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
   return fetch('/hello', {
@@ -41,8 +47,8 @@ test('hello world', t => {
     .then(json => t.deepEqual(json, { hello: 'world' }, 'got correct body'))
 })
 
-test('JSON body param', t => {
-  tnock(t, OPTS.registry)
+t.test('JSON body param', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/json', 'content-type automatically set')
       return ctype[0] === 'application/json'
@@ -67,8 +73,8 @@ test('JSON body param', t => {
     .then(json => t.deepEqual(json, { hello: 'world' }))
 })
 
-test('buffer body param', t => {
-  tnock(t, OPTS.registry)
+t.test('buffer body param', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
       return ctype[0] === 'application/octet-stream'
@@ -97,8 +103,8 @@ test('buffer body param', t => {
     )
 })
 
-test('stream body param', t => {
-  tnock(t, OPTS.registry)
+t.test('stream body param', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
       return ctype[0] === 'application/octet-stream'
@@ -125,8 +131,8 @@ test('stream body param', t => {
     .then(json => t.deepEqual(json, { hello: 'world' }))
 })
 
-test('JSON body param', t => {
-  tnock(t, OPTS.registry)
+t.test('JSON body param', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/json', 'content-type automatically set')
       return ctype[0] === 'application/json'
@@ -150,8 +156,8 @@ test('JSON body param', t => {
     })
 })
 
-test('gzip + buffer body param', t => {
-  tnock(t, OPTS.registry)
+t.test('gzip + buffer body param', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
       return ctype[0] === 'application/octet-stream'
@@ -186,8 +192,8 @@ test('gzip + buffer body param', t => {
     )
 })
 
-test('gzip + stream body param', t => {
-  tnock(t, OPTS.registry)
+t.test('gzip + stream body param', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/octet-stream', 'content-type automatically set')
       return ctype[0] === 'application/octet-stream'
@@ -224,8 +230,8 @@ test('gzip + stream body param', t => {
     .then(json => t.deepEqual(json, { hello: 'world' }))
 })
 
-test('query strings', t => {
-  tnock(t, OPTS.registry)
+t.test('query strings', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello?hi=there&who=wor%20ld')
     .reply(200, { hello: 'world' })
   return fetch.json('/hello?hi=there', {
@@ -234,8 +240,8 @@ test('query strings', t => {
   }).then(json => t.equal(json.hello, 'world', 'query-string merged'))
 })
 
-test('query strings - undefined values', t => {
-  tnock(t, OPTS.registry)
+t.test('query strings - undefined values', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello?who=wor%20ld')
     .reply(200, { ok: true })
   return fetch.json('/hello', {
@@ -244,20 +250,20 @@ test('query strings - undefined values', t => {
   }).then(json => t.ok(json.ok, 'undefined keys not included in query string'))
 })
 
-test('json()', t => {
-  tnock(t, OPTS.registry)
+t.test('json()', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
   return fetch.json('/hello', OPTS)
     .then(json => t.deepEqual(json, { hello: 'world' }, 'got json body'))
 })
 
-test('query string with ?write=true', t => {
+t.test('query string with ?write=true', t => {
   const cache = t.testdir()
   const opts = { ...OPTS, preferOffline: true, cache }
   const qsString = { ...opts, query: { write: 'true' } }
   const qsBool = { ...opts, query: { write: true } }
-  tnock(t, opts.registry)
+  tnock(t, defaultOpts.registry)
     .get('/writeTrueTest?write=true')
     .times(6)
     .reply(200, { write: 'go for it' })
@@ -276,8 +282,8 @@ test('query string with ?write=true', t => {
     .then(res => t.strictSame(res, { write: 'go for it' }))
 })
 
-test('fetch.json.stream()', t => {
-  tnock(t, OPTS.registry).get('/hello').reply(200, {
+t.test('fetch.json.stream()', t => {
+  tnock(t, defaultOpts.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
     c: 3,
@@ -291,8 +297,8 @@ test('fetch.json.stream()', t => {
   })
 })
 
-test('fetch.json.stream opts.mapJSON', t => {
-  tnock(t, OPTS.registry).get('/hello').reply(200, {
+t.test('fetch.json.stream opts.mapJSON', t => {
+  tnock(t, defaultOpts.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
     c: 3,
@@ -311,7 +317,7 @@ test('fetch.json.stream opts.mapJSON', t => {
   })
 })
 
-test('fetch.json.stream gets fetch error on stream', t => {
+t.test('fetch.json.stream gets fetch error on stream', t => {
   return t.rejects(fetch.json.stream('/hello', '*', {
     ...OPTS,
     body: Promise.reject(new Error('no body for you')),
@@ -322,8 +328,8 @@ test('fetch.json.stream gets fetch error on stream', t => {
   })
 })
 
-test('opts.ignoreBody', t => {
-  tnock(t, OPTS.registry)
+t.test('opts.ignoreBody', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
   return fetch('/hello', { ...OPTS, ignoreBody: true })
@@ -332,8 +338,8 @@ test('opts.ignoreBody', t => {
     })
 })
 
-test('method configurable', t => {
-  tnock(t, OPTS.registry)
+t.test('method configurable', t => {
+  tnock(t, defaultOpts.registry)
     .delete('/hello')
     .reply(200)
   const opts = {
@@ -346,8 +352,8 @@ test('method configurable', t => {
     })
 })
 
-test('npm-notice header logging', t => {
-  tnock(t, OPTS.registry)
+t.test('npm-notice header logging', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' }, {
       'npm-notice': 'npm <3 u',
@@ -366,9 +372,9 @@ test('npm-notice header logging', t => {
     .then(res => t.equal(res.status, 200, 'got successful response'))
 })
 
-test('optionally verifies request body integrity', t => {
+t.test('optionally verifies request body integrity', t => {
   t.plan(3)
-  tnock(t, OPTS.registry)
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .times(2)
     .reply(200, 'hello')
@@ -394,9 +400,9 @@ test('optionally verifies request body integrity', t => {
     })
 })
 
-test('pickRegistry() utility', t => {
+t.test('pickRegistry() utility', t => {
   const pick = fetch.pickRegistry
-  t.equal(pick('foo@1.2.3'), 'https://registry.npmjs.org/', 'has good default')
+  t.equal(pick('foo@1.2.3'), defaultOpts.registry, 'has good default')
   t.equal(
     pick('foo@1.2.3', {
       registry: 'https://my.registry/here/',
@@ -427,10 +433,10 @@ test('pickRegistry() utility', t => {
   t.done()
 })
 
-test('pickRegistry through opts.spec', t => {
-  tnock(t, OPTS.registry)
+t.test('pickRegistry through opts.spec', t => {
+  tnock(t, defaultOpts.registry)
     .get('/pkg')
-    .reply(200, { source: OPTS.registry })
+    .reply(200, { source: defaultOpts.registry })
   const scopedReg = 'https://scoped.mock.reg/'
   tnock(t, scopedReg)
     .get('/pkg')
@@ -442,7 +448,7 @@ test('pickRegistry through opts.spec', t => {
     '@myscope:registry': scopedReg,
   }).then(json => t.equal(
     json.source,
-    OPTS.registry,
+    defaultOpts.registry,
     'request made to main registry'
   )).then(() => fetch.json('/pkg', {
     ...OPTS,
@@ -463,8 +469,8 @@ test('pickRegistry through opts.spec', t => {
   ))
 })
 
-test('log warning header info', t => {
-  tnock(t, OPTS.registry)
+t.test('log warning header info', t => {
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' }, { Warning: '199 - "ENOTFOUND" "Wed, 21 Oct 2015 07:28:00 GMT"' })
   const opts = {
@@ -472,7 +478,7 @@ test('log warning header info', t => {
     log: Object.assign({}, silentLog, {
       warn (header, msg) {
         t.equal(header, 'registry', 'expected warn log header')
-        t.equal(msg, `Using stale data from ${OPTS.registry} because the host is inaccessible -- are you offline?`, 'logged out at WARNING level')
+        t.equal(msg, `Using stale data from ${defaultOpts.registry} because the host is inaccessible -- are you offline?`, 'logged out at WARNING level')
       },
     }),
   }
@@ -481,13 +487,13 @@ test('log warning header info', t => {
     .then(res => t.equal(res.status, 200, 'got successful response'))
 })
 
-test('npm-in-ci header with forced CI=false', t => {
+t.test('npm-in-ci header with forced CI=false', t => {
   const CI = process.env.CI
   process.env.CI = false
   t.teardown(t => {
     process.env.CI = CI
   })
-  tnock(t, OPTS.registry)
+  tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
   return fetch('/hello', OPTS)
@@ -496,8 +502,8 @@ test('npm-in-ci header with forced CI=false', t => {
     })
 })
 
-test('miscellaneous headers', t => {
-  tnock(t, OPTS.registry)
+t.test('miscellaneous headers', t => {
+  tnock(t, defaultOpts.registry)
     .matchHeader('npm-session', session =>
       t.strictSame(session, ['foobarbaz'], 'session set from options'))
     .matchHeader('npm-scope', scope =>
@@ -513,6 +519,7 @@ test('miscellaneous headers', t => {
 
   return fetch('/hello', {
     ...OPTS,
+    registry: null, // always falls back on falsey registry value
     npmSession: 'foobarbaz',
     projectScope: '@foo',
     userAgent: 'agent of use',
