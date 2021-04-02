@@ -425,6 +425,19 @@ This is a one-time password from a two-factor authenticator. It is required for
 certain registry interactions when two-factor auth is enabled for a user
 account.
 
+##### <a name="opts-otpPrompt"></a> `opts.otpPrompt`
+
+* Type: Function
+* Default: null
+
+This is a method which will be called to provide an OTP if the server
+responds with a 401 response indicating that a one-time-password is
+required.
+
+It may return a promise, which must resolve to the OTP value to be used.
+If the method fails to provide an OTP value, then the fetch will fail with
+the auth error that indicated an OTP was needed.
+
 ##### <a name="opts-password"></a> `opts.password`
 
 * Alias: `_password`

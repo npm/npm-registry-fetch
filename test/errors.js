@@ -4,6 +4,7 @@ const npa = require('npm-package-arg')
 const npmlog = require('npmlog')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
+const { HttpErrorAuthOTP } = require('./errors.js')
 
 const fetch = require('../index.js')
 
@@ -24,7 +25,11 @@ t.test('generic request errors', t => {
   tnock(t, OPTS.registry)
     .get('/ohno/oops')
     .reply(400, 'failwhale!')
-  return fetch('/ohno/oops', OPTS)
+  // verify that the otpPrompt won't save from non-OTP errors
+  const otpPrompt = () => {
+    throw new Error('nope')
+  }
+  return fetch('/ohno/oops', { ...OPTS, otpPrompt })
     .then(
       () => {
         throw new Error('should not have succeeded!')
@@ -126,6 +131,89 @@ t.test('OTP error', t => {
         t.equal(err.code, 'EOTP', 'got special OTP error code')
       }
     )
+})
+
+t.test('OTP error with prompt', t => {
+  let OTP = null
+  tnock(t, OPTS.registry)
+    .get('/otplease').times(2)
+    .matchHeader('npm-otp', otp => {
+      if (otp) {
+        OTP = otp[0]
+        t.strictSame(otp, ['12345'], 'got expected otp')
+      }
+      return true
+    })
+    .reply((...args) => {
+      if (OTP === '12345')
+        return [200, { ok: 'this is fine' }, {}]
+      else
+        return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
+    })
+
+  const otpPrompt = async () => '12345'
+  return fetch('/otplease', { ...OPTS, otpPrompt })
+    .then(res => {
+      t.strictSame(res.status, 200, 'got 200 response')
+      return res.json()
+    }).then(body => {
+      t.strictSame(body, { ok: 'this is fine' }, 'got expected body')
+    })
+})
+
+t.test('OTP error with prompt, expired OTP in settings', t => {
+  let OTP = null
+  tnock(t, OPTS.registry)
+    .get('/otplease').times(2)
+    .matchHeader('npm-otp', otp => {
+      if (otp) {
+        if (!OTP)
+          t.strictSame(otp, ['98765'], 'got invalid otp first')
+        else
+          t.strictSame(otp, ['12345'], 'got expected otp')
+        OTP = otp[0]
+      }
+      return true
+    })
+    .reply((...args) => {
+      if (OTP === '12345')
+        return [200, { ok: 'this is fine' }, {}]
+      else
+        return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
+    })
+
+  const otpPrompt = async () => '12345'
+  return fetch('/otplease', { ...OPTS, otpPrompt, otp: '98765' })
+    .then(res => {
+      t.strictSame(res.status, 200, 'got 200 response')
+      return res.json()
+    }).then(body => {
+      t.strictSame(body, { ok: 'this is fine' }, 'got expected body')
+    })
+})
+
+t.test('OTP error with prompt that fails', t => {
+  tnock(t, OPTS.registry)
+    .get('/otplease')
+    .reply((...args) => {
+      return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
+    })
+
+  const otpPrompt = async () => {
+    throw new Error('whoopsie')
+  }
+  return t.rejects(fetch('/otplease', { ...OPTS, otpPrompt }), HttpErrorAuthOTP)
+})
+
+t.test('OTP error with prompt that returns nothing', t => {
+  tnock(t, OPTS.registry)
+    .get('/otplease')
+    .reply((...args) => {
+      return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
+    })
+
+  const otpPrompt = async () => {}
+  return t.rejects(fetch('/otplease', { ...OPTS, otpPrompt }), HttpErrorAuthOTP)
 })
 
 t.test('OTP error when missing www-authenticate', t => {
