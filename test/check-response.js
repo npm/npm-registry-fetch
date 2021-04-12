@@ -1,9 +1,11 @@
 const { Readable } = require('stream')
-const test = require('tap').test
+const t = require('tap')
 
 const checkResponse = require('../check-response.js')
-const errors = require('./errors.js')
+const errors = require('../errors.js')
 const silentLog = require('../silentlog.js')
+const registry = 'registry'
+const startTime = Date.now()
 
 class Body extends Readable {
   _read () {
@@ -22,7 +24,7 @@ const mockFetchRes = {
   status: 200,
 }
 
-test('any response error should be silent', t => {
+t.test('any response error should be silent', t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.reject(new Error('ERR')),
     status: 400,
@@ -31,7 +33,7 @@ test('any response error should be silent', t => {
   t.end()
 })
 
-test('all checks are ok, nothing to report', t => {
+t.test('all checks are ok, nothing to report', t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.resolve(Buffer.from('ok')),
     status: 400,
@@ -40,13 +42,14 @@ test('all checks are ok, nothing to report', t => {
   t.end()
 })
 
-test('log x-fetch-attempts header value', t => {
+t.test('log x-fetch-attempts header value', t => {
   const headers = new Headers()
   headers.get = header => header === 'x-fetch-attempts' ? 3 : undefined
   const res = Object.assign({}, mockFetchRes, {
     headers,
     status: 400,
   })
+  t.plan(2)
   t.rejects(checkResponse('get', res, 'registry', Date.now(), {
     log: Object.assign({}, silentLog, {
       http (header, msg) {
@@ -54,10 +57,9 @@ test('log x-fetch-attempts header value', t => {
       },
     }),
   }))
-  t.plan(2)
 })
 
-test('log the url fetched', async t => {
+t.test('log the url fetched', t => {
   const headers = new Headers()
   const EE = require('events')
   headers.get = header => undefined
@@ -67,6 +69,7 @@ test('log the url fetched', async t => {
     url: 'http://example.com/foo/bar/baz',
     body: new EE(),
   })
+  t.plan(2)
   checkResponse('get', res, 'registry', Date.now(), {
     log: Object.assign({}, silentLog, {
       http (header, msg) {
@@ -78,7 +81,7 @@ test('log the url fetched', async t => {
   res.body.emit('end')
 })
 
-test('redact password from log', async t => {
+t.test('redact password from log', t => {
   const headers = new Headers()
   const EE = require('events')
   headers.get = header => undefined
@@ -88,6 +91,7 @@ test('redact password from log', async t => {
     url: 'http://username:password@example.com/foo/bar/baz',
     body: new EE(),
   })
+  t.plan(2)
   checkResponse('get', res, 'registry', Date.now(), {
     log: Object.assign({}, silentLog, {
       http (header, msg) {
@@ -99,7 +103,7 @@ test('redact password from log', async t => {
   res.body.emit('end')
 })
 
-test('bad-formatted warning headers', t => {
+t.test('bad-formatted warning headers', t => {
   const headers = new Headers()
   headers.has = header => header === 'warning' ? 'foo' : undefined
   headers.raw = () => ({

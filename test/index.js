@@ -44,7 +44,7 @@ t.test('hello world', t => {
       t.equal(res.status, 200, 'got successful response')
       return res.json()
     })
-    .then(json => t.deepEqual(json, { hello: 'world' }, 'got correct body'))
+    .then(json => t.same(json, { hello: 'world' }, 'got correct body'))
 })
 
 t.test('JSON body param', t => {
@@ -55,7 +55,7 @@ t.test('JSON body param', t => {
     })
     .post('/hello')
     .reply(200, (uri, reqBody) => {
-      t.deepEqual(reqBody, {
+      t.same(reqBody, {
         hello: 'world',
       }, 'got the JSON version of the body')
       return reqBody
@@ -70,7 +70,7 @@ t.test('JSON body param', t => {
       t.equal(res.status, 200)
       return res.json()
     })
-    .then(json => t.deepEqual(json, { hello: 'world' }))
+    .then(json => t.same(json, { hello: 'world' }))
 })
 
 t.test('buffer body param', t => {
@@ -81,7 +81,7 @@ t.test('buffer body param', t => {
     })
     .post('/hello')
     .reply(200, (uri, reqBody) => {
-      t.deepEqual(
+      t.same(
         Buffer.from(reqBody, 'utf8'),
         Buffer.from('hello', 'utf8'),
         'got the JSON version of the body'
@@ -99,7 +99,7 @@ t.test('buffer body param', t => {
       return res.buffer()
     })
     .then(buf =>
-      t.deepEqual(buf, Buffer.from('hello', 'utf8'), 'got response')
+      t.same(buf, Buffer.from('hello', 'utf8'), 'got response')
     )
 })
 
@@ -111,7 +111,7 @@ t.test('stream body param', t => {
     })
     .post('/hello')
     .reply(200, (uri, reqBody) => {
-      t.deepEqual(JSON.parse(reqBody), {
+      t.same(JSON.parse(reqBody), {
         hello: 'world',
       }, 'got the stringified version of the body')
       return reqBody
@@ -128,7 +128,7 @@ t.test('stream body param', t => {
       t.equal(res.status, 200)
       return res.json()
     })
-    .then(json => t.deepEqual(json, { hello: 'world' }))
+    .then(json => t.same(json, { hello: 'world' }))
 })
 
 t.test('JSON body param', t => {
@@ -169,7 +169,7 @@ t.test('gzip + buffer body param', t => {
     .post('/hello')
     .reply(200, (uri, reqBody) => {
       reqBody = zlib.gunzipSync(Buffer.from(reqBody, 'hex'))
-      t.deepEqual(
+      t.same(
         Buffer.from(reqBody, 'utf8').toString('utf8'),
         'hello',
         'got the JSON version of the body'
@@ -188,7 +188,7 @@ t.test('gzip + buffer body param', t => {
       return res.buffer()
     })
     .then(buf =>
-      t.deepEqual(buf, Buffer.from('hello', 'utf8'), 'got response')
+      t.same(buf, Buffer.from('hello', 'utf8'), 'got response')
     )
 })
 
@@ -205,7 +205,7 @@ t.test('gzip + stream body param', t => {
     .post('/hello')
     .reply(200, (uri, reqBody) => {
       reqBody = zlib.gunzipSync(Buffer.from(reqBody, 'hex'))
-      t.deepEqual(JSON.parse(reqBody.toString('utf8')), {
+      t.same(JSON.parse(reqBody.toString('utf8')), {
         hello: 'world',
       }, 'got the stringified version of the body')
       return reqBody
@@ -227,7 +227,7 @@ t.test('gzip + stream body param', t => {
       t.equal(res.status, 200)
       return res.json()
     })
-    .then(json => t.deepEqual(json, { hello: 'world' }))
+    .then(json => t.same(json, { hello: 'world' }))
 })
 
 t.test('query strings', t => {
@@ -255,7 +255,7 @@ t.test('json()', t => {
     .get('/hello')
     .reply(200, { hello: 'world' })
   return fetch.json('/hello', OPTS)
-    .then(json => t.deepEqual(json, { hello: 'world' }, 'got json body'))
+    .then(json => t.same(json, { hello: 'world' }, 'got json body'))
 })
 
 t.test('query string with ?write=true', t => {
@@ -289,7 +289,7 @@ t.test('fetch.json.stream()', t => {
     c: 3,
   })
   return fetch.json.stream('/hello', '$*', OPTS).collect().then(data => {
-    t.deepEqual(data, [
+    t.same(data, [
       { key: 'a', value: 1 },
       { key: 'b', value: 2 },
       { key: 'c', value: 3 },
@@ -309,7 +309,7 @@ t.test('fetch.json.stream opts.mapJSON', t => {
       return [key, value]
     },
   }).collect().then(data => {
-    t.deepEqual(data, [
+    t.same(data, [
       ['a', 1],
       ['b', 2],
       ['c', 3],
@@ -430,7 +430,7 @@ t.test('pickRegistry() utility', t => {
     'https://my.scoped.registry/here/',
     'scope @ is option@l'
   )
-  t.done()
+  t.end()
 })
 
 t.test('pickRegistry through opts.spec', t => {
