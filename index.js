@@ -51,7 +51,8 @@ function regFetch (uri, /* istanbul ignore next */ opts_ = {}) {
 
   // through that takes into account the scope, the prefix of `uri`, etc
   const startTime = Date.now()
-  const headers = getHeaders(uri, opts)
+  const auth = getAuth(uri, opts)
+  const headers = getHeaders(uri, auth, opts)
   let body = opts.body
   const bodyIsStream = Minipass.isStream(body)
   const bodyIsPromise = body &&
@@ -122,9 +123,15 @@ function regFetch (uri, /* istanbul ignore next */ opts_ = {}) {
     },
     strictSSL: opts.strictSSL,
     timeout: opts.timeout || 30 * 1000,
-  }).then(res => checkResponse(
-    method, res, registry, startTime, opts
-  ))
+  }).then(res => checkResponse({
+    method,
+    uri,
+    res,
+    registry,
+    startTime,
+    auth,
+    opts,
+  }))
 
   return Promise.resolve(body).then(doFetch)
 }
@@ -168,7 +175,7 @@ function getCacheMode (opts) {
     : 'default'
 }
 
-function getHeaders (uri, opts) {
+function getHeaders (uri, auth, opts) {
   const headers = Object.assign({
     'npm-in-ci': !!opts.isFromCI,
     'user-agent': opts.userAgent,
@@ -183,7 +190,6 @@ function getHeaders (uri, opts) {
   if (opts.npmCommand)
     headers['npm-command'] = opts.npmCommand
 
-  const auth = getAuth(uri, opts)
   // If a tarball is hosted on a different place than the manifest, only send
   // credentials on `alwaysAuth`
   if (auth.token)

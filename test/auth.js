@@ -32,6 +32,7 @@ t.test('basic auth', t => {
   }
   const gotAuth = getAuth(config.registry, config)
   t.same(gotAuth, {
+    scopeAuthKey: null,
     token: null,
     auth: Buffer.from('user:pass').toString('base64'),
   }, 'basic auth details generated')
@@ -59,6 +60,7 @@ t.test('token auth', t => {
     '//my.custom.registry/:token': 'nope',
   }
   t.same(getAuth(`${config.registry}/foo/-/foo.tgz`, config), {
+    scopeAuthKey: null,
     token: 'c0ffee',
     auth: null,
   }, 'correct auth token picked out')
@@ -90,6 +92,7 @@ t.test('forceAuth', t => {
     },
   }
   t.same(getAuth(config.registry, config), {
+    scopeAuthKey: null,
     token: null,
     auth: Buffer.from('user:pass').toString('base64'),
   }, 'only forceAuth details included')
@@ -115,6 +118,7 @@ t.test('_auth auth', t => {
     '//my.custom.registry/here/:_auth': 'c0ffee',
   }
   t.same(getAuth(`${config.registry}/asdf/foo/bar/baz`, config), {
+    scopeAuthKey: null,
     token: null,
     auth: 'c0ffee',
   }, 'correct _auth picked out')
@@ -138,6 +142,7 @@ t.test('_auth username:pass auth', t => {
     '//my.custom.registry/here/:_auth': auth,
   }
   t.same(getAuth(config.registry, config), {
+    scopeAuthKey: null,
     token: null,
     auth: auth,
   }, 'correct _auth picked out')
@@ -163,6 +168,7 @@ t.test('ignore user/pass when _auth is set', t => {
   }
 
   const expect = {
+    scopeAuthKey: null,
     auth,
     token: null,
   }
@@ -183,6 +189,7 @@ t.test('globally-configured auth', t => {
     '//my.custom.registry/here/:email': 'e@ma.il',
   }
   t.same(getAuth(basicConfig.registry, basicConfig), {
+    scopeAuthKey: null,
     token: null,
     auth: Buffer.from('globaluser:globalpass').toString('base64'),
   }, 'basic auth details generated from global settings')
@@ -194,6 +201,7 @@ t.test('globally-configured auth', t => {
     '//my.custom.registry/here/:token': 'nope',
   }
   t.same(getAuth(tokenConfig.registry, tokenConfig), {
+    scopeAuthKey: null,
     token: 'deadbeef',
     auth: null,
   }, 'correct global auth token picked out')
@@ -205,6 +213,7 @@ t.test('globally-configured auth', t => {
     '//my.custom.registry/here/:_auth': 'c0ffee',
   }
   t.same(getAuth(`${_authConfig.registry}/foo`, _authConfig), {
+    scopeAuthKey: null,
     token: null,
     auth: 'deadbeef',
   }, 'correct _auth picked out')
@@ -221,6 +230,7 @@ t.test('otp token passed through', t => {
     '//my.custom.registry/here/:token': 'nope',
   }
   t.same(getAuth(config.registry, config), {
+    scopeAuthKey: null,
     token: 'c0ffee',
     auth: null,
   }, 'correct auth token picked out')
@@ -286,6 +296,7 @@ t.test('always-auth', t => {
     '//my.custom.registry/here/:token': 'nope',
   }
   t.same(getAuth(config.registry, config), {
+    scopeAuthKey: null,
     token: 'c0ffee',
     auth: null,
   }, 'correct auth token picked out')
@@ -309,10 +320,12 @@ t.test('scope-based auth', t => {
     '//my.custom.registry/here/:token': 'nope',
   }
   t.same(getAuth(config['@myscope:registry'], config), {
+    scopeAuthKey: null,
     auth: null,
     token: 'c0ffee',
   }, 'correct auth token picked out')
   t.same(getAuth(config['@myscope:registry'], config), {
+    scopeAuthKey: null,
     auth: null,
     token: 'c0ffee',
   }, 'correct auth token picked out without scope config having an @')
@@ -355,8 +368,45 @@ t.test('do not be thrown by other weird configs', t => {
   const uri = 'http://localhost:15443/foo/@asdf/bar/-/bar-1.2.3.tgz'
   const auth = getAuth(uri, opts)
   t.same(auth, {
+    scopeAuthKey: null,
     token: 'correct bearer token',
     auth: null,
   })
+  t.end()
+})
+
+t.test('scopeAuthKey tests', t => {
+  const opts = {
+    '@other-scope:registry': 'https://other-scope-registry.com/',
+    '//other-scope-registry.com/:_authToken': 'cafebad',
+    '@scope:registry': 'https://scope-host.com/',
+    '//scope-host.com/:_authToken': 'c0ffee',
+  }
+  const uri = 'https://tarball-host.com/foo/foo.tgz'
+
+  t.same(getAuth(uri, { ...opts, spec: '@scope/foo@latest' }), {
+    scopeAuthKey: '//scope-host.com/',
+    auth: null,
+    token: null,
+  }, 'regular scoped spec')
+
+  t.same(getAuth(uri, { ...opts, spec: 'foo@npm:@scope/foo@latest' }), {
+    scopeAuthKey: '//scope-host.com/',
+    auth: null,
+    token: null,
+  }, 'scoped pkg aliased to unscoped name')
+
+  t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo@npm:@scope/foo@latest' }), {
+    scopeAuthKey: '//scope-host.com/',
+    auth: null,
+    token: null,
+  }, 'scoped name aliased to other scope with auth')
+
+  t.same(getAuth(uri, { ...opts, spec: '@scope/foo@npm:foo@latest' }), {
+    scopeAuthKey: null,
+    auth: null,
+    token: null,
+  }, 'unscoped aliased to scoped name')
+
   t.end()
 })

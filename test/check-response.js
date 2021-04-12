@@ -28,8 +28,16 @@ t.test('any response error should be silent', t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.reject(new Error('ERR')),
     status: 400,
+    url: 'https://example.com/',
   })
-  t.rejects(checkResponse('get', res, 'registry', Date.now(), { ignoreBody: true }), errors.HttpErrorGeneral)
+
+  t.rejects(checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+    opts: { ignoreBody: true },
+  }), errors.HttpErrorGeneral)
   t.end()
 })
 
@@ -37,8 +45,14 @@ t.test('all checks are ok, nothing to report', t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.resolve(Buffer.from('ok')),
     status: 400,
+    url: 'https://example.com/',
   })
-  t.rejects(checkResponse('get', res, 'registry', Date.now()), errors.HttpErrorGeneral)
+  t.rejects(checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+  }), errors.HttpErrorGeneral)
   t.end()
 })
 
@@ -50,12 +64,18 @@ t.test('log x-fetch-attempts header value', t => {
     status: 400,
   })
   t.plan(2)
-  t.rejects(checkResponse('get', res, 'registry', Date.now(), {
-    log: Object.assign({}, silentLog, {
-      http (header, msg) {
-        t.ok(msg.endsWith('attempt #3'), 'should log correct number of attempts')
-      },
-    }),
+  t.rejects(checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+    opts: {
+      log: Object.assign({}, silentLog, {
+        http (header, msg) {
+          t.ok(msg.endsWith('attempt #3'), 'should log correct number of attempts')
+        },
+      }),
+    },
   }))
 })
 
@@ -70,13 +90,19 @@ t.test('log the url fetched', t => {
     body: new EE(),
   })
   t.plan(2)
-  checkResponse('get', res, 'registry', Date.now(), {
-    log: Object.assign({}, silentLog, {
-      http (header, msg) {
-        t.equal(header, 'fetch')
-        t.match(msg, /^GET 200 http:\/\/example.com\/foo\/bar\/baz [0-9]+m?s/)
-      },
-    }),
+  checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+    opts: {
+      log: Object.assign({}, silentLog, {
+        http (header, msg) {
+          t.equal(header, 'fetch')
+          t.match(msg, /^GET 200 http:\/\/example.com\/foo\/bar\/baz [0-9]+m?s/)
+        },
+      }),
+    },
   })
   res.body.emit('end')
 })
@@ -92,13 +118,19 @@ t.test('redact password from log', t => {
     body: new EE(),
   })
   t.plan(2)
-  checkResponse('get', res, 'registry', Date.now(), {
-    log: Object.assign({}, silentLog, {
-      http (header, msg) {
-        t.equal(header, 'fetch')
-        t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s/)
-      },
-    }),
+  checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+    opts: {
+      log: Object.assign({}, silentLog, {
+        http (header, msg) {
+          t.equal(header, 'fetch')
+          t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s/)
+        },
+      }),
+    },
   })
   res.body.emit('end')
 })
@@ -112,12 +144,51 @@ t.test('bad-formatted warning headers', t => {
   const res = Object.assign({}, mockFetchRes, {
     headers,
   })
-  t.ok(checkResponse('get', res, 'registry', Date.now(), {
-    log: Object.assign({}, silentLog, {
-      warn (header, msg) {
-        t.fail('should not log warnings')
-      },
-    }),
+  return t.resolves(checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+    opts: {
+      log: Object.assign({}, silentLog, {
+        warn (header, msg) {
+          t.fail('should not log warnings')
+        },
+      }),
+    },
   }))
-  t.plan(1)
+})
+
+t.test('report auth for registry, but not for this request', t => {
+  const res = Object.assign({}, mockFetchRes, {
+    buffer: () => Promise.resolve(Buffer.from('ok')),
+    status: 400,
+    url: 'https://example.com/',
+  })
+  t.plan(3)
+  t.rejects(checkResponse({
+    method: 'get',
+    res,
+    uri: 'https://example.com/',
+    registry,
+    startTime,
+    auth: {
+      scopeAuthKey: '//some-scope-registry.com/',
+      auth: null,
+      token: null,
+    },
+    opts: {
+      log: Object.assign({}, silentLog, {
+        warn (header, msg) {
+          t.equal(header, 'registry')
+          t.equal(msg, `No auth for URI, but auth present for scoped registry.
+
+URI: https://example.com/
+Scoped Registry Key: //some-scope-registry.com/
+
+More info here: https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-present-for-scoped-registry`)
+        },
+      }),
+    },
+  }), errors.HttpErrorGeneral)
 })

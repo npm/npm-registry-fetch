@@ -1,4 +1,5 @@
 'use strict'
+const npa = require('npm-package-arg')
 
 // Find the longest registry key that is used for some kind of auth
 // in the options.
@@ -35,6 +36,7 @@ const getAuth = (uri, opts = {}) => {
   // we are only allowed to use what's in forceAuth if specified
   if (forceAuth && !regKey) {
     return new Auth({
+      scopeAuthKey: null,
       token: forceAuth._authToken,
       username: forceAuth.username,
       password: forceAuth._password || forceAuth.password,
@@ -43,8 +45,19 @@ const getAuth = (uri, opts = {}) => {
   }
 
   // no auth for this URI
-  if (!regKey)
-    return new Auth({})
+  if (!regKey && opts.spec) {
+    // If making a tarball request to a different base URI than the
+    // registry where we logged in, but the same auth SHOULD be sent
+    // to that artifact host, then we track where it was coming in from,
+    // and warn the user if we get a 4xx error on it.
+    const { spec } = opts
+    const { scope: specScope, subSpec } = npa(spec)
+    const subSpecScope = subSpec && subSpec.scope
+    const scope = subSpec ? subSpecScope : specScope
+    const scopeReg = scope && opts[`${scope}:registry`]
+    const scopeAuthKey = scopeReg && regKeyFromURI(scopeReg, opts)
+    return new Auth({ scopeAuthKey })
+  }
 
   const {
     [`${regKey}:_authToken`]: token,
@@ -54,6 +67,7 @@ const getAuth = (uri, opts = {}) => {
   } = opts
 
   return new Auth({
+    scopeAuthKey: null,
     token,
     auth,
     username,
@@ -62,7 +76,8 @@ const getAuth = (uri, opts = {}) => {
 }
 
 class Auth {
-  constructor ({ token, auth, username, password }) {
+  constructor ({ token, auth, username, password, scopeAuthKey }) {
+    this.scopeAuthKey = scopeAuthKey
     this.token = null
     this.auth = null
     if (token)
