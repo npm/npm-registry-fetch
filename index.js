@@ -165,7 +165,6 @@ function getCacheMode (opts) {
 
 function getHeaders (registry, uri, opts) {
   const headers = Object.assign({
-    'npm-in-ci': !!opts.isFromCI,
     'user-agent': opts.userAgent,
   }, opts.headers || {})
 
