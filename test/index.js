@@ -19,9 +19,6 @@ const fetch = require('../index.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
-  // just to make sure we hit the second branch when
-  // we are ACTUALLY in CI
-  isFromCI: false,
   log: npmlog,
   timeout: 0,
   retry: {
@@ -487,21 +484,6 @@ t.test('log warning header info', t => {
     .then(res => t.equal(res.status, 200, 'got successful response'))
 })
 
-t.test('npm-in-ci header with forced CI=false', t => {
-  const CI = process.env.CI
-  process.env.CI = false
-  t.teardown(t => {
-    process.env.CI = CI
-  })
-  tnock(t, defaultOpts.registry)
-    .get('/hello')
-    .reply(200, { hello: 'world' })
-  return fetch('/hello', OPTS)
-    .then(res => {
-      t.equal(res.status, 200, 'got successful response')
-    })
-})
-
 t.test('miscellaneous headers', t => {
   tnock(t, defaultOpts.registry)
     .matchHeader('npm-session', session =>
@@ -510,8 +492,6 @@ t.test('miscellaneous headers', t => {
       t.strictSame(scope, ['@foo'], 'scope set from options'))
     .matchHeader('user-agent', ua =>
       t.strictSame(ua, ['agent of use'], 'UA set from options'))
-    .matchHeader('npm-in-ci', ci =>
-      t.strictSame(ci, ['false'], 'CI set from options'))
     .matchHeader('npm-command', cmd =>
       t.strictSame(cmd, ['hello-world'], 'command set from options'))
     .get('/hello')

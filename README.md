@@ -309,13 +309,6 @@ previously-generated integrity hash for the saved request information, so
 `EINTEGRITY` errors can happen if [`opts.cache`](#opts-cache) is used, even if
 `opts.integrity` is not passed in.
 
-##### <a name='opts-isFromCI'></a> `opts.isFromCI`
-
-* Type: Boolean
-* Default: Based on environment variables
-
-This is used to populate the `npm-in-ci` request header sent to the registry.
-
 ##### <a name="opts-key"></a> `opts.key`
 
 * Type: String
