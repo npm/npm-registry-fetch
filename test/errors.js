@@ -2,7 +2,7 @@
 
 const npa = require('npm-package-arg')
 const npmlog = require('npmlog')
-const test = require('tap').test
+const t = require('tap')
 const tnock = require('./util/tnock.js')
 
 const fetch = require('../index.js')
@@ -20,7 +20,7 @@ const OPTS = {
   registry: 'https://mock.reg/',
 }
 
-test('generic request errors', t => {
+t.test('generic request errors', t => {
   tnock(t, OPTS.registry)
     .get('/ohno/oops')
     .reply(400, 'failwhale!')
@@ -44,7 +44,7 @@ test('generic request errors', t => {
     )
 })
 
-test('pkgid tie fighter', t => {
+t.test('pkgid tie fighter', t => {
   tnock(t, OPTS.registry)
     .get('/-/ohno/_rewrite/ohyeah/maybe')
     .reply(400, 'failwhale!')
@@ -57,7 +57,7 @@ test('pkgid tie fighter', t => {
     )
 })
 
-test('pkgid _rewrite', t => {
+t.test('pkgid _rewrite', t => {
   tnock(t, OPTS.registry)
     .get('/ohno/_rewrite/ohyeah/maybe')
     .reply(400, 'failwhale!')
@@ -70,7 +70,7 @@ test('pkgid _rewrite', t => {
     )
 })
 
-test('pkgid with `opts.spec`', t => {
+t.test('pkgid with `opts.spec`', t => {
   tnock(t, OPTS.registry)
     .get('/ohno/_rewrite/ohyeah')
     .reply(400, 'failwhale!')
@@ -86,7 +86,7 @@ test('pkgid with `opts.spec`', t => {
     )
 })
 
-test('JSON error reporing', t => {
+t.test('JSON error reporing', t => {
   tnock(t, OPTS.registry)
     .get('/ohno')
     .reply(400, { error: 'badarg' })
@@ -111,7 +111,7 @@ test('JSON error reporing', t => {
     )
 })
 
-test('OTP error', t => {
+t.test('OTP error', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
     .reply(401, { error: 'needs an otp, please' }, {
@@ -128,7 +128,7 @@ test('OTP error', t => {
     )
 })
 
-test('OTP error when missing www-authenticate', t => {
+t.test('OTP error when missing www-authenticate', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
     .reply(401, { error: 'needs a one-time password' })
@@ -143,7 +143,7 @@ test('OTP error when missing www-authenticate', t => {
     )
 })
 
-test('Bad IP address error', t => {
+t.test('Bad IP address error', t => {
   tnock(t, OPTS.registry)
     .get('/badaddr')
     .reply(401, { error: 'you are using the wrong IP address, friend' }, {
@@ -160,7 +160,7 @@ test('Bad IP address error', t => {
     )
 })
 
-test('Unexpected www-authenticate error', t => {
+t.test('Unexpected www-authenticate error', t => {
   tnock(t, OPTS.registry)
     .get('/unown')
     .reply(401, {
@@ -185,4 +185,4 @@ test('Unexpected www-authenticate error', t => {
     )
 })
 
-test('retries certain types')
+t.test('retries certain types')

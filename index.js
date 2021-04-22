@@ -27,26 +27,32 @@ function regFetch (uri, /* istanbul ignore next */ opts_ = {}) {
     ...defaultOpts,
     ...opts_,
   }
-  const registry = opts.registry = (
-    (opts.spec && pickRegistry(opts.spec, opts)) ||
-    opts.registry ||
-    /* istanbul ignore next */
-    'https://registry.npmjs.org/'
-  )
 
-  if (!urlIsValid(uri)) {
+  // if we did not get a fully qualified URI, then we look at the registry
+  // config or relevant scope to resolve it.
+  const uriValid = urlIsValid(uri)
+  let registry = opts.registry || defaultOpts.registry
+  if (!uriValid) {
+    registry = opts.registry = (
+      (opts.spec && pickRegistry(opts.spec, opts)) ||
+      opts.registry ||
+      registry
+    )
     uri = `${
       registry.trim().replace(/\/?$/g, '')
     }/${
       uri.trim().replace(/^\//, '')
     }`
+    // asserts that this is now valid
+    new url.URL(uri)
   }
 
   const method = opts.method || 'GET'
 
   // through that takes into account the scope, the prefix of `uri`, etc
   const startTime = Date.now()
-  const headers = getHeaders(registry, uri, opts)
+  const auth = getAuth(uri, opts)
+  const headers = getHeaders(uri, auth, opts)
   let body = opts.body
   const bodyIsStream = Minipass.isStream(body)
   const bodyIsPromise = body &&
@@ -117,9 +123,15 @@ function regFetch (uri, /* istanbul ignore next */ opts_ = {}) {
     },
     strictSSL: opts.strictSSL,
     timeout: opts.timeout || 30 * 1000,
-  }).then(res => checkResponse(
-    method, res, registry, startTime, opts
-  ))
+  }).then(res => checkResponse({
+    method,
+    uri,
+    res,
+    registry,
+    startTime,
+    auth,
+    opts,
+  }))
 
   return Promise.resolve(body).then(doFetch)
 }
@@ -151,7 +163,7 @@ function pickRegistry (spec, opts = {}) {
     registry = opts[opts.scope.replace(/^@?/, '@') + ':registry']
 
   if (!registry)
-    registry = opts.registry || 'https://registry.npmjs.org/'
+    registry = opts.registry || defaultOpts.registry
 
   return registry
 }
@@ -163,7 +175,7 @@ function getCacheMode (opts) {
     : 'default'
 }
 
-function getHeaders (registry, uri, opts) {
+function getHeaders (uri, auth, opts) {
   const headers = Object.assign({
     'npm-in-ci': !!opts.isFromCI,
     'user-agent': opts.userAgent,
@@ -178,25 +190,15 @@ function getHeaders (registry, uri, opts) {
   if (opts.npmCommand)
     headers['npm-command'] = opts.npmCommand
 
-  const auth = getAuth(registry, opts)
   // If a tarball is hosted on a different place than the manifest, only send
   // credentials on `alwaysAuth`
-  const shouldAuth = (
-    auth.alwaysAuth ||
-    new url.URL(uri).host === new url.URL(registry).host
-  )
-  if (shouldAuth && auth.token)
+  if (auth.token)
     headers.authorization = `Bearer ${auth.token}`
-  else if (shouldAuth && auth.username && auth.password) {
-    const encoded = Buffer.from(
-      `${auth.username}:${auth.password}`, 'utf8'
-    ).toString('base64')
-    headers.authorization = `Basic ${encoded}`
-  } else if (shouldAuth && auth._auth)
-    headers.authorization = `Basic ${auth._auth}`
+  else if (auth.auth)
+    headers.authorization = `Basic ${auth.auth}`
 
-  if (shouldAuth && auth.otp)
-    headers['npm-otp'] = auth.otp
+  if (opts.otp)
+    headers['npm-otp'] = opts.otp
 
   return headers
 }
