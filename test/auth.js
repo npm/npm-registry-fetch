@@ -34,6 +34,7 @@ t.test('basic auth', t => {
   t.same(gotAuth, {
     scopeAuthKey: null,
     token: null,
+    isBasicAuth: true,
     auth: Buffer.from('user:pass').toString('base64'),
   }, 'basic auth details generated')
 
@@ -61,6 +62,7 @@ t.test('token auth', t => {
   }
   t.same(getAuth(`${config.registry}/foo/-/foo.tgz`, config), {
     scopeAuthKey: null,
+    isBasicAuth: false,
     token: 'c0ffee',
     auth: null,
   }, 'correct auth token picked out')
@@ -94,6 +96,7 @@ t.test('forceAuth', t => {
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
     token: null,
+    isBasicAuth: true,
     auth: Buffer.from('user:pass').toString('base64'),
   }, 'only forceAuth details included')
 
@@ -120,6 +123,7 @@ t.test('_auth auth', t => {
   t.same(getAuth(`${config.registry}/asdf/foo/bar/baz`, config), {
     scopeAuthKey: null,
     token: null,
+    isBasicAuth: false,
     auth: 'c0ffee',
   }, 'correct _auth picked out')
 
@@ -144,6 +148,7 @@ t.test('_auth username:pass auth', t => {
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
     token: null,
+    isBasicAuth: false,
     auth: auth,
   }, 'correct _auth picked out')
 
@@ -170,6 +175,7 @@ t.test('ignore user/pass when _auth is set', t => {
   const expect = {
     scopeAuthKey: null,
     auth,
+    isBasicAuth: false,
     token: null,
   }
 
@@ -191,6 +197,7 @@ t.test('globally-configured auth', t => {
   t.same(getAuth(basicConfig.registry, basicConfig), {
     scopeAuthKey: null,
     token: null,
+    isBasicAuth: true,
     auth: Buffer.from('globaluser:globalpass').toString('base64'),
   }, 'basic auth details generated from global settings')
 
@@ -203,6 +210,7 @@ t.test('globally-configured auth', t => {
   t.same(getAuth(tokenConfig.registry, tokenConfig), {
     scopeAuthKey: null,
     token: 'deadbeef',
+    isBasicAuth: false,
     auth: null,
   }, 'correct global auth token picked out')
 
@@ -215,6 +223,7 @@ t.test('globally-configured auth', t => {
   t.same(getAuth(`${_authConfig.registry}/foo`, _authConfig), {
     scopeAuthKey: null,
     token: null,
+    isBasicAuth: false,
     auth: 'deadbeef',
   }, 'correct _auth picked out')
 
@@ -232,6 +241,7 @@ t.test('otp token passed through', t => {
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
     token: 'c0ffee',
+    isBasicAuth: false,
     auth: null,
   }, 'correct auth token picked out')
 
@@ -298,6 +308,7 @@ t.test('always-auth', t => {
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
     token: 'c0ffee',
+    isBasicAuth: false,
     auth: null,
   }, 'correct auth token picked out')
 
@@ -322,11 +333,13 @@ t.test('scope-based auth', t => {
   t.same(getAuth(config['@myscope:registry'], config), {
     scopeAuthKey: null,
     auth: null,
+    isBasicAuth: false,
     token: 'c0ffee',
   }, 'correct auth token picked out')
   t.same(getAuth(config['@myscope:registry'], config), {
     scopeAuthKey: null,
     auth: null,
+    isBasicAuth: false,
     token: 'c0ffee',
   }, 'correct auth token picked out without scope config having an @')
 
@@ -370,6 +383,7 @@ t.test('do not be thrown by other weird configs', t => {
   t.same(auth, {
     scopeAuthKey: null,
     token: 'correct bearer token',
+    isBasicAuth: false,
     auth: null,
   })
   t.end()
@@ -387,24 +401,28 @@ t.test('scopeAuthKey tests', t => {
   t.same(getAuth(uri, { ...opts, spec: '@scope/foo@latest' }), {
     scopeAuthKey: '//scope-host.com/',
     auth: null,
+    isBasicAuth: false,
     token: null,
   }, 'regular scoped spec')
 
   t.same(getAuth(uri, { ...opts, spec: 'foo@npm:@scope/foo@latest' }), {
     scopeAuthKey: '//scope-host.com/',
     auth: null,
+    isBasicAuth: false,
     token: null,
   }, 'scoped pkg aliased to unscoped name')
 
   t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo@npm:@scope/foo@latest' }), {
     scopeAuthKey: '//scope-host.com/',
     auth: null,
+    isBasicAuth: false,
     token: null,
   }, 'scoped name aliased to other scope with auth')
 
   t.same(getAuth(uri, { ...opts, spec: '@scope/foo@npm:foo@latest' }), {
     scopeAuthKey: null,
     auth: null,
+    isBasicAuth: false,
     token: null,
   }, 'unscoped aliased to scoped name')
 
