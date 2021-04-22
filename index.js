@@ -1,5 +1,6 @@
 'use strict'
 
+const { HttpErrorAuthOTP } = require('./errors.js')
 const checkResponse = require('./check-response.js')
 const getAuth = require('./auth.js')
 const fetch = require('make-fetch-happen')
@@ -98,40 +99,57 @@ function regFetch (uri, /* istanbul ignore next */ opts_ = {}) {
     opts.preferOnline = true
   }
 
-  const doFetch = (body) => fetch(uri, {
-    agent: opts.agent,
-    algorithms: opts.algorithms,
-    body,
-    cache: getCacheMode(opts),
-    cacheManager: opts.cache,
-    ca: opts.ca,
-    cert: opts.cert,
-    headers,
-    integrity: opts.integrity,
-    key: opts.key,
-    localAddress: opts.localAddress,
-    maxSockets: opts.maxSockets,
-    memoize: opts.memoize,
-    method: method,
-    noProxy: opts.noProxy,
-    proxy: opts.httpsProxy || opts.proxy,
-    retry: opts.retry ? opts.retry : {
-      retries: opts.fetchRetries,
-      factor: opts.fetchRetryFactor,
-      minTimeout: opts.fetchRetryMintimeout,
-      maxTimeout: opts.fetchRetryMaxtimeout,
-    },
-    strictSSL: opts.strictSSL,
-    timeout: opts.timeout || 30 * 1000,
-  }).then(res => checkResponse({
-    method,
-    uri,
-    res,
-    registry,
-    startTime,
-    auth,
-    opts,
-  }))
+  const doFetch = async body => {
+    const p = fetch(uri, {
+      agent: opts.agent,
+      algorithms: opts.algorithms,
+      body,
+      cache: getCacheMode(opts),
+      cacheManager: opts.cache,
+      ca: opts.ca,
+      cert: opts.cert,
+      headers,
+      integrity: opts.integrity,
+      key: opts.key,
+      localAddress: opts.localAddress,
+      maxSockets: opts.maxSockets,
+      memoize: opts.memoize,
+      method: method,
+      noProxy: opts.noProxy,
+      proxy: opts.httpsProxy || opts.proxy,
+      retry: opts.retry ? opts.retry : {
+        retries: opts.fetchRetries,
+        factor: opts.fetchRetryFactor,
+        minTimeout: opts.fetchRetryMintimeout,
+        maxTimeout: opts.fetchRetryMaxtimeout,
+      },
+      strictSSL: opts.strictSSL,
+      timeout: opts.timeout || 30 * 1000,
+    }).then(res => checkResponse({
+      method,
+      uri,
+      res,
+      registry,
+      startTime,
+      auth,
+      opts,
+    }))
+
+    if (typeof opts.otpPrompt === 'function') {
+      return p.catch(async er => {
+        if (er instanceof HttpErrorAuthOTP) {
+          // if otp fails to complete, we fail with that failure
+          const otp = await opts.otpPrompt()
+          // if no otp provided, throw the original HTTP error
+          if (!otp)
+            throw er
+          return regFetch(uri, { ...opts, otp })
+        }
+        throw er
+      })
+    } else
+      return p
+  }
 
   return Promise.resolve(body).then(doFetch)
 }
