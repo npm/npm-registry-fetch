@@ -29,7 +29,6 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@npmcli/ci-detect": "^1.0.0",
     "lru-cache": "^6.0.0",
     "make-fetch-happen": "^8.0.9",
     "minipass": "^3.1.3",
