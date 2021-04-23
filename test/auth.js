@@ -428,3 +428,33 @@ t.test('scopeAuthKey tests', t => {
 
   t.end()
 })
+
+t.test('registry host matches, path does not, send auth', t => {
+  const opts = {
+    '@other-scope:registry': 'https://other-scope-registry.com/other/scope/',
+    '//other-scope-registry.com/other/scope/:_authToken': 'cafebad',
+    '@scope:registry': 'https://scope-host.com/scope/host/',
+    '//scope-host.com/scope/host/:_authToken': 'c0ffee',
+    registry: 'https://registry.example.com/some/path/',
+  }
+  const uri = 'https://scope-host.com/blahblah/bloobloo/foo.tgz'
+  t.same(getAuth(uri, { ...opts, spec: '@scope/foo' }), {
+    scopeAuthKey: null,
+    token: 'c0ffee',
+    auth: null,
+    isBasicAuth: false,
+  })
+  t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo' }), {
+    scopeAuthKey: '//other-scope-registry.com/other/scope/',
+    token: null,
+    auth: null,
+    isBasicAuth: false,
+  })
+  t.same(getAuth(uri, { ...opts, registry: 'https://scope-host.com/scope/host/' }), {
+    scopeAuthKey: null,
+    token: 'c0ffee',
+    auth: null,
+    isBasicAuth: false,
+  })
+  t.end()
+})
