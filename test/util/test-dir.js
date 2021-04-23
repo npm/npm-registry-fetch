@@ -15,7 +15,7 @@ function testDir (filename) {
     return reset(dir)
   })
   if (!process.env.KEEPCACHE) {
-    tap.tearDown(function () {
+    tap.teardown(function () {
       process.chdir(__dirname)
       try {
         rimraf.sync(dir)

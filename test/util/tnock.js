@@ -7,7 +7,7 @@ module.exports = tnock
 function tnock (t, host) {
   clearMemoized()
   const server = nock(host)
-  t.tearDown(function () {
+  t.teardown(function () {
     server.done()
   })
   return server

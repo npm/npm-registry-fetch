@@ -4,7 +4,7 @@ const npa = require('npm-package-arg')
 const npmlog = require('npmlog')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
-const { HttpErrorAuthOTP } = require('./errors.js')
+const errors = require('./errors.js')
 
 const fetch = require('../index.js')
 
@@ -202,7 +202,7 @@ t.test('OTP error with prompt that fails', t => {
   const otpPrompt = async () => {
     throw new Error('whoopsie')
   }
-  return t.rejects(fetch('/otplease', { ...OPTS, otpPrompt }), HttpErrorAuthOTP)
+  return t.rejects(fetch('/otplease', { ...OPTS, otpPrompt }), errors.HttpErrorAuthOTP)
 })
 
 t.test('OTP error with prompt that returns nothing', t => {
@@ -213,7 +213,7 @@ t.test('OTP error with prompt that returns nothing', t => {
     })
 
   const otpPrompt = async () => {}
-  return t.rejects(fetch('/otplease', { ...OPTS, otpPrompt }), HttpErrorAuthOTP)
+  return t.rejects(fetch('/otplease', { ...OPTS, otpPrompt }), errors.HttpErrorAuthOTP)
 })
 
 t.test('OTP error when missing www-authenticate', t => {
