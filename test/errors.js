@@ -109,7 +109,7 @@ t.test('JSON error reporing', t => {
         t.equal(err.code, 'E400', 'HTTP code used for err.code')
         t.equal(err.statusCode, 400, 'numerical HTTP code available')
         t.equal(err.method, 'GET', 'method in error object')
-        t.deepEqual(err.body, {
+        t.same(err.body, {
           error: 'badarg',
         }, 'parsed JSON error response available')
       }
