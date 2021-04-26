@@ -113,6 +113,27 @@ t.test('forceAuth', t => {
     .then(res => t.equal(res, 'success', 'used forced auth details'))
 })
 
+t.test('_auth legacy global', t => {
+  const config = {
+    registry: 'https://my.custom.registry/here/',
+    _auth: 'deadbeef',
+  }
+  t.same(getAuth(`${config.registry}/asdf/foo/bar/baz`, config), {
+    scopeAuthKey: null,
+    token: null,
+    isBasicAuth: false,
+    auth: 'deadbeef',
+  }, 'correct legacy global _auth picked out')
+
+  const opts = Object.assign({}, OPTS, config)
+  tnock(t, opts.registry)
+    .matchHeader('authorization', 'Basic deadbeef')
+    .get('/hello')
+    .reply(200, '"success"')
+  return fetch.json('/hello', opts)
+    .then(res => t.equal(res, 'success', '_auth auth succeeded'))
+})
+
 t.test('_auth auth', t => {
   const config = {
     registry: 'https://my.custom.registry/here/',

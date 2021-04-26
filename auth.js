@@ -71,6 +71,14 @@ const getAuth = (uri, opts = {}) => {
       // and warn the user if we get a 4xx error on it.
       const scopeAuthKey = regKeyFromURI(registry, opts)
       return new Auth({ scopeAuthKey })
+    } else {
+      return new Auth({
+        scopeAuthKey: null,
+        token: opts._authToken,
+        auth: opts._auth,
+        username: opts.username,
+        password: opts._password,
+      })
     }
   }
 
