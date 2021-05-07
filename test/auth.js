@@ -113,6 +113,36 @@ t.test('forceAuth', t => {
     .then(res => t.equal(res, 'success', 'used forced auth details'))
 })
 
+t.test('forceAuth token', t => {
+  const config = {
+    registry: 'https://my.custom.registry/here/',
+    token: 'deadbeef',
+    'always-auth': false,
+    '//my.custom.registry/here/:_authToken': 'c0ffee',
+    '//my.custom.registry/here/:token': 'nope',
+    forceAuth: {
+      token: 'cafebad',
+    },
+  }
+  t.same(getAuth(config.registry, config), {
+    scopeAuthKey: null,
+    isBasicAuth: false,
+    token: 'cafebad',
+    auth: null,
+  }, 'correct forceAuth token picked out')
+
+  const opts = Object.assign({}, OPTS, config)
+  tnock(t, opts.registry)
+    .matchHeader('authorization', auth => {
+      t.equal(auth[0], 'Bearer cafebad', 'got correct bearer token')
+      return auth[0] === 'Bearer cafebad'
+    })
+    .get('/hello')
+    .reply(200, '"success"')
+  return fetch.json('/hello', opts)
+    .then(res => t.equal(res, 'success', 'token forceAuth succeeded'))
+})
+
 t.test('_auth auth', t => {
   const config = {
     registry: 'https://my.custom.registry/here/',
