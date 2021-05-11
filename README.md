@@ -390,7 +390,7 @@ invocations of the CLI).
 * Type: String
 * Default: null
 
-If provided, it will be sent in the `npm-command` header.  This yeader is
+If provided, it will be sent in the `npm-command` header.  This header is
 used by the npm registry to identify the npm command that caused this
 request to be made.
 
