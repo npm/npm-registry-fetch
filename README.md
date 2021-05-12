@@ -516,10 +516,7 @@ If the request URI already has a query string, it will be merged with
 * Default: `'https://registry.npmjs.org'`
 
 Registry configuration for a request. If a request URL only includes the URL
-path, this registry setting will be prepended. This configuration is also used
-to determine authentication details, so even if the request URL references a
-completely different host, `opts.registry` will be used to find the auth details
-for that request.
+path, this registry setting will be prepended.
 
 See also [`opts.scope`](#opts-scope), [`opts.spec`](#opts-spec), and
 [`opts.<scope>:registry`](#opts-scope-registry) which can all affect the actual
