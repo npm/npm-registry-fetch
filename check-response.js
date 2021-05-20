@@ -1,7 +1,6 @@
 'use strict'
 
 const errors = require('./errors.js')
-const LRU = require('lru-cache')
 const { Response } = require('minipass-fetch')
 const defaultOpts = require('./default-opts.js')
 
@@ -10,7 +9,6 @@ const checkResponse = async ({ method, uri, res, registry, startTime, auth, opts
   if (res.headers.has('npm-notice') && !res.headers.has('x-local-cache'))
     opts.log.notice('', res.headers.get('npm-notice'))
 
-  checkWarnings(res, registry, opts)
   if (res.status >= 400) {
     logRequest(method, res, startTime, opts)
     if (auth && auth.scopeAuthKey && !auth.token && !auth.auth) {
@@ -58,46 +56,6 @@ function logRequest (method, res, startTime, opts) {
     'fetch',
     `${method.toUpperCase()} ${res.status} ${urlStr} ${elapsedTime}ms${attemptStr}${cacheStr}`
   )
-}
-
-const WARNING_REGEXP = /^\s*(\d{3})\s+(\S+)\s+"(.*)"\s+"([^"]+)"/
-const BAD_HOSTS = new LRU({ max: 50 })
-
-function checkWarnings (res, registry, opts) {
-  if (res.headers.has('warning') && !BAD_HOSTS.has(registry)) {
-    const warnings = {}
-    // note: headers.raw() will preserve case, so we might have a
-    // key on the object like 'WaRnInG' if that was used first
-    for (const [key, value] of Object.entries(res.headers.raw())) {
-      if (key.toLowerCase() !== 'warning')
-        continue
-      value.forEach(w => {
-        const match = w.match(WARNING_REGEXP)
-        if (match) {
-          warnings[match[1]] = {
-            code: match[1],
-            host: match[2],
-            message: match[3],
-            date: new Date(match[4]),
-          }
-        }
-      })
-    }
-    BAD_HOSTS.set(registry, true)
-    if (warnings['199']) {
-      if (warnings['199'].message.match(/ENOTFOUND/))
-        opts.log.warn('registry', `Using stale data from ${registry} because the host is inaccessible -- are you offline?`)
-      else
-        opts.log.warn('registry', `Unexpected warning for ${registry}: ${warnings['199'].message}`)
-    }
-    if (warnings['111']) {
-      // 111 Revalidation failed -- we're using stale data
-      opts.log.warn(
-        'registry',
-        `Using stale data from ${registry} due to a request error during revalidation.`
-      )
-    }
-  }
 }
 
 function checkErrors (method, res, startTime, opts) {

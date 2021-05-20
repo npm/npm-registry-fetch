@@ -466,24 +466,6 @@ t.test('pickRegistry through opts.spec', t => {
   ))
 })
 
-t.test('log warning header info', t => {
-  tnock(t, defaultOpts.registry)
-    .get('/hello')
-    .reply(200, { hello: 'world' }, { Warning: '199 - "ENOTFOUND" "Wed, 21 Oct 2015 07:28:00 GMT"' })
-  const opts = {
-    ...OPTS,
-    log: Object.assign({}, silentLog, {
-      warn (header, msg) {
-        t.equal(header, 'registry', 'expected warn log header')
-        t.equal(msg, `Using stale data from ${defaultOpts.registry} because the host is inaccessible -- are you offline?`, 'logged out at WARNING level')
-      },
-    }),
-  }
-  t.plan(3)
-  return fetch('/hello', opts)
-    .then(res => t.equal(res.status, 200, 'got successful response'))
-})
-
 t.test('miscellaneous headers', t => {
   tnock(t, defaultOpts.registry)
     .matchHeader('npm-session', session =>
