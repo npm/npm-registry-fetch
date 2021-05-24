@@ -38,7 +38,8 @@ function logRequest (method, res, startTime, opts) {
   const elapsedTime = Date.now() - startTime
   const attempt = res.headers.get('x-fetch-attempts')
   const attemptStr = attempt && attempt > 1 ? ` attempt #${attempt}` : ''
-  const cacheStr = res.headers.get('x-local-cache') ? ' (from cache)' : ''
+  const cacheStatus = res.headers.get('x-local-cache-status')
+  const cacheStr = cacheStatus ? ` (cache ${cacheStatus})` : ''
 
   let urlStr
   try {

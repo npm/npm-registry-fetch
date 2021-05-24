@@ -168,3 +168,31 @@ More info here: https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-presen
     },
   }), errors.HttpErrorGeneral)
 })
+
+t.test('logs the value of x-local-cache-status when set', t => {
+  const headers = new Headers()
+  const EE = require('events')
+  headers.get = header => header === 'x-local-cache-status' ? 'hit' : undefined
+  const res = Object.assign({}, mockFetchRes, {
+    headers,
+    status: 200,
+    url: 'http://username:password@example.com/foo/bar/baz',
+    body: new EE(),
+  })
+  t.plan(2)
+  checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+    opts: {
+      log: Object.assign({}, silentLog, {
+        http (header, msg) {
+          t.equal(header, 'fetch')
+          t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/)
+        },
+      }),
+    },
+  })
+  res.body.emit('end')
+})
