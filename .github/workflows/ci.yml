@@ -37,6 +37,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: update npm
+        run: npm i -g npm@latest
+
       ################################################################################
       # Install Dependencies
       #
