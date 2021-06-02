@@ -135,30 +135,6 @@ t.test('redact password from log', t => {
   res.body.emit('end')
 })
 
-t.test('bad-formatted warning headers', t => {
-  const headers = new Headers()
-  headers.has = header => header === 'warning' ? 'foo' : undefined
-  headers.raw = () => ({
-    warning: ['100 - foo'],
-  })
-  const res = Object.assign({}, mockFetchRes, {
-    headers,
-  })
-  return t.resolves(checkResponse({
-    method: 'get',
-    res,
-    registry,
-    startTime,
-    opts: {
-      log: Object.assign({}, silentLog, {
-        warn (header, msg) {
-          t.fail('should not log warnings')
-        },
-      }),
-    },
-  }))
-})
-
 t.test('report auth for registry, but not for this request', t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.resolve(Buffer.from('ok')),
