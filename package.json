@@ -8,13 +8,15 @@
   ],
   "scripts": {
     "eslint": "eslint",
-    "lint": "npm run eslint -- *.js test/*.js",
+    "lint": "npm run npmclilint -- \"*.*js\" \"test/**/*.*js\"",
     "lintfix": "npm run lint -- --fix",
     "prepublishOnly": "git push origin --follow-tags",
     "preversion": "npm test",
     "postversion": "npm publish",
     "test": "tap",
-    "posttest": "npm run lint"
+    "posttest": "npm run lint --",
+    "npmclilint": "npmcli-lint",
+    "postsnap": "npm run lintfix --"
   },
   "repository": "https://github.com/npm/npm-registry-fetch",
   "keywords": [
@@ -37,17 +39,11 @@
     "npm-package-arg": "^8.0.0"
   },
   "devDependencies": {
+    "@npmcli/lint": "^1.0.1",
     "cacache": "^15.0.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "mkdirp": "^0.5.1",
-    "nock": "^11.7.0",
+    "nock": "^13.1.0",
     "npmlog": "^4.1.2",
     "require-inject": "^1.4.4",
-    "rimraf": "^2.6.2",
     "ssri": "^8.0.0",
     "tap": "^15.0.4"
   },

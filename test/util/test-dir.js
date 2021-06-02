@@ -20,9 +20,8 @@ function testDir (filename) {
       try {
         rimraf.sync(dir)
       } catch (e) {
-        if (process.platform !== 'win32') {
+        if (process.platform !== 'win32')
           throw e
-        }
       }
     })
   }
@@ -34,13 +33,13 @@ function reset (testDir) {
   process.chdir(__dirname)
   return new Promise((resolve, reject) => {
     rimraf(testDir, function (err) {
-      if (err) {
+      if (err)
         return reject(err)
-      }
+
       mkdirp(testDir, function (err) {
-        if (err) {
+        if (err)
           return reject(err)
-        }
+
         process.chdir(testDir)
         resolve()
       })

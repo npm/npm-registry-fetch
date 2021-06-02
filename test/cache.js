@@ -9,7 +9,7 @@ const tnock = require('./util/tnock.js')
 
 const fetch = require('../index.js')
 
-const testDir = require('./util/test-dir.js')(__filename)
+const testDir = t.testdir({})
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const REGISTRY = 'https://mock.reg'

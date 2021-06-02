@@ -4,34 +4,35 @@ const errors = require('./errors.js')
 const { Response } = require('minipass-fetch')
 const defaultOpts = require('./default-opts.js')
 
-const checkResponse = async ({ method, uri, res, registry, startTime, auth, opts }) => {
-  opts = { ...defaultOpts, ...opts }
-  if (res.headers.has('npm-notice') && !res.headers.has('x-local-cache'))
-    opts.log.notice('', res.headers.get('npm-notice'))
+const checkResponse =
+  async ({ method, uri, res, registry, startTime, auth, opts }) => {
+    opts = { ...defaultOpts, ...opts }
+    if (res.headers.has('npm-notice') && !res.headers.has('x-local-cache'))
+      opts.log.notice('', res.headers.get('npm-notice'))
 
-  if (res.status >= 400) {
-    logRequest(method, res, startTime, opts)
-    if (auth && auth.scopeAuthKey && !auth.token && !auth.auth) {
+    if (res.status >= 400) {
+      logRequest(method, res, startTime, opts)
+      if (auth && auth.scopeAuthKey && !auth.token && !auth.auth) {
       // we didn't have auth for THIS request, but we do have auth for
       // requests to the registry indicated by the spec's scope value.
       // Warn the user.
-      opts.log.warn('registry', `No auth for URI, but auth present for scoped registry.
+        opts.log.warn('registry', `No auth for URI, but auth present for scoped registry.
 
 URI: ${uri}
 Scoped Registry Key: ${auth.scopeAuthKey}
 
 More info here: https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-present-for-scoped-registry`)
+      }
+      return checkErrors(method, res, startTime, opts)
+    } else {
+      res.body.on('end', () => logRequest(method, res, startTime, opts))
+      if (opts.ignoreBody) {
+        res.body.resume()
+        return new Response(null, res)
+      }
+      return res
     }
-    return checkErrors(method, res, startTime, opts)
-  } else {
-    res.body.on('end', () => logRequest(method, res, startTime, opts))
-    if (opts.ignoreBody) {
-      res.body.resume()
-      return new Response(null, res)
-    }
-    return res
   }
-}
 module.exports = checkResponse
 
 function logRequest (method, res, startTime, opts) {
@@ -85,7 +86,8 @@ function checkErrors (method, res, startTime, opts) {
           )
         }
       } else if (res.status === 401 && body != null && /one-time pass/.test(body.toString('utf8'))) {
-        // Heuristic for malformed OTP responses that don't include the www-authenticate header.
+        // Heuristic for malformed OTP responses that don't include the
+        // www-authenticate header.
         throw new errors.HttpErrorAuthOTP(
           method, res, parsed, opts.spec
         )
