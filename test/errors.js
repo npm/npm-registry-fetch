@@ -145,10 +145,11 @@ t.test('OTP error with prompt', t => {
       return true
     })
     .reply((...args) => {
-      if (OTP === '12345')
+      if (OTP === '12345') {
         return [200, { ok: 'this is fine' }, {}]
-      else
+      } else {
         return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
+      }
     })
 
   const otpPrompt = async () => '12345'
@@ -167,19 +168,21 @@ t.test('OTP error with prompt, expired OTP in settings', t => {
     .get('/otplease').times(2)
     .matchHeader('npm-otp', otp => {
       if (otp) {
-        if (!OTP)
+        if (!OTP) {
           t.strictSame(otp, ['98765'], 'got invalid otp first')
-        else
+        } else {
           t.strictSame(otp, ['12345'], 'got expected otp')
+        }
         OTP = otp[0]
       }
       return true
     })
     .reply((...args) => {
-      if (OTP === '12345')
+      if (OTP === '12345') {
         return [200, { ok: 'this is fine' }, {}]
-      else
+      } else {
         return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
+      }
     })
 
   const otpPrompt = async () => '12345'
@@ -226,7 +229,11 @@ t.test('OTP error when missing www-authenticate', t => {
         throw new Error('Should not have succeeded!')
       },
       err => {
-        t.equal(err.code, 'EOTP', 'got special OTP error code even with missing www-authenticate header')
+        t.equal(
+          err.code,
+          'EOTP',
+          'got special OTP error code even with missing www-authenticate header'
+        )
       }
     )
 })

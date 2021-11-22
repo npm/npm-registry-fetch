@@ -135,6 +135,9 @@ t.test('redact password from log', t => {
   res.body.emit('end')
 })
 
+/* eslint-disable-next-line max-len */
+const moreInfoUrl = 'https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-present-for-scoped-registry'
+
 t.test('report auth for registry, but not for this request', t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.resolve(Buffer.from('ok')),
@@ -162,7 +165,7 @@ t.test('report auth for registry, but not for this request', t => {
 URI: https://example.com/
 Scoped Registry Key: //some-scope-registry.com/
 
-More info here: https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-present-for-scoped-registry`)
+More info here: ${moreInfoUrl}`)
         },
       }),
     },
@@ -189,7 +192,10 @@ t.test('logs the value of x-local-cache-status when set', t => {
       log: Object.assign({}, silentLog, {
         http (header, msg) {
           t.equal(header, 'fetch')
-          t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/)
+          t.match(
+            msg,
+            /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/
+          )
         },
       }),
     },
