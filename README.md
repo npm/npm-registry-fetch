@@ -480,7 +480,7 @@ This option is generally only useful if you're also using
 This option is set to `true` when the request includes `write=true` in the
 query string.
 
-##### <a name="opts-projectScope"></a> `opts.projectScope`
+##### <a name="opts-scope"></a> `opts.scope`
 
 * Type: String
 * Default: null

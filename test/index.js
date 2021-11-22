@@ -483,7 +483,7 @@ t.test('miscellaneous headers', t => {
     ...OPTS,
     registry: null, // always falls back on falsey registry value
     npmSession: 'foobarbaz',
-    projectScope: '@foo',
+    scope: '@foo',
     userAgent: 'agent of use',
     npmCommand: 'hello-world',
   }).then(res => {
