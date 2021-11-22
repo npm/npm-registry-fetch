@@ -1,9 +1,9 @@
 const { Readable } = require('stream')
 const t = require('tap')
 
-const checkResponse = require('../check-response.js')
-const errors = require('../errors.js')
-const silentLog = require('../silentlog.js')
+const checkResponse = require('../lib/check-response.js')
+const errors = require('../lib/errors.js')
+const silentLog = require('../lib/silentlog.js')
 const registry = 'registry'
 const startTime = Date.now()
 

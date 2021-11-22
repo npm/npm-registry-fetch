@@ -7,7 +7,7 @@ const path = require('path')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
 
-const fetch = require('../index.js')
+const fetch = require('..')
 
 const testDir = t.testdir({})
 

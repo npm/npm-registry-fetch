@@ -2,12 +2,12 @@
 
 const Minipass = require('minipass')
 const npmlog = require('npmlog')
-const silentLog = require('../silentlog.js')
 const ssri = require('ssri')
 const t = require('tap')
-const tnock = require('./util/tnock.js')
 const zlib = require('zlib')
-const defaultOpts = require('../default-opts.js')
+const silentLog = require('../lib/silentlog.js')
+const defaultOpts = require('../lib/default-opts.js')
+const tnock = require('./util/tnock.js')
 
 t.equal(defaultOpts.registry, 'https://registry.npmjs.org/',
   'default registry is the npm public registry')
@@ -15,7 +15,7 @@ t.equal(defaultOpts.registry, 'https://registry.npmjs.org/',
 // ok, now change it for the tests
 defaultOpts.registry = 'https://mock.reg/'
 
-const fetch = require('../index.js')
+const fetch = require('..')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {

@@ -2,13 +2,13 @@
   "name": "npm-registry-fetch",
   "version": "11.0.0",
   "description": "Fetch-based http client for use with npm registry APIs",
-  "main": "index.js",
+  "main": "lib",
   "files": [
     "*.js"
   ],
   "scripts": {
     "eslint": "eslint",
-    "lint": "npm run npmclilint -- \"*.*js\" \"test/**/*.*js\"",
+    "lint": "npm run npmclilint -- \"lib/**/*.*js\" \"test/**/*.*js\"",
     "lintfix": "npm run lint -- --fix",
     "prepublishOnly": "git push origin --follow-tags",
     "preversion": "npm test",

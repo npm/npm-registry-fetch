@@ -4,9 +4,9 @@ const npa = require('npm-package-arg')
 const npmlog = require('npmlog')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
-const errors = require('./errors.js')
+const errors = require('../lib/errors.js')
 
-const fetch = require('../index.js')
+const fetch = require('..')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
