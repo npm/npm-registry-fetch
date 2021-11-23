@@ -1,6 +1,63 @@
 # Changelog
+### [12.0.0](https://github.com/npm/registry-fetch/compare/v11.0.0...v12.0.0) (2021-11-23)
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+### ⚠ BREAKING CHANGES
+
+* feat(opts): use scope instead of projectScope
+* drop support for node10 and non-LTS versions of node12 and node14
+
+### [11.0.0](https://github.com/npm/registry-fetch/compare/v10.1.2...v11.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* remove handling of deprecated warning headers (#53)
+
+### Features
+
+* better cache status (#54)
+
+### Bug Fixes
+
+* docs: fix header typo for npm-command (#51)
+* fix(docs): update registry param (#52)
+
+### [10.1.2](https://github.com/npm/registry-fetch/compare/v10.1.1...v10.1.2)
+
+### Bug Fixes
+
+* fix: get auth token correct when login with sso
+
+### [10.1.1](https://github.com/npm/registry-fetch/compare/v10.1.0...v10.1.1)
+
+### Bug Fixes
+
+* Send auth when hostname matches registry, and reg has auth
+
+### [10.1.1](https://github.com/npm/registry-fetch/compare/v10.0.0...v10.1.0)
+
+### Features
+
+* feat(auth): set basicAuth (#45)
+
+### [10.0.0](https://github.com/npm/registry-fetch/compare/v9.0.0...v10.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* feat(auth) load/send based on URI, not registry
+
+### Features:
+
+* feat(otp): Adds opts.otpPrompt to provide an OTP on demand
+
+### Bug Fixes
+
+* fix(config): remove isFromCI and npm-is-ci
+
+### [10.0.0](https://github.com/npm/registry-fetch/compare/v8.1.4...v9.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* Remove publishConfig option
 
 ### [8.1.5](https://github.com/npm/registry-fetch/compare/v8.1.4...v8.1.5) (2020-10-12)
 
