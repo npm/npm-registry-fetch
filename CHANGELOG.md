@@ -53,7 +53,7 @@
 
 * fix(config): remove isFromCI and npm-is-ci
 
-### [10.0.0](https://github.com/npm/registry-fetch/compare/v8.1.4...v9.0.0)
+### [9.0.0](https://github.com/npm/registry-fetch/compare/v8.1.4...v9.0.0)
 
 ### ⚠ BREAKING CHANGES
 
