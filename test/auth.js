@@ -4,8 +4,8 @@ const npmlog = require('npmlog')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
 
-const fetch = require('../index.js')
-const getAuth = require('../auth.js')
+const fetch = require('..')
+const getAuth = require('../lib/auth.js')
 
 npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
