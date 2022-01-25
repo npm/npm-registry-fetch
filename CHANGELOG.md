@@ -1,5 +1,13 @@
 # Changelog
 
+### [12.0.1](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.0...v12.0.1) (2022-01-25)
+
+
+### dependencies
+
+* @npmcli/template-oss@2.5.1 ([cc4cc11](https://www.github.com/npm/npm-registry-fetch/commit/cc4cc11050a3b0e35f6bc59f5dd49a957f7a0569))
+* make-fetch-happen@10.0.0 ([6926dd1](https://www.github.com/npm/npm-registry-fetch/commit/6926dd1270b6c1292cf9adb25429db77755ff5d6))
+
 ### [12.0.0](https://github.com/npm/registry-fetch/compare/v11.0.0...v12.0.0) (2021-11-23)
 
 ### ⚠ BREAKING CHANGES
