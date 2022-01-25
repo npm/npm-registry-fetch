@@ -38,7 +38,7 @@
     "npm-package-arg": "^8.0.0"
   },
   "devDependencies": {
-    "@npmcli/template-oss": "^2.3.1",
+    "@npmcli/template-oss": "^2.5.1",
     "cacache": "^15.0.0",
     "nock": "^13.1.0",
     "npmlog": "^4.1.2",
@@ -53,5 +53,7 @@
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || >=16"
   },
-  "templateVersion": "2.3.1"
+  "templateOSS": {
+    "version": "2.5.1"
+  }
 }
