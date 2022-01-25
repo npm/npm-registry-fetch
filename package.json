@@ -41,7 +41,7 @@
     "@npmcli/template-oss": "^2.5.1",
     "cacache": "^15.0.0",
     "nock": "^13.1.0",
-    "npmlog": "^4.1.2",
+    "npmlog": "^6.0.0",
     "require-inject": "^1.4.4",
     "ssri": "^8.0.0",
     "tap": "^15.0.4"
