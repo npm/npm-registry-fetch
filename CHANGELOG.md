@@ -1,4 +1,5 @@
 # Changelog
+
 ### [12.0.0](https://github.com/npm/registry-fetch/compare/v11.0.0...v12.0.0) (2021-11-23)
 
 ### ⚠ BREAKING CHANGES
