@@ -19,7 +19,8 @@
     "npmclilint": "npmcli-lint",
     "postsnap": "npm run lintfix --",
     "postlint": "npm-template-check",
-    "snap": "tap"
+    "snap": "tap",
+    "template-copy": "npm-template-copy --force"
   },
   "repository": "https://github.com/npm/npm-registry-fetch",
   "keywords": [
@@ -38,7 +39,7 @@
     "npm-package-arg": "^8.0.0"
   },
   "devDependencies": {
-    "@npmcli/template-oss": "^2.5.1",
+    "@npmcli/template-oss": "^2.7.1",
     "cacache": "^15.0.0",
     "nock": "^13.1.0",
     "npmlog": "^6.0.0",
@@ -54,6 +55,6 @@
     "node": "^12.13.0 || ^14.15.0 || >=16"
   },
   "templateOSS": {
-    "version": "2.5.1"
+    "version": "2.7.1"
   }
 }
