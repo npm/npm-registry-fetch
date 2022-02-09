@@ -41,7 +41,7 @@
   "devDependencies": {
     "@npmcli/template-oss": "^2.7.1",
     "cacache": "^15.0.0",
-    "nock": "^13.1.0",
+    "nock": "^13.2.4",
     "npmlog": "^6.0.0",
     "require-inject": "^1.4.4",
     "ssri": "^8.0.0",
