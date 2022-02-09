@@ -581,9 +581,8 @@ See also [`opts.ca`](#opts-ca).
 
 Time before a hanging request times out.
 
-##### <a name="opts-token"></a> `opts.token`
+##### <a name="opts-authtoken"></a> `opts._authToken`
 
-* Alias: `opts._authToken`
 * Type: String
 * Default: null
 
@@ -593,7 +592,7 @@ Can be scoped to a registry by using a "nerf dart" for that registry. That is:
 
 ```
 {
-  '//registry.npmjs.org/:token': 't0k3nH34r'
+  '//registry.npmjs.org/:_authToken': 't0k3nH34r'
 }
 ```
 
@@ -610,7 +609,7 @@ User agent string to send in the `User-Agent` header.
 * Default: null
 
 Username used for basic authentication. For the more modern authentication
-method, please use the (more secure) [`opts.token`](#opts-token)
+method, please use the (more secure) [`opts.authtoken`](#opts-authtoken)
 
 Can optionally be scoped to a registry by using a "nerf dart" for that registry.
 That is:
@@ -622,11 +621,3 @@ That is:
 ```
 
 See also [`opts.password`](#opts-password)
-
-##### <a name="opts-auth"></a> `opts._auth`
-
-* Type: String
-* Default: null
-
-** DEPRECATED ** This is a legacy authentication token supported only for
-compatibility. Please use [`opts.token`](#opts-token) instead.
