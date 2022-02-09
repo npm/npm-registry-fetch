@@ -1,5 +1,26 @@
 # Changelog
 
+### [12.0.2](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.1...v12.0.2) (2022-02-09)
+
+
+### Bug Fixes
+
+* consistent use of url.URL ([847e5f9](https://www.github.com/npm/npm-registry-fetch/commit/847e5f93cc3c468ed1fdecfd00aba5ef1fa37b16))
+
+
+### Dependencies
+
+* update make-fetch-happen requirement from ^10.0.0 to ^10.0.1 ([d1a2a7f](https://www.github.com/npm/npm-registry-fetch/commit/d1a2a7f72af3650879e5bfc7c094830eaa59181c))
+* update minipass requirement from ^3.1.3 to ^3.1.6 ([caa4309](https://www.github.com/npm/npm-registry-fetch/commit/caa43093d382be9a54a9e22c5f1ab8fa834f0612))
+* update minipass-fetch requirement from ^1.3.0 to ^1.4.1 ([52f2ca9](https://www.github.com/npm/npm-registry-fetch/commit/52f2ca98b79969f9ba19df38bf1aee79c04518e6))
+* update minizlib requirement from ^2.0.0 to ^2.1.2 ([9258e8a](https://www.github.com/npm/npm-registry-fetch/commit/9258e8a06fd9458c22584cf267b2d4d18751659a))
+* update npm-package-arg requirement from ^8.0.0 to ^8.1.5 ([131ab16](https://www.github.com/npm/npm-registry-fetch/commit/131ab16408867e987e144d1267dee086c5fa8507))
+
+
+### Documentation
+
+* rename token to _authToken ([d615b4e](https://www.github.com/npm/npm-registry-fetch/commit/d615b4e6cf284c4a8f39b24700beacbf07dfec5d))
+
 ### [12.0.1](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.0...v12.0.1) (2022-01-25)
 
 
