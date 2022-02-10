@@ -1,5 +1,13 @@
 # Changelog
 
+### [12.0.3](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.2...v12.0.3) (2022-02-10)
+
+
+### Dependencies
+
+* bump npm-package-arg from 8.1.5 to 9.0.0 ([0b41730](https://www.github.com/npm/npm-registry-fetch/commit/0b41730bc55e82180d369b8a4a7a198c16f26d34))
+* update make-fetch-happen requirement from ^10.0.1 to ^10.0.2 ([6644733](https://www.github.com/npm/npm-registry-fetch/commit/6644733199ab7569d2452174b9a467193b7171a8))
+
 ### [12.0.2](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.1...v12.0.2) (2022-02-09)
 
 
