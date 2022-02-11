@@ -3,7 +3,6 @@ const t = require('tap')
 
 const checkResponse = require('../lib/check-response.js')
 const errors = require('../lib/errors.js')
-const silentLog = require('../lib/silentlog.js')
 const registry = 'registry'
 const startTime = Date.now()
 
@@ -56,7 +55,7 @@ t.test('all checks are ok, nothing to report', t => {
   t.end()
 })
 
-t.test('log x-fetch-attempts header value', t => {
+t.test('log x-fetch-attempts header value', async t => {
   const headers = new Headers()
   headers.get = header => header === 'x-fetch-attempts' ? 3 : undefined
   const res = Object.assign({}, mockFetchRes, {
@@ -64,19 +63,19 @@ t.test('log x-fetch-attempts header value', t => {
     status: 400,
   })
   t.plan(2)
-  t.rejects(checkResponse({
+  let msg
+  process.on('log', (level, ...args) => {
+    if (level === 'http') {
+      ;[, msg] = args
+    }
+  })
+  await t.rejects(checkResponse({
     method: 'get',
     res,
     registry,
     startTime,
-    opts: {
-      log: Object.assign({}, silentLog, {
-        http (header, msg) {
-          t.ok(msg.endsWith('attempt #3'), 'should log correct number of attempts')
-        },
-      }),
-    },
   }))
+  t.ok(msg.endsWith('attempt #3'), 'should log correct number of attempts')
 })
 
 t.test('log the url fetched', t => {
@@ -90,21 +89,22 @@ t.test('log the url fetched', t => {
     body: new EE(),
   })
   t.plan(2)
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'http') {
+      ;[header, msg] = args
+    }
+  })
   checkResponse({
     method: 'get',
     res,
     registry,
     startTime,
-    opts: {
-      log: Object.assign({}, silentLog, {
-        http (header, msg) {
-          t.equal(header, 'fetch')
-          t.match(msg, /^GET 200 http:\/\/example.com\/foo\/bar\/baz [0-9]+m?s/)
-        },
-      }),
-    },
+
   })
   res.body.emit('end')
+  t.equal(header, 'fetch')
+  t.match(msg, /^GET 200 http:\/\/example.com\/foo\/bar\/baz [0-9]+m?s/)
 })
 
 t.test('redact password from log', t => {
@@ -118,34 +118,40 @@ t.test('redact password from log', t => {
     body: new EE(),
   })
   t.plan(2)
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'http') {
+      ;[header, msg] = args
+    }
+  })
   checkResponse({
     method: 'get',
     res,
     registry,
     startTime,
-    opts: {
-      log: Object.assign({}, silentLog, {
-        http (header, msg) {
-          t.equal(header, 'fetch')
-          t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s/)
-        },
-      }),
-    },
   })
   res.body.emit('end')
+  t.equal(header, 'fetch')
+  t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s/)
 })
 
 /* eslint-disable-next-line max-len */
 const moreInfoUrl = 'https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-present-for-scoped-registry'
 
-t.test('report auth for registry, but not for this request', t => {
+t.test('report auth for registry, but not for this request', async t => {
   const res = Object.assign({}, mockFetchRes, {
     buffer: () => Promise.resolve(Buffer.from('ok')),
     status: 400,
     url: 'https://example.com/',
   })
   t.plan(3)
-  t.rejects(checkResponse({
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'warn') {
+      ;[header, msg] = args
+    }
+  })
+  await t.rejects(checkResponse({
     method: 'get',
     res,
     uri: 'https://example.com/',
@@ -156,20 +162,14 @@ t.test('report auth for registry, but not for this request', t => {
       auth: null,
       token: null,
     },
-    opts: {
-      log: Object.assign({}, silentLog, {
-        warn (header, msg) {
-          t.equal(header, 'registry')
-          t.equal(msg, `No auth for URI, but auth present for scoped registry.
+  }), errors.HttpErrorGeneral)
+  t.equal(header, 'registry')
+  t.equal(msg, `No auth for URI, but auth present for scoped registry.
 
 URI: https://example.com/
 Scoped Registry Key: //some-scope-registry.com/
 
 More info here: ${moreInfoUrl}`)
-        },
-      }),
-    },
-  }), errors.HttpErrorGeneral)
 })
 
 t.test('logs the value of x-local-cache-status when set', t => {
@@ -183,22 +183,22 @@ t.test('logs the value of x-local-cache-status when set', t => {
     body: new EE(),
   })
   t.plan(2)
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'http') {
+      ;[header, msg] = args
+    }
+  })
   checkResponse({
     method: 'get',
     res,
     registry,
     startTime,
-    opts: {
-      log: Object.assign({}, silentLog, {
-        http (header, msg) {
-          t.equal(header, 'fetch')
-          t.match(
-            msg,
-            /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/
-          )
-        },
-      }),
-    },
   })
   res.body.emit('end')
+  t.equal(header, 'fetch')
+  t.match(
+    msg,
+    /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/
+  )
 })
