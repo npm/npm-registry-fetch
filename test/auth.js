@@ -1,15 +1,12 @@
 'use strict'
 
-const npmlog = require('npmlog')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
 
 const fetch = require('..')
 const getAuth = require('../lib/auth.js')
 
-npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
-  log: npmlog,
   timeout: 0,
   retry: {
     retries: 1,

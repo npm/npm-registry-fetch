@@ -337,14 +337,6 @@ to the registry.
 
 See also [`opts.proxy`](#opts-proxy)
 
-##### <a name="opts-log"></a> `opts.log`
-
-* Type: [`npmlog`](https://npm.im/npmlog)-like
-* Default: null
-
-Logger object to use for logging operation details. Must have the same methods
-as `npmlog`.
-
 ##### <a name="opts-mapJSON"></a> `opts.mapJSON`
 
 * Type: Function

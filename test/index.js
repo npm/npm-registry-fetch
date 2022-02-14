@@ -1,11 +1,9 @@
 'use strict'
 
 const Minipass = require('minipass')
-const npmlog = require('npmlog')
 const ssri = require('ssri')
 const t = require('tap')
 const zlib = require('zlib')
-const silentLog = require('../lib/silentlog.js')
 const defaultOpts = require('../lib/default-opts.js')
 const tnock = require('./util/tnock.js')
 
@@ -17,9 +15,7 @@ defaultOpts.registry = 'https://mock.reg/'
 
 const fetch = require('..')
 
-npmlog.level = process.env.LOGLEVEL || 'silent'
 const OPTS = {
-  log: npmlog,
   timeout: 0,
   retry: {
     retries: 1,
@@ -349,24 +345,25 @@ t.test('method configurable', t => {
     })
 })
 
-t.test('npm-notice header logging', t => {
+t.test('npm-notice header logging', async t => {
   tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' }, {
       'npm-notice': 'npm <3 u',
     })
-  const opts = {
-    ...OPTS,
-    log: Object.assign({}, silentLog, {
-      notice (header, msg) {
-        t.equal(header, '', 'empty log header thing')
-        t.equal(msg, 'npm <3 u', 'logged out npm-notice at NOTICE level')
-      },
-    }),
-  }
+
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'notice') {
+      ;[header, msg] = args
+    }
+  })
+
   t.plan(3)
-  return fetch('/hello', opts)
-    .then(res => t.equal(res.status, 200, 'got successful response'))
+  const res = await fetch('/hello', { ...OPTS })
+  t.equal(res.status, 200, 'got successful response')
+  t.equal(header, '', 'empty log header thing')
+  t.equal(msg, 'npm <3 u', 'logged out npm-notice at NOTICE level')
 })
 
 t.test('optionally verifies request body integrity', t => {

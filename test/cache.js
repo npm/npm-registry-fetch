@@ -2,7 +2,6 @@
 
 const { promisify } = require('util')
 const statAsync = promisify(require('fs').stat)
-const npmlog = require('npmlog')
 const path = require('path')
 const t = require('tap')
 const tnock = require('./util/tnock.js')
@@ -11,10 +10,8 @@ const fetch = require('..')
 
 const testDir = t.testdir({})
 
-npmlog.level = process.env.LOGLEVEL || 'silent'
 const REGISTRY = 'https://mock.reg'
 const OPTS = {
-  log: npmlog,
   memoize: false,
   timeout: 0,
   retry: {
