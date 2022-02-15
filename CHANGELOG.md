@@ -1,5 +1,22 @@
 # Changelog
 
+## [13.0.0](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.2...v13.0.0) (2022-02-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* this drops support for passing in a `log` property. All logs are now emitted on the process object via `proc-log`
+
+### Features
+
+* use proc-log and drop npmlog support ([#85](https://www.github.com/npm/npm-registry-fetch/issues/85)) ([db90766](https://www.github.com/npm/npm-registry-fetch/commit/db907663bcde5871dc99840a7dab5358a8fc410e))
+
+
+### Dependencies
+
+* bump npm-package-arg from 8.1.5 to 9.0.0 ([0b41730](https://www.github.com/npm/npm-registry-fetch/commit/0b41730bc55e82180d369b8a4a7a198c16f26d34))
+* update make-fetch-happen requirement from ^10.0.1 to ^10.0.2 ([6644733](https://www.github.com/npm/npm-registry-fetch/commit/6644733199ab7569d2452174b9a467193b7171a8))
+
 ### [12.0.2](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.1...v12.0.2) (2022-02-09)
 
 
