@@ -1,5 +1,13 @@
 # Changelog
 
+### [13.0.1](https://www.github.com/npm/npm-registry-fetch/compare/v13.0.0...v13.0.1) (2022-03-02)
+
+
+### Dependencies
+
+* bump minipass-fetch from 1.4.1 to 2.0.1 ([#92](https://www.github.com/npm/npm-registry-fetch/issues/92)) ([33d0ecd](https://www.github.com/npm/npm-registry-fetch/commit/33d0ecd411e4af03db2a2adf8db2f21ea72e2c42))
+* update make-fetch-happen requirement from ^10.0.2 to ^10.0.3 ([ee38552](https://www.github.com/npm/npm-registry-fetch/commit/ee38552b304eafd706b8a67093f1904c57ca1af3))
+
 ## [13.0.0](https://www.github.com/npm/npm-registry-fetch/compare/v12.0.2...v13.0.0) (2022-02-14)
 
 
