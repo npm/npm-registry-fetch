@@ -31,7 +31,7 @@
   "author": "GitHub Inc.",
   "license": "ISC",
   "dependencies": {
-    "make-fetch-happen": "^10.0.3",
+    "make-fetch-happen": "^10.0.4",
     "minipass": "^3.1.6",
     "minipass-fetch": "^2.0.1",
     "minipass-json-stream": "^1.0.1",
