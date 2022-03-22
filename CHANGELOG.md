@@ -1,5 +1,21 @@
 # Changelog
 
+## [13.1.0](https://www.github.com/npm/npm-registry-fetch/compare/v13.0.1...v13.1.0) (2022-03-22)
+
+
+### Features
+
+* clean token from logged urls ([#107](https://www.github.com/npm/npm-registry-fetch/issues/107)) ([9894911](https://www.github.com/npm/npm-registry-fetch/commit/989491178115ad3bb898b7c681ab6cad4293e8f2))
+
+
+### Dependencies
+
+* update make-fetch-happen requirement from ^10.0.3 to ^10.0.4 ([#96](https://www.github.com/npm/npm-registry-fetch/issues/96)) ([38d9782](https://www.github.com/npm/npm-registry-fetch/commit/38d978297c1f1183da1b1c55f3ea9e670a9934d3))
+* update make-fetch-happen requirement from ^10.0.4 to ^10.0.6 ([#101](https://www.github.com/npm/npm-registry-fetch/issues/101)) ([1d2f3ed](https://www.github.com/npm/npm-registry-fetch/commit/1d2f3edec1a0399ba046df8662cc1097da2be434))
+* update minipass-fetch requirement from ^2.0.1 to ^2.0.2 ([#95](https://www.github.com/npm/npm-registry-fetch/issues/95)) ([d8c3180](https://www.github.com/npm/npm-registry-fetch/commit/d8c3180d0b8a584a9024b4b6f9a34cb00a9e8523))
+* update minipass-fetch requirement from ^2.0.2 to ^2.0.3 ([#99](https://www.github.com/npm/npm-registry-fetch/issues/99)) ([3e08986](https://www.github.com/npm/npm-registry-fetch/commit/3e08986b4283f88719a2c92f058177a3123f81e4))
+* update npm-package-arg requirement from ^9.0.0 to ^9.0.1 ([#102](https://www.github.com/npm/npm-registry-fetch/issues/102)) ([a6192b4](https://www.github.com/npm/npm-registry-fetch/commit/a6192b48b2dc95f488cf479e448ff97fc1bc5d4a))
+
 ### [13.0.1](https://www.github.com/npm/npm-registry-fetch/compare/v13.0.0...v13.0.1) (2022-03-02)
 
 
