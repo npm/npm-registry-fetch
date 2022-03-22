@@ -30,20 +30,20 @@ function testDir (filename) {
 }
 
 module.exports.reset = reset
-function reset (testDir) {
+function reset (dir) {
   process.chdir(__dirname)
   return new Promise((resolve, reject) => {
-    rimraf(testDir, function (err) {
+    rimraf(dir, function (err) {
       if (err) {
         return reject(err)
       }
 
-      mkdirp(testDir, function (err) {
-        if (err) {
-          return reject(err)
+      mkdirp(testDir, function (mkErr) {
+        if (mkErr) {
+          return reject(mkErr)
         }
 
-        process.chdir(testDir)
+        process.chdir(dir)
         resolve()
       })
     })
