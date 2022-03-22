@@ -135,6 +135,34 @@ t.test('redact password from log', t => {
   t.match(msg, /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s/)
 })
 
+t.test('redact well known token from log', t => {
+  const headers = new Headers()
+  const EE = require('events')
+  headers.get = header => undefined
+  const res = Object.assign({}, mockFetchRes, {
+    headers,
+    status: 200,
+    url: `http://example.com/foo/bar/baz/npm_${'a'.repeat(36)}`,
+    body: new EE(),
+  })
+  t.plan(2)
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'http') {
+      ;[header, msg] = args
+    }
+  })
+  checkResponse({
+    method: 'get',
+    res,
+    registry,
+    startTime,
+  })
+  res.body.emit('end')
+  t.equal(header, 'fetch')
+  t.match(msg, /^GET 200 http:\/\/example.com\/foo\/bar\/baz\/npm_\*\*\* [0-9]+m?s/)
+})
+
 /* eslint-disable-next-line max-len */
 const moreInfoUrl = 'https://github.com/npm/cli/wiki/No-auth-for-URI,-but-auth-present-for-scoped-registry'
 
