@@ -49,7 +49,7 @@
     "nock": "^13.2.4",
     "require-inject": "^1.4.4",
     "ssri": "^8.0.1",
-    "tap": "^15.1.6"
+    "tap": "^16.0.1"
   },
   "tap": {
     "check-coverage": true,
