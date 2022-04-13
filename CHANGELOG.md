@@ -1,5 +1,12 @@
 # Changelog
 
+### [13.1.1](https://github.com/npm/npm-registry-fetch/compare/v13.1.0...v13.1.1) (2022-04-13)
+
+
+### Bug Fixes
+
+* replace deprecated String.prototype.substr() ([#115](https://github.com/npm/npm-registry-fetch/issues/115)) ([804411f](https://github.com/npm/npm-registry-fetch/commit/804411f345be9737e5edadffb0e686bc7263ce1d))
+
 ## [13.1.0](https://www.github.com/npm/npm-registry-fetch/compare/v13.0.1...v13.1.0) (2022-03-22)
 
 
