@@ -1,5 +1,12 @@
 # Changelog
 
+### ⚠ BREAKING CHANGES
+
+* Decode `npm-notice` heder according to the rfc2047 rule. 
+
+### Dependencies
+* add rfc2047
+
 ### [13.1.1](https://github.com/npm/npm-registry-fetch/compare/v13.1.0...v13.1.1) (2022-04-13)
 
 

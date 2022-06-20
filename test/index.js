@@ -366,6 +366,27 @@ t.test('npm-notice header logging', async t => {
   t.equal(msg, 'npm <3 u', 'logged out npm-notice at NOTICE level')
 })
 
+t.test('npm-notice encoded header logging', async t => {
+  tnock(t, defaultOpts.registry)
+    .get('/hello')
+    .reply(200, { hello: 'world' }, {
+      'npm-notice': 'npm=?utf-8?Q?_=E2=98=BA?=',
+    })
+
+  let header, msg
+  process.on('log', (level, ...args) => {
+    if (level === 'notice') {
+      ;[header, msg] = args
+    }
+  })
+
+  t.plan(3)
+  const res = await fetch('/hello', { ...OPTS })
+  t.equal(res.status, 200, 'got successful response')
+  t.equal(header, '', 'empty log header thing')
+  t.equal(msg, 'npm ☺', 'logged out npm-notice at NOTICE level')
+})
+
 t.test('optionally verifies request body integrity', t => {
   t.plan(3)
   tnock(t, defaultOpts.registry)
