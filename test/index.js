@@ -473,6 +473,8 @@ t.test('miscellaneous headers', t => {
       t.strictSame(ua, ['agent of use'], 'UA set from options'))
     .matchHeader('npm-command', cmd =>
       t.strictSame(cmd, ['hello-world'], 'command set from options'))
+    .matchHeader('npm-auth-type', authType =>
+      t.strictSame(authType, ['auth'], 'auth-type set from options'))
     .get('/hello')
     .reply(200, { hello: 'world' })
 
@@ -483,6 +485,22 @@ t.test('miscellaneous headers', t => {
     scope: '@foo',
     userAgent: 'agent of use',
     npmCommand: 'hello-world',
+    authType: 'auth',
+  }).then(res => {
+    t.equal(res.status, 200, 'got successful response')
+  })
+})
+
+t.test('miscellaneous headers not being set if not present in options', t => {
+  tnock(t, defaultOpts.registry)
+    .matchHeader('npm-auth-type', authType =>
+      t.strictSame(authType, undefined, 'auth-type not set from options'))
+    .get('/hello')
+    .reply(200, { hello: 'world' })
+
+  return fetch('/hello', {
+    ...OPTS,
+    authType: undefined,
   }).then(res => {
     t.equal(res.status, 200, 'got successful response')
   })
