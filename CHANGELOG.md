@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.2.0](https://github.com/npm/npm-registry-fetch/compare/v13.1.1...v13.2.0) (2022-06-29)
+
+
+### Features
+
+* set 'npm-auth-type' header depending on config option ([#123](https://github.com/npm/npm-registry-fetch/issues/123)) ([ff4ed65](https://github.com/npm/npm-registry-fetch/commit/ff4ed65b04127dea40c1ebce741ac91088deaf1a))
+
 ### [13.1.1](https://github.com/npm/npm-registry-fetch/compare/v13.1.0...v13.1.1) (2022-04-13)
 
 
