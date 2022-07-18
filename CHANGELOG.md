@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.3.0](https://github.com/npm/npm-registry-fetch/compare/v13.2.0...v13.3.0) (2022-07-18)
+
+
+### Features
+
+* respect registry-scoped certfile and keyfile options ([#125](https://github.com/npm/npm-registry-fetch/issues/125)) ([42d605c](https://github.com/npm/npm-registry-fetch/commit/42d605cb00986c6775e6ec1732b114e065266ae9))
+
 ## [13.2.0](https://github.com/npm/npm-registry-fetch/compare/v13.1.1...v13.2.0) (2022-06-29)
 
 
