@@ -33,6 +33,8 @@ t.test('basic auth', t => {
     token: null,
     isBasicAuth: true,
     auth: Buffer.from('user:pass').toString('base64'),
+    cert: null,
+    key: null,
   }, 'basic auth details generated')
 
   const opts = Object.assign({}, OPTS, config)
@@ -62,6 +64,8 @@ t.test('token auth', t => {
     isBasicAuth: false,
     token: 'c0ffee',
     auth: null,
+    cert: null,
+    key: null,
   }, 'correct auth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -77,17 +81,28 @@ t.test('token auth', t => {
 })
 
 t.test('forceAuth', t => {
+  const dir = t.testdir({
+    'my.cert': 'my cert',
+    'my.key': 'my key',
+    'other.cert': 'other cert',
+    'other.key': 'other key',
+  })
+
   const config = {
     registry: 'https://my.custom.registry/here/',
     token: 'deadbeef',
     'always-auth': false,
     '//my.custom.registry/here/:_authToken': 'c0ffee',
     '//my.custom.registry/here/:token': 'nope',
+    '//my.custom.registry/here/:certfile': `${dir}/my.cert`,
+    '//my.custom.registry/here/:keyfile': `${dir}/my.key`,
     forceAuth: {
       username: 'user',
       password: Buffer.from('pass', 'utf8').toString('base64'),
       email: 'e@ma.il',
       'always-auth': true,
+      certfile: `${dir}/other.cert`,
+      keyfile: `${dir}/other.key`,
     },
   }
   t.same(getAuth(config.registry, config), {
@@ -95,6 +110,8 @@ t.test('forceAuth', t => {
     token: null,
     isBasicAuth: true,
     auth: Buffer.from('user:pass').toString('base64'),
+    cert: 'other cert',
+    key: 'other key',
   }, 'only forceAuth details included')
 
   const opts = Object.assign({}, OPTS, config)
@@ -126,6 +143,8 @@ t.test('forceAuth token', t => {
     isBasicAuth: false,
     token: 'cafebad',
     auth: null,
+    cert: null,
+    key: null,
   }, 'correct forceAuth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -152,6 +171,8 @@ t.test('_auth auth', t => {
     token: null,
     isBasicAuth: false,
     auth: 'c0ffee',
+    cert: null,
+    key: null,
   }, 'correct _auth picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -177,6 +198,8 @@ t.test('_auth username:pass auth', t => {
     token: null,
     isBasicAuth: false,
     auth: auth,
+    cert: null,
+    key: null,
   }, 'correct _auth picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -226,6 +249,8 @@ t.test('globally-configured auth', t => {
     token: null,
     isBasicAuth: true,
     auth: Buffer.from('globaluser:globalpass').toString('base64'),
+    cert: null,
+    key: null,
   }, 'basic auth details generated from global settings')
 
   const tokenConfig = {
@@ -239,6 +264,8 @@ t.test('globally-configured auth', t => {
     token: 'deadbeef',
     isBasicAuth: false,
     auth: null,
+    cert: null,
+    key: null,
   }, 'correct global auth token picked out')
 
   const _authConfig = {
@@ -252,6 +279,8 @@ t.test('globally-configured auth', t => {
     token: null,
     isBasicAuth: false,
     auth: 'deadbeef',
+    cert: null,
+    key: null,
   }, 'correct _auth picked out')
 
   t.end()
@@ -270,6 +299,8 @@ t.test('otp token passed through', t => {
     token: 'c0ffee',
     isBasicAuth: false,
     auth: null,
+    cert: null,
+    key: null,
   }, 'correct auth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -337,6 +368,8 @@ t.test('always-auth', t => {
     token: 'c0ffee',
     isBasicAuth: false,
     auth: null,
+    cert: null,
+    key: null,
   }, 'correct auth token picked out')
 
   const opts = Object.assign({}, OPTS, config)
@@ -349,6 +382,11 @@ t.test('always-auth', t => {
 })
 
 t.test('scope-based auth', t => {
+  const dir = t.testdir({
+    'my.cert': 'my cert',
+    'my.key': 'my key',
+  })
+
   const config = {
     registry: 'https://my.custom.registry/here/',
     scope: '@myscope',
@@ -356,18 +394,24 @@ t.test('scope-based auth', t => {
     token: 'deadbeef',
     '//my.custom.registry/here/:_authToken': 'c0ffee',
     '//my.custom.registry/here/:token': 'nope',
+    '//my.custom.registry/here/:certfile': `${dir}/my.cert`,
+    '//my.custom.registry/here/:keyfile': `${dir}/my.key`,
   }
   t.same(getAuth(config['@myscope:registry'], config), {
     scopeAuthKey: null,
     auth: null,
     isBasicAuth: false,
     token: 'c0ffee',
+    cert: 'my cert',
+    key: 'my key',
   }, 'correct auth token picked out')
   t.same(getAuth(config['@myscope:registry'], config), {
     scopeAuthKey: null,
     auth: null,
     isBasicAuth: false,
     token: 'c0ffee',
+    cert: 'my cert',
+    key: 'my key',
   }, 'correct auth token picked out without scope config having an @')
 
   const opts = Object.assign({}, OPTS, config)
@@ -392,6 +436,32 @@ t.test('auth needs a uri', t => {
   t.end()
 })
 
+t.test('certfile and keyfile errors', t => {
+  const dir = t.testdir({
+    'my.cert': 'my cert',
+  })
+
+  t.same(getAuth('https://my.custom.registry/here/', {
+    '//my.custom.registry/here/:certfile': `${dir}/my.cert`,
+    '//my.custom.registry/here/:keyfile': `${dir}/nosuch.key`,
+  }), {
+    scopeAuthKey: null,
+    auth: null,
+    isBasicAuth: false,
+    token: null,
+    cert: null,
+    key: null,
+  }, 'cert and key ignored if one doesn\'t exist')
+
+  t.throws(() => {
+    getAuth('https://my.custom.registry/here/', {
+      '//my.custom.registry/here/:certfile': `${dir}/my.cert`,
+      '//my.custom.registry/here/:keyfile': dir,
+    })
+  }, /EISDIR/, 'other read errors are propagated')
+  t.end()
+})
+
 t.test('do not be thrown by other weird configs', t => {
   const opts = {
     scope: '@asdf',
@@ -412,6 +482,8 @@ t.test('do not be thrown by other weird configs', t => {
     token: 'correct bearer token',
     isBasicAuth: false,
     auth: null,
+    cert: null,
+    key: null,
   })
   t.end()
 })
@@ -430,6 +502,8 @@ t.test('scopeAuthKey tests', t => {
     auth: null,
     isBasicAuth: false,
     token: null,
+    cert: null,
+    key: null,
   }, 'regular scoped spec')
 
   t.same(getAuth(uri, { ...opts, spec: 'foo@npm:@scope/foo@latest' }), {
@@ -437,6 +511,8 @@ t.test('scopeAuthKey tests', t => {
     auth: null,
     isBasicAuth: false,
     token: null,
+    cert: null,
+    key: null,
   }, 'scoped pkg aliased to unscoped name')
 
   t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo@npm:@scope/foo@latest' }), {
@@ -444,6 +520,8 @@ t.test('scopeAuthKey tests', t => {
     auth: null,
     isBasicAuth: false,
     token: null,
+    cert: null,
+    key: null,
   }, 'scoped name aliased to other scope with auth')
 
   t.same(getAuth(uri, { ...opts, spec: '@scope/foo@npm:foo@latest' }), {
@@ -451,6 +529,8 @@ t.test('scopeAuthKey tests', t => {
     auth: null,
     isBasicAuth: false,
     token: null,
+    cert: null,
+    key: null,
   }, 'unscoped aliased to scoped name')
 
   t.end()
@@ -470,18 +550,24 @@ t.test('registry host matches, path does not, send auth', t => {
     token: 'c0ffee',
     auth: null,
     isBasicAuth: false,
+    cert: null,
+    key: null,
   })
   t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo' }), {
     scopeAuthKey: '//other-scope-registry.com/other/scope/',
     token: null,
     auth: null,
     isBasicAuth: false,
+    cert: null,
+    key: null,
   })
   t.same(getAuth(uri, { ...opts, registry: 'https://scope-host.com/scope/host/' }), {
     scopeAuthKey: null,
     token: 'c0ffee',
     auth: null,
     isBasicAuth: false,
+    cert: null,
+    key: null,
   })
   t.end()
 })
