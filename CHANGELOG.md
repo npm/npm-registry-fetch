@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.3.1](https://github.com/npm/npm-registry-fetch/compare/v13.3.0...v13.3.1) (2022-08-15)
+
+
+### Bug Fixes
+
+* linting ([c9a8727](https://github.com/npm/npm-registry-fetch/commit/c9a8727f026367a86c50d103035f1c02d89431fd))
+
 ## [13.3.0](https://github.com/npm/npm-registry-fetch/compare/v13.2.0...v13.3.0) (2022-07-18)
 
 
