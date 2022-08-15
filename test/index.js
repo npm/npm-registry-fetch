@@ -124,7 +124,7 @@ t.test('stream body param', t => {
     .then(json => t.same(json, { hello: 'world' }))
 })
 
-t.test('JSON body param', t => {
+t.test('JSON body param', async t => {
   tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
       t.equal(ctype[0], 'application/json', 'content-type automatically set')
@@ -143,10 +143,8 @@ t.test('JSON body param', t => {
     body: { hello: 'world' },
     gzip: true,
   }
-  return fetch('/hello', opts)
-    .then(res => {
-      t.equal(res.status, 200, 'request succeeded')
-    })
+  const res = await fetch('/hello', opts)
+  t.equal(res.status, 200, 'request succeeded')
 })
 
 t.test('gzip + buffer body param', t => {
@@ -275,43 +273,41 @@ t.test('query string with ?write=true', t => {
     .then(res => t.strictSame(res, { write: 'go for it' }))
 })
 
-t.test('fetch.json.stream()', t => {
+t.test('fetch.json.stream()', async t => {
   tnock(t, defaultOpts.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
     c: 3,
   })
-  return fetch.json.stream('/hello', '$*', OPTS).collect().then(data => {
-    t.same(data, [
-      { key: 'a', value: 1 },
-      { key: 'b', value: 2 },
-      { key: 'c', value: 3 },
-    ], 'got a streamed JSON body')
-  })
+  const data = await fetch.json.stream('/hello', '$*', OPTS).collect()
+  t.same(data, [
+    { key: 'a', value: 1 },
+    { key: 'b', value: 2 },
+    { key: 'c', value: 3 },
+  ], 'got a streamed JSON body')
 })
 
-t.test('fetch.json.stream opts.mapJSON', t => {
+t.test('fetch.json.stream opts.mapJSON', async t => {
   tnock(t, defaultOpts.registry).get('/hello').reply(200, {
     a: 1,
     b: 2,
     c: 3,
   })
-  return fetch.json.stream('/hello', '*', {
+  const data = await fetch.json.stream('/hello', '*', {
     ...OPTS,
     mapJSON (value, [key]) {
       return [key, value]
     },
-  }).collect().then(data => {
-    t.same(data, [
-      ['a', 1],
-      ['b', 2],
-      ['c', 3],
-    ], 'data mapped')
-  })
+  }).collect()
+  t.same(data, [
+    ['a', 1],
+    ['b', 2],
+    ['c', 3],
+  ], 'data mapped')
 })
 
-t.test('fetch.json.stream gets fetch error on stream', t => {
-  return t.rejects(fetch.json.stream('/hello', '*', {
+t.test('fetch.json.stream gets fetch error on stream', async t => {
+  await t.rejects(fetch.json.stream('/hello', '*', {
     ...OPTS,
     body: Promise.reject(new Error('no body for you')),
     method: 'POST',
@@ -321,17 +317,15 @@ t.test('fetch.json.stream gets fetch error on stream', t => {
   })
 })
 
-t.test('opts.ignoreBody', t => {
+t.test('opts.ignoreBody', async t => {
   tnock(t, defaultOpts.registry)
     .get('/hello')
     .reply(200, { hello: 'world' })
-  return fetch('/hello', { ...OPTS, ignoreBody: true })
-    .then(res => {
-      t.equal(res.body, null, 'body omitted')
-    })
+  const res = await fetch('/hello', { ...OPTS, ignoreBody: true })
+  t.equal(res.body, null, 'body omitted')
 })
 
-t.test('method configurable', t => {
+t.test('method configurable', async t => {
   tnock(t, defaultOpts.registry)
     .delete('/hello')
     .reply(200)
@@ -339,10 +333,8 @@ t.test('method configurable', t => {
     ...OPTS,
     method: 'DELETE',
   }
-  return fetch('/hello', opts)
-    .then(res => {
-      t.equal(res.status, 200, 'successfully used DELETE method')
-    })
+  const res = await fetch('/hello', opts)
+  t.equal(res.status, 200, 'successfully used DELETE method')
 })
 
 t.test('npm-notice header logging', async t => {
@@ -355,7 +347,7 @@ t.test('npm-notice header logging', async t => {
   let header, msg
   process.on('log', (level, ...args) => {
     if (level === 'notice') {
-      ;[header, msg] = args
+      [header, msg] = args
     }
   })
 
@@ -463,7 +455,7 @@ t.test('pickRegistry through opts.spec', t => {
   ))
 })
 
-t.test('miscellaneous headers', t => {
+t.test('miscellaneous headers', async t => {
   tnock(t, defaultOpts.registry)
     .matchHeader('npm-session', session =>
       t.strictSame(session, ['foobarbaz'], 'session set from options'))
@@ -478,7 +470,7 @@ t.test('miscellaneous headers', t => {
     .get('/hello')
     .reply(200, { hello: 'world' })
 
-  return fetch('/hello', {
+  const res = await fetch('/hello', {
     ...OPTS,
     registry: null, // always falls back on falsey registry value
     npmSession: 'foobarbaz',
@@ -486,22 +478,20 @@ t.test('miscellaneous headers', t => {
     userAgent: 'agent of use',
     npmCommand: 'hello-world',
     authType: 'auth',
-  }).then(res => {
-    t.equal(res.status, 200, 'got successful response')
   })
+  t.equal(res.status, 200, 'got successful response')
 })
 
-t.test('miscellaneous headers not being set if not present in options', t => {
+t.test('miscellaneous headers not being set if not present in options', async t => {
   tnock(t, defaultOpts.registry)
     .matchHeader('npm-auth-type', authType =>
       t.strictSame(authType, undefined, 'auth-type not set from options'))
     .get('/hello')
     .reply(200, { hello: 'world' })
 
-  return fetch('/hello', {
+  const res = await fetch('/hello', {
     ...OPTS,
     authType: undefined,
-  }).then(res => {
-    t.equal(res.status, 200, 'got successful response')
   })
+  t.equal(res.status, 200, 'got successful response')
 })
