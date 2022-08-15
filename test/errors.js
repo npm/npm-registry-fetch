@@ -130,7 +130,7 @@ t.test('OTP error', t => {
     )
 })
 
-t.test('OTP error with prompt', t => {
+t.test('OTP error with prompt', async t => {
   let OTP = null
   tnock(t, OPTS.registry)
     .get('/otplease').times(2)
@@ -150,16 +150,13 @@ t.test('OTP error with prompt', t => {
     })
 
   const otpPrompt = async () => '12345'
-  return fetch('/otplease', { ...OPTS, otpPrompt })
-    .then(res => {
-      t.strictSame(res.status, 200, 'got 200 response')
-      return res.json()
-    }).then(body => {
-      t.strictSame(body, { ok: 'this is fine' }, 'got expected body')
-    })
+  const res = await fetch('/otplease', { ...OPTS, otpPrompt })
+  t.strictSame(res.status, 200, 'got 200 response')
+  const body = await res.json()
+  t.strictSame(body, { ok: 'this is fine' }, 'got expected body')
 })
 
-t.test('OTP error with prompt, expired OTP in settings', t => {
+t.test('OTP error with prompt, expired OTP in settings', async t => {
   let OTP = null
   tnock(t, OPTS.registry)
     .get('/otplease').times(2)
@@ -183,13 +180,10 @@ t.test('OTP error with prompt, expired OTP in settings', t => {
     })
 
   const otpPrompt = async () => '12345'
-  return fetch('/otplease', { ...OPTS, otpPrompt, otp: '98765' })
-    .then(res => {
-      t.strictSame(res.status, 200, 'got 200 response')
-      return res.json()
-    }).then(body => {
-      t.strictSame(body, { ok: 'this is fine' }, 'got expected body')
-    })
+  const res = await fetch('/otplease', { ...OPTS, otpPrompt, otp: '98765' })
+  t.strictSame(res.status, 200, 'got 200 response')
+  const body = await res.json()
+  t.strictSame(body, { ok: 'this is fine' }, 'got expected body')
 })
 
 t.test('OTP error with prompt that fails', t => {

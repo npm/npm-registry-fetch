@@ -66,7 +66,7 @@ t.test('log x-fetch-attempts header value', async t => {
   let msg
   process.on('log', (level, ...args) => {
     if (level === 'http') {
-      ;[, msg] = args
+      [, msg] = args
     }
   })
   await t.rejects(checkResponse({
@@ -92,7 +92,7 @@ t.test('log the url fetched', t => {
   let header, msg
   process.on('log', (level, ...args) => {
     if (level === 'http') {
-      ;[header, msg] = args
+      [header, msg] = args
     }
   })
   checkResponse({
@@ -121,7 +121,7 @@ t.test('redact password from log', t => {
   let header, msg
   process.on('log', (level, ...args) => {
     if (level === 'http') {
-      ;[header, msg] = args
+      [header, msg] = args
     }
   })
   checkResponse({
@@ -149,7 +149,7 @@ t.test('redact well known token from log', t => {
   let header, msg
   process.on('log', (level, ...args) => {
     if (level === 'http') {
-      ;[header, msg] = args
+      [header, msg] = args
     }
   })
   checkResponse({
@@ -176,7 +176,7 @@ t.test('report auth for registry, but not for this request', async t => {
   let header, msg
   process.on('log', (level, ...args) => {
     if (level === 'warn') {
-      ;[header, msg] = args
+      [header, msg] = args
     }
   })
   await t.rejects(checkResponse({
@@ -214,7 +214,7 @@ t.test('logs the value of x-local-cache-status when set', t => {
   let header, msg
   process.on('log', (level, ...args) => {
     if (level === 'http') {
-      ;[header, msg] = args
+      [header, msg] = args
     }
   })
   checkResponse({
