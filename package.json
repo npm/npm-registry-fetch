@@ -11,9 +11,6 @@
     "eslint": "eslint",
     "lint": "eslint \"**/*.js\"",
     "lintfix": "npm run lint -- --fix",
-    "prepublishOnly": "git push origin --follow-tags",
-    "preversion": "npm test",
-    "postversion": "npm publish",
     "test": "tap",
     "posttest": "npm run lint",
     "npmclilint": "npmcli-lint",
@@ -55,13 +52,17 @@
   },
   "tap": {
     "check-coverage": true,
-    "test-ignore": "test[\\\\/](util|cache)[\\\\/]"
+    "test-ignore": "test[\\\\/](util|cache)[\\\\/]",
+    "nyc-arg": [
+      "--exclude",
+      "tap-snapshots/**"
+    ]
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || >=16.0.0"
+    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
   },
   "templateOSS": {
     "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
-    "version": "3.6.0"
+    "version": "4.3.2"
   }
 }
