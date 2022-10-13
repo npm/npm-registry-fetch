@@ -1,5 +1,20 @@
 # Changelog
 
+## [14.0.0](https://github.com/npm/npm-registry-fetch/compare/v13.3.1...v14.0.0) (2022-10-13)
+
+### ⚠️ BREAKING CHANGES
+
+* this module no longer attempts to change file ownership automatically
+* `npm-registry-fetch` is now compatible with the following semver range for node: `^14.17.0 || ^16.13.0 || >=18.0.0`
+
+### Features
+
+* [`104a51f`](https://github.com/npm/npm-registry-fetch/commit/104a51f869dd97e3decca389f742c920f29687d0) [#138](https://github.com/npm/npm-registry-fetch/pull/138) postinstall for dependabot template-oss PR (@lukekarrys)
+
+### Dependencies
+
+* [`b5aeed0`](https://github.com/npm/npm-registry-fetch/commit/b5aeed0cb4e639b6460fb1419f0bb86eb45ddcb3) [#146](https://github.com/npm/npm-registry-fetch/pull/146) bump make-fetch-happen from 10.2.1 to 11.0.0 (#146)
+
 ## [13.3.1](https://github.com/npm/npm-registry-fetch/compare/v13.3.0...v13.3.1) (2022-08-15)
 
 
