@@ -1,5 +1,12 @@
 # Changelog
 
+## [14.0.1](https://github.com/npm/npm-registry-fetch/compare/v14.0.0...v14.0.1) (2022-10-17)
+
+### Dependencies
+
+* [`ade1c8b`](https://github.com/npm/npm-registry-fetch/commit/ade1c8b03ee694e6dc4025805cb3d59eca768c43) [#150](https://github.com/npm/npm-registry-fetch/pull/150) bump minipass-fetch from 2.1.2 to 3.0.0
+* [`84bb850`](https://github.com/npm/npm-registry-fetch/commit/84bb850f63af899d471f7761cdb2cb17c53e3784) [#149](https://github.com/npm/npm-registry-fetch/pull/149) bump proc-log from 2.0.1 to 3.0.0
+
 ## [14.0.0](https://github.com/npm/npm-registry-fetch/compare/v13.3.1...v14.0.0) (2022-10-13)
 
 ### ⚠️ BREAKING CHANGES
