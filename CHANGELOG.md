@@ -1,5 +1,11 @@
 # Changelog
 
+## [14.0.2](https://github.com/npm/npm-registry-fetch/compare/v14.0.1...v14.0.2) (2022-10-18)
+
+### Dependencies
+
+* [`36b7685`](https://github.com/npm/npm-registry-fetch/commit/36b768515b37af9e1dac22c5ef211f64e279461e) [#154](https://github.com/npm/npm-registry-fetch/pull/154) bump npm-package-arg from 9.1.2 to 10.0.0
+
 ## [14.0.1](https://github.com/npm/npm-registry-fetch/compare/v14.0.0...v14.0.1) (2022-10-17)
 
 ### Dependencies
