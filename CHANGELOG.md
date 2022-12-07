@@ -1,5 +1,11 @@
 # Changelog
 
+## [14.0.3](https://github.com/npm/npm-registry-fetch/compare/v14.0.2...v14.0.3) (2022-12-07)
+
+### Dependencies
+
+* [`c669335`](https://github.com/npm/npm-registry-fetch/commit/c669335c163439d7b860967154249713f51253d8) [#158](https://github.com/npm/npm-registry-fetch/pull/158) bump minipass from 3.3.6 to 4.0.0
+
 ## [14.0.2](https://github.com/npm/npm-registry-fetch/compare/v14.0.1...v14.0.2) (2022-10-18)
 
 ### Dependencies
