@@ -43,7 +43,7 @@
     "@npmcli/eslint-config": "^4.0.0",
     "@npmcli/template-oss": "4.11.0",
     "cacache": "^17.0.0",
-    "mkdirp": "^1.0.4",
+    "mkdirp": "^2.1.1",
     "nock": "^13.2.4",
     "require-inject": "^1.4.4",
     "rimraf": "^3.0.2",
