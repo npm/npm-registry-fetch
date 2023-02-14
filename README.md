@@ -364,7 +364,7 @@ HTTP method to use for the outgoing request. Case-insensitive.
 ##### <a name="opts-noProxy"></a> `opts.noProxy`
 
 * Type: String | String[]
-* Default: process.env.NO_PROXY
+* Default: process.env.NOPROXY
 
 If present, should be a comma-separated string or an array of domain extensions
 that a proxy should _not_ be used for.
