@@ -361,12 +361,13 @@ Maximum number of sockets to keep open during requests. Has no effect if
 
 HTTP method to use for the outgoing request. Case-insensitive.
 
-##### <a name="opts-noproxy"></a> `opts.noproxy`
+##### <a name="opts-noProxy"></a> `opts.noProxy`
 
-* Type: Boolean
+* Type: String | String[]
 * Default: process.env.NOPROXY
 
-If true, proxying will be disabled even if [`opts.proxy`](#opts-proxy) is used.
+If present, should be a comma-separated string or an array of domain extensions
+that a proxy should _not_ be used for.
 
 ##### <a name="opts-npmSession"></a> `opts.npmSession`
 
