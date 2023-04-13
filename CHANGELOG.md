@@ -1,5 +1,15 @@
 # Changelog
 
+## [14.0.4](https://github.com/npm/npm-registry-fetch/compare/v14.0.3...v14.0.4) (2023-04-13)
+
+### Bug Fixes
+
+* [`15dd221`](https://github.com/npm/npm-registry-fetch/commit/15dd2216a52393fbce2246c071045c6597c922ea) [#178](https://github.com/npm/npm-registry-fetch/pull/178) clean password by using url object itself (#178) (@DEMON1A)
+
+### Documentation
+
+* [`14d1159`](https://github.com/npm/npm-registry-fetch/commit/14d11597d499882aba36403300b128bee19a8b53) [#173](https://github.com/npm/npm-registry-fetch/pull/173) update API documentation of noProxy option (#173) (@lingyuncai)
+
 ## [14.0.3](https://github.com/npm/npm-registry-fetch/compare/v14.0.2...v14.0.3) (2022-12-07)
 
 ### Dependencies
