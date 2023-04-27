@@ -1,6 +1,6 @@
 'use strict'
 
-const Minipass = require('minipass')
+const { Minipass } = require('minipass')
 const ssri = require('ssri')
 const t = require('tap')
 const zlib = require('zlib')
