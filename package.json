@@ -32,7 +32,7 @@
   "license": "ISC",
   "dependencies": {
     "make-fetch-happen": "^11.0.0",
-    "minipass": "^5.0.0",
+    "minipass": "^7.0.2",
     "minipass-fetch": "^3.0.0",
     "minipass-json-stream": "^1.0.1",
     "minizlib": "^2.1.2",
