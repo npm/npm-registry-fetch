@@ -1,5 +1,21 @@
 # Changelog
 
+## [15.0.0](https://github.com/npm/npm-registry-fetch/compare/v14.0.5...v15.0.0) (2023-07-28)
+
+### ⚠️ BREAKING CHANGES
+
+* the underlying fetch module now uses `@npmcli/agent`. Backwards compatibility should be fully implemented but due to the scope of this change it was made a breaking change out of an abundance of caution.
+* support for node 14 has been removed
+
+### Bug Fixes
+
+* [`b875c26`](https://github.com/npm/npm-registry-fetch/commit/b875c269f35da1a878c3dc353d622a07c3257c7c) [#193](https://github.com/npm/npm-registry-fetch/pull/193) drop node14 support (#193) (@wraithgar)
+
+### Dependencies
+
+* [`a97564f`](https://github.com/npm/npm-registry-fetch/commit/a97564fac4fc1f8ff76b325906583c8d4d207eb3) [#195](https://github.com/npm/npm-registry-fetch/pull/195) bump make-fetch-happen from 11.1.1 to 12.0.0 (#195)
+* [`e154d49`](https://github.com/npm/npm-registry-fetch/commit/e154d4918aa16495d01bdd7232221d2ae87d3c3d) [#191](https://github.com/npm/npm-registry-fetch/pull/191) bump minipass from 5.0.0 to 7.0.2
+
 ## [14.0.5](https://github.com/npm/npm-registry-fetch/compare/v14.0.4...v14.0.5) (2023-04-27)
 
 ### Dependencies
