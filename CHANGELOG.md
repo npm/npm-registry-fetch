@@ -1,5 +1,20 @@
 # Changelog
 
+## [16.0.0](https://github.com/npm/npm-registry-fetch/compare/v15.0.0...v16.0.0) (2023-08-15)
+
+### ⚠️ BREAKING CHANGES
+
+* support for node <=16.13 has been removed
+
+### Bug Fixes
+
+* [`4c0be5e`](https://github.com/npm/npm-registry-fetch/commit/4c0be5ea200fd48994fb0a39f19d451fde8a9b30) [#199](https://github.com/npm/npm-registry-fetch/pull/199) drop node 16.13.x support (@lukekarrys)
+
+### Dependencies
+
+* [`c859195`](https://github.com/npm/npm-registry-fetch/commit/c8591951477b66149bb0663b3e26d054a3bafcef) [#197](https://github.com/npm/npm-registry-fetch/pull/197) bump npm-package-arg from 10.1.0 to 11.0.0
+* [`c1d490d`](https://github.com/npm/npm-registry-fetch/commit/c1d490dd63a2268aa17adc14420278ceb1468e0e) [#198](https://github.com/npm/npm-registry-fetch/pull/198) bump make-fetch-happen from 12.0.0 to 13.0.0
+
 ## [15.0.0](https://github.com/npm/npm-registry-fetch/compare/v14.0.5...v15.0.0) (2023-07-28)
 
 ### ⚠️ BREAKING CHANGES
