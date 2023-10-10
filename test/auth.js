@@ -30,6 +30,8 @@ t.test('basic auth', t => {
   const gotAuth = getAuth(config.registry, config)
   t.same(gotAuth, {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: 'username',
     token: null,
     isBasicAuth: true,
     auth: Buffer.from('user:pass').toString('base64'),
@@ -61,6 +63,8 @@ t.test('token auth', t => {
   }
   t.same(getAuth(`${config.registry}/foo/-/foo.tgz`, config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_authToken',
     isBasicAuth: false,
     token: 'c0ffee',
     auth: null,
@@ -107,6 +111,8 @@ t.test('forceAuth', t => {
   }
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
+    regKey: false,
+    authKey: null,
     token: null,
     isBasicAuth: true,
     auth: Buffer.from('user:pass').toString('base64'),
@@ -140,6 +146,8 @@ t.test('forceAuth token', t => {
   }
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
+    regKey: false,
+    authKey: null,
     isBasicAuth: false,
     token: 'cafebad',
     auth: null,
@@ -168,6 +176,8 @@ t.test('_auth auth', t => {
   }
   t.same(getAuth(`${config.registry}/asdf/foo/bar/baz`, config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_auth',
     token: null,
     isBasicAuth: false,
     auth: 'c0ffee',
@@ -195,6 +205,8 @@ t.test('_auth username:pass auth', t => {
   }
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_auth',
     token: null,
     isBasicAuth: false,
     auth: auth,
@@ -246,6 +258,8 @@ t.test('globally-configured auth', t => {
   }
   t.same(getAuth(basicConfig.registry, basicConfig), {
     scopeAuthKey: null,
+    regKey: '//different.registry/',
+    authKey: 'username',
     token: null,
     isBasicAuth: true,
     auth: Buffer.from('globaluser:globalpass').toString('base64'),
@@ -261,6 +275,8 @@ t.test('globally-configured auth', t => {
   }
   t.same(getAuth(tokenConfig.registry, tokenConfig), {
     scopeAuthKey: null,
+    regKey: '//different.registry/',
+    authKey: '_authToken',
     token: 'deadbeef',
     isBasicAuth: false,
     auth: null,
@@ -276,6 +292,8 @@ t.test('globally-configured auth', t => {
   }
   t.same(getAuth(`${_authConfig.registry}/foo`, _authConfig), {
     scopeAuthKey: null,
+    regKey: '//different.registry',
+    authKey: '_auth',
     token: null,
     isBasicAuth: false,
     auth: 'deadbeef',
@@ -296,6 +314,8 @@ t.test('otp token passed through', t => {
   }
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_authToken',
     token: 'c0ffee',
     isBasicAuth: false,
     auth: null,
@@ -365,6 +385,8 @@ t.test('always-auth', t => {
   }
   t.same(getAuth(config.registry, config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_authToken',
     token: 'c0ffee',
     isBasicAuth: false,
     auth: null,
@@ -399,6 +421,8 @@ t.test('scope-based auth', t => {
   }
   t.same(getAuth(config['@myscope:registry'], config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_authToken',
     auth: null,
     isBasicAuth: false,
     token: 'c0ffee',
@@ -407,6 +431,8 @@ t.test('scope-based auth', t => {
   }, 'correct auth token picked out')
   t.same(getAuth(config['@myscope:registry'], config), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: '_authToken',
     auth: null,
     isBasicAuth: false,
     token: 'c0ffee',
@@ -446,6 +472,8 @@ t.test('certfile and keyfile errors', t => {
     '//my.custom.registry/here/:keyfile': `${dir}/nosuch.key`,
   }), {
     scopeAuthKey: null,
+    regKey: '//my.custom.registry/here/',
+    authKey: 'certfile',
     auth: null,
     isBasicAuth: false,
     token: null,
@@ -479,6 +507,8 @@ t.test('do not be thrown by other weird configs', t => {
   const auth = getAuth(uri, opts)
   t.same(auth, {
     scopeAuthKey: null,
+    regKey: '//localhost:15443/foo',
+    authKey: '_authToken',
     token: 'correct bearer token',
     isBasicAuth: false,
     auth: null,
@@ -499,6 +529,8 @@ t.test('scopeAuthKey tests', t => {
 
   t.same(getAuth(uri, { ...opts, spec: '@scope/foo@latest' }), {
     scopeAuthKey: '//scope-host.com/',
+    regKey: '//scope-host.com/',
+    authKey: '_authToken',
     auth: null,
     isBasicAuth: false,
     token: null,
@@ -508,6 +540,8 @@ t.test('scopeAuthKey tests', t => {
 
   t.same(getAuth(uri, { ...opts, spec: 'foo@npm:@scope/foo@latest' }), {
     scopeAuthKey: '//scope-host.com/',
+    regKey: '//scope-host.com/',
+    authKey: '_authToken',
     auth: null,
     isBasicAuth: false,
     token: null,
@@ -517,6 +551,8 @@ t.test('scopeAuthKey tests', t => {
 
   t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo@npm:@scope/foo@latest' }), {
     scopeAuthKey: '//scope-host.com/',
+    regKey: '//scope-host.com/',
+    authKey: '_authToken',
     auth: null,
     isBasicAuth: false,
     token: null,
@@ -526,6 +562,8 @@ t.test('scopeAuthKey tests', t => {
 
   t.same(getAuth(uri, { ...opts, spec: '@scope/foo@npm:foo@latest' }), {
     scopeAuthKey: null,
+    regKey: false,
+    authKey: null,
     auth: null,
     isBasicAuth: false,
     token: null,
@@ -547,6 +585,8 @@ t.test('registry host matches, path does not, send auth', t => {
   const uri = 'https://scope-host.com/blahblah/bloobloo/foo.tgz'
   t.same(getAuth(uri, { ...opts, spec: '@scope/foo' }), {
     scopeAuthKey: null,
+    regKey: '//scope-host.com/scope/host/',
+    authKey: '_authToken',
     token: 'c0ffee',
     auth: null,
     isBasicAuth: false,
@@ -555,6 +595,8 @@ t.test('registry host matches, path does not, send auth', t => {
   })
   t.same(getAuth(uri, { ...opts, spec: '@other-scope/foo' }), {
     scopeAuthKey: '//other-scope-registry.com/other/scope/',
+    regKey: '//other-scope-registry.com/other/scope/',
+    authKey: '_authToken',
     token: null,
     auth: null,
     isBasicAuth: false,
@@ -563,6 +605,8 @@ t.test('registry host matches, path does not, send auth', t => {
   })
   t.same(getAuth(uri, { ...opts, registry: 'https://scope-host.com/scope/host/' }), {
     scopeAuthKey: null,
+    regKey: '//scope-host.com/scope/host/',
+    authKey: '_authToken',
     token: 'c0ffee',
     auth: null,
     isBasicAuth: false,
