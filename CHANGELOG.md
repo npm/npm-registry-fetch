@@ -1,5 +1,12 @@
 # Changelog
 
+## [16.1.0](https://github.com/npm/npm-registry-fetch/compare/v16.0.0...v16.1.0) (2023-10-10)
+
+### Features
+
+* [`84823a5`](https://github.com/npm/npm-registry-fetch/commit/84823a5c85b010f62d9a9f3b890fdee0d1d6f80a) [#212](https://github.com/npm/npm-registry-fetch/pull/212) include regKey and authKey in auth object (@wraithgar)
+* [`92ec0da`](https://github.com/npm/npm-registry-fetch/commit/92ec0dacb20af1b32ae5f07cf59440ade21b25e7) [#212](https://github.com/npm/npm-registry-fetch/pull/212) add getAuth to main exports (@wraithgar)
+
 ## [16.0.0](https://github.com/npm/npm-registry-fetch/compare/v15.0.0...v16.0.0) (2023-08-15)
 
 ### ⚠️ BREAKING CHANGES
