@@ -571,3 +571,7 @@ t.test('registry host matches, path does not, send auth', t => {
   })
   t.end()
 })
+
+t.test('getAuth is exported', async t => {
+  t.equal(fetch.getAuth, getAuth)
+})
