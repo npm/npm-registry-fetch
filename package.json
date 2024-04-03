@@ -31,6 +31,7 @@
   "author": "GitHub Inc.",
   "license": "ISC",
   "dependencies": {
+    "@npmcli/redact": "^1.1.0",
     "make-fetch-happen": "^13.0.0",
     "minipass": "^7.0.2",
     "minipass-fetch": "^3.0.0",
