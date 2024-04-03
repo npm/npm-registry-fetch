@@ -1,5 +1,18 @@
 # Changelog
 
+## [16.2.0](https://github.com/npm/npm-registry-fetch/compare/v16.1.0...v16.2.0) (2024-04-03)
+
+### Features
+
+* [`76b02e8`](https://github.com/npm/npm-registry-fetch/commit/76b02e8356a49c81d4fff32a1470778ccabf8477) [#231](https://github.com/npm/npm-registry-fetch/pull/231) use @npmcli/redact for url cleaning (#231) (@lukekarrys)
+
+### Chores
+
+* [`e58e8bc`](https://github.com/npm/npm-registry-fetch/commit/e58e8bc6c5b25d53a764f58190fc3a5c764a2e78) [#225](https://github.com/npm/npm-registry-fetch/pull/225) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`ac8ae30`](https://github.com/npm/npm-registry-fetch/commit/ac8ae309a436fa075bd8526d8e39ed017b41067f) [#225](https://github.com/npm/npm-registry-fetch/pull/225) bump @npmcli/template-oss from 4.21.1 to 4.21.3 (@dependabot[bot])
+* [`8fc28d0`](https://github.com/npm/npm-registry-fetch/commit/8fc28d0722fcf05feda4847bcb3ba8825d3cb51a) [#222](https://github.com/npm/npm-registry-fetch/pull/222) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`b7c4309`](https://github.com/npm/npm-registry-fetch/commit/b7c43093733ff53deb27f99f9c6fc736a8b33bbd) [#222](https://github.com/npm/npm-registry-fetch/pull/222) bump @npmcli/template-oss from 4.19.0 to 4.21.1 (@dependabot[bot])
+
 ## [16.1.0](https://github.com/npm/npm-registry-fetch/compare/v16.0.0...v16.1.0) (2023-10-10)
 
 ### Features
