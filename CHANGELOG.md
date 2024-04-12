@@ -1,5 +1,11 @@
 # Changelog
 
+## [16.2.1](https://github.com/npm/npm-registry-fetch/compare/v16.2.0...v16.2.1) (2024-04-12)
+
+### Dependencies
+
+* [`7a18f69`](https://github.com/npm/npm-registry-fetch/commit/7a18f69e303a680b991fa225fbe3800c9222fd8c) [#232](https://github.com/npm/npm-registry-fetch/pull/232) `proc-log@4.0.0` (#232)
+
 ## [16.2.0](https://github.com/npm/npm-registry-fetch/compare/v16.1.0...v16.2.0) (2024-04-03)
 
 ### Features
