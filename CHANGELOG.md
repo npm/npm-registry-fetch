@@ -1,5 +1,25 @@
 # Changelog
 
+## [17.0.0](https://github.com/npm/npm-registry-fetch/compare/v16.2.1...v17.0.0) (2024-04-30)
+
+### ⚠️ BREAKING CHANGES
+
+* remove undcoumented cleanUrl export (#234)
+
+### Features
+
+* [`105f786`](https://github.com/npm/npm-registry-fetch/commit/105f7865bf0da8bdb2e29dffa92c0fc2e93debc5) [#234](https://github.com/npm/npm-registry-fetch/pull/234) remove undcoumented cleanUrl export (#234) (@lukekarrys)
+
+### Dependencies
+
+* [`7cc481b`](https://github.com/npm/npm-registry-fetch/commit/7cc481b8763ac60dc3fea7e14870a36f74e3b4d2) [#238](https://github.com/npm/npm-registry-fetch/pull/238) `@npmcli/redact@2.0.0`
+
+### Chores
+
+* [`bdc9039`](https://github.com/npm/npm-registry-fetch/commit/bdc9039538a07cb6d7f64873fa5ee1ba638e4c8f) [#238](https://github.com/npm/npm-registry-fetch/pull/238) fix linting in test files (@wraithgar)
+* [`ceaf77e`](https://github.com/npm/npm-registry-fetch/commit/ceaf77ece4eb71a4ab1f9542bf4e75aec0dd4b05) [#236](https://github.com/npm/npm-registry-fetch/pull/236) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`377d981`](https://github.com/npm/npm-registry-fetch/commit/377d981cb6165adec1a9b96627c1431604400a68) [#236](https://github.com/npm/npm-registry-fetch/pull/236) bump @npmcli/template-oss from 4.21.3 to 4.21.4 (@dependabot[bot])
+
 ## [16.2.1](https://github.com/npm/npm-registry-fetch/compare/v16.2.0...v16.2.1) (2024-04-12)
 
 ### Dependencies
