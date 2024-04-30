@@ -141,7 +141,7 @@ t.test('OTP error with prompt', async t => {
       }
       return true
     })
-    .reply((...args) => {
+    .reply(() => {
       if (OTP === '12345') {
         return [200, { ok: 'this is fine' }, {}]
       } else {
@@ -171,7 +171,7 @@ t.test('OTP error with prompt, expired OTP in settings', async t => {
       }
       return true
     })
-    .reply((...args) => {
+    .reply(() => {
       if (OTP === '12345') {
         return [200, { ok: 'this is fine' }, {}]
       } else {
@@ -189,7 +189,7 @@ t.test('OTP error with prompt, expired OTP in settings', async t => {
 t.test('OTP error with prompt that fails', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
-    .reply((...args) => {
+    .reply(() => {
       return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
     })
 
@@ -202,7 +202,7 @@ t.test('OTP error with prompt that fails', t => {
 t.test('OTP error with prompt that returns nothing', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
-    .reply((...args) => {
+    .reply(() => {
       return [401, { error: 'otp, please' }, { 'www-authenticate': 'otp' }]
     })
 

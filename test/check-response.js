@@ -81,7 +81,7 @@ t.test('log x-fetch-attempts header value', async t => {
 t.test('log the url fetched', t => {
   const headers = new Headers()
   const EE = require('events')
-  headers.get = header => undefined
+  headers.get = () => undefined
   const res = Object.assign({}, mockFetchRes, {
     headers,
     status: 200,
@@ -110,7 +110,7 @@ t.test('log the url fetched', t => {
 t.test('redact password from log', t => {
   const headers = new Headers()
   const EE = require('events')
-  headers.get = header => undefined
+  headers.get = () => undefined
   const res = Object.assign({}, mockFetchRes, {
     headers,
     status: 200,
@@ -138,7 +138,7 @@ t.test('redact password from log', t => {
 t.test('redact well known token from log', t => {
   const headers = new Headers()
   const EE = require('events')
-  headers.get = header => undefined
+  headers.get = () => undefined
   const res = Object.assign({}, mockFetchRes, {
     headers,
     status: 200,
