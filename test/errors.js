@@ -271,4 +271,8 @@ t.test('Unexpected www-authenticate error', t => {
     )
 })
 
-t.test('retries certain types')
+t.test('error can take headers object', (t) => {
+  t.strictSame(new errors.HttpErrorBase('GET', { headers: { a: 1 } }).headers, { a: 1 })
+  t.strictSame(new errors.HttpErrorBase('GET', { }).headers, undefined)
+  t.end()
+})
