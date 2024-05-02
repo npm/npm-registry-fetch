@@ -1,5 +1,12 @@
 # Changelog
 
+## [17.0.1](https://github.com/npm/npm-registry-fetch/compare/v17.0.0...v17.0.1) (2024-05-02)
+
+### Bug Fixes
+
+* [`45cef0a`](https://github.com/npm/npm-registry-fetch/commit/45cef0a7c4c1dfa7fc3c78ef3807029065bcf45b) [#239](https://github.com/npm/npm-registry-fetch/pull/239) allow HttpErrorBase to take headers object (@lukekarrys, @wraithgar)
+* [`45cef0a`](https://github.com/npm/npm-registry-fetch/commit/45cef0a7c4c1dfa7fc3c78ef3807029065bcf45b) [#239](https://github.com/npm/npm-registry-fetch/pull/239) make ErrorBase always capture stack trace (#239) (@lukekarrys, @wraithgar)
+
 ## [17.0.0](https://github.com/npm/npm-registry-fetch/compare/v16.2.1...v17.0.0) (2024-04-30)
 
 ### ⚠️ BREAKING CHANGES
