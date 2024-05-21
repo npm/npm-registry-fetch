@@ -1,8 +1,7 @@
-'use strict'
+const t = require('tap')
 
 const { Minipass } = require('minipass')
 const ssri = require('ssri')
-const t = require('tap')
 const zlib = require('zlib')
 const defaultOpts = require('../lib/default-opts.js')
 const tnock = require('./util/tnock.js')
@@ -271,50 +270,6 @@ t.test('query string with ?write=true', t => {
     .then(res => t.strictSame(res, { write: 'go for it' }))
     .then(() => fetch.json('/writeTrueTest', qsBool))
     .then(res => t.strictSame(res, { write: 'go for it' }))
-})
-
-t.test('fetch.json.stream()', async t => {
-  tnock(t, defaultOpts.registry).get('/hello').reply(200, {
-    a: 1,
-    b: 2,
-    c: 3,
-  })
-  const data = await fetch.json.stream('/hello', '$*', OPTS).collect()
-  t.same(data, [
-    { key: 'a', value: 1 },
-    { key: 'b', value: 2 },
-    { key: 'c', value: 3 },
-  ], 'got a streamed JSON body')
-})
-
-t.test('fetch.json.stream opts.mapJSON', async t => {
-  tnock(t, defaultOpts.registry).get('/hello').reply(200, {
-    a: 1,
-    b: 2,
-    c: 3,
-  })
-  const data = await fetch.json.stream('/hello', '*', {
-    ...OPTS,
-    mapJSON (value, [key]) {
-      return [key, value]
-    },
-  }).collect()
-  t.same(data, [
-    ['a', 1],
-    ['b', 2],
-    ['c', 3],
-  ], 'data mapped')
-})
-
-t.test('fetch.json.stream gets fetch error on stream', async t => {
-  await t.rejects(fetch.json.stream('/hello', '*', {
-    ...OPTS,
-    body: Promise.reject(new Error('no body for you')),
-    method: 'POST',
-    gzip: true, // make sure we don't gzip the promise, lol!
-  }).collect(), {
-    message: 'no body for you',
-  })
 })
 
 t.test('opts.ignoreBody', async t => {
