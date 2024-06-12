@@ -1,5 +1,21 @@
 # Changelog
 
+## [17.1.0](https://github.com/npm/npm-registry-fetch/compare/v17.0.1...v17.1.0) (2024-06-12)
+
+### Features
+
+* [`29712af`](https://github.com/npm/npm-registry-fetch/commit/29712af1ff756d652313710c0c54a82961a0d038) [#246](https://github.com/npm/npm-registry-fetch/pull/246) merging functionality from minipass-json-stream (@wraithgar)
+
+### Dependencies
+
+* [`9a3e7e8`](https://github.com/npm/npm-registry-fetch/commit/9a3e7e8f1644028685e97d27412592a215799afd) [#246](https://github.com/npm/npm-registry-fetch/pull/246) remove minipass-json-stream
+* [`089d0f9`](https://github.com/npm/npm-registry-fetch/commit/089d0f9749fa42a4ecb56e6d5cfdbc7b51dbf817) [#246](https://github.com/npm/npm-registry-fetch/pull/246) add `jsonparse@1.3.1`
+
+### Chores
+
+* [`920a3d8`](https://github.com/npm/npm-registry-fetch/commit/920a3d843fc16938b4430a1619f3d5cf41f8bac9) [#241](https://github.com/npm/npm-registry-fetch/pull/241) bump @npmcli/template-oss to 4.22.0 (@lukekarrys)
+* [`17a1013`](https://github.com/npm/npm-registry-fetch/commit/17a10133f95f4ee163c281cd5c1e1ffc2b9a109c) [#241](https://github.com/npm/npm-registry-fetch/pull/241) postinstall for dependabot template-oss PR (@lukekarrys)
+
 ## [17.0.1](https://github.com/npm/npm-registry-fetch/compare/v17.0.0...v17.0.1) (2024-05-02)
 
 ### Bug Fixes
