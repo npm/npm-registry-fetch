@@ -36,7 +36,7 @@
     "make-fetch-happen": "^13.0.0",
     "minipass": "^7.0.2",
     "minipass-fetch": "^4.0.0",
-    "minizlib": "^2.1.2",
+    "minizlib": "^3.0.1",
     "npm-package-arg": "^12.0.0",
     "proc-log": "^5.0.0"
   },
