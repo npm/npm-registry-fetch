@@ -38,7 +38,7 @@
     "minipass-fetch": "^4.0.0",
     "minizlib": "^2.1.2",
     "npm-package-arg": "^12.0.0",
-    "proc-log": "^4.0.0"
+    "proc-log": "^5.0.0"
   },
   "devDependencies": {
     "@npmcli/eslint-config": "^5.0.0",
