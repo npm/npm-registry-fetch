@@ -1,5 +1,23 @@
 # Changelog
 
+## [18.0.0](https://github.com/npm/npm-registry-fetch/compare/v17.1.0...v18.0.0) (2024-09-26)
+### ⚠️ BREAKING CHANGES
+* `npm-registry-fetch` now supports node `^18.17.0 || >=20.5.0`
+### Bug Fixes
+* [`93d71a6`](https://github.com/npm/npm-registry-fetch/commit/93d71a6cb45e5622f0dad0ecb039b7d160045194) [#264](https://github.com/npm/npm-registry-fetch/pull/264) align to npm 10 node engine range (@reggi)
+### Dependencies
+* [`78aa620`](https://github.com/npm/npm-registry-fetch/commit/78aa620415a40978f78a92a8c2f2a07593c8afcc) [#266](https://github.com/npm/npm-registry-fetch/pull/266) bump minizlib from 2.1.2 to 3.0.1 (#266)
+* [`842f324`](https://github.com/npm/npm-registry-fetch/commit/842f324b7f0045b4ade9c9ee2033bcd38d9a5f71) [#264](https://github.com/npm/npm-registry-fetch/pull/264) `proc-log@5.0.0`
+* [`b394f34`](https://github.com/npm/npm-registry-fetch/commit/b394f34ba2e1ba062614ef7c8bdefac6355a659a) [#264](https://github.com/npm/npm-registry-fetch/pull/264) `npm-package-arg@12.0.0`
+* [`c2b986a`](https://github.com/npm/npm-registry-fetch/commit/c2b986a20ffa4a0c36ac0c5e5096a41cf91a9387) [#264](https://github.com/npm/npm-registry-fetch/pull/264) `minipass-fetch@4.0.0`
+* [`351e1f4`](https://github.com/npm/npm-registry-fetch/commit/351e1f42371de69bac3e560595f62b14d28a8e28) [#264](https://github.com/npm/npm-registry-fetch/pull/264) `@npmcli/redact@3.0.0`
+### Chores
+* [`bd5f617`](https://github.com/npm/npm-registry-fetch/commit/bd5f61742fe304c0e366131108337e68711fe4a2) [#262](https://github.com/npm/npm-registry-fetch/pull/262) bump ssri from 10.0.6 to 12.0.0 (#262) (@dependabot[bot])
+* [`60a396a`](https://github.com/npm/npm-registry-fetch/commit/60a396a095e08d72bd56190d3a31e3e0d63f575e) [#264](https://github.com/npm/npm-registry-fetch/pull/264) run template-oss-apply (@reggi)
+* [`0a9f05b`](https://github.com/npm/npm-registry-fetch/commit/0a9f05be03a8410edffbbf3dc121a930c21535ac) [#256](https://github.com/npm/npm-registry-fetch/pull/256) bump @npmcli/eslint-config from 4.0.5 to 5.0.0 (@dependabot[bot])
+* [`4317115`](https://github.com/npm/npm-registry-fetch/commit/4317115fe040d701121c65bc57a053caafcafb8b) [#257](https://github.com/npm/npm-registry-fetch/pull/257) postinstall for dependabot template-oss PR (@hashtagchris)
+* [`81080b9`](https://github.com/npm/npm-registry-fetch/commit/81080b9f53cc4dea3aeab2b38396527756011902) [#257](https://github.com/npm/npm-registry-fetch/pull/257) bump @npmcli/template-oss from 4.23.1 to 4.23.3 (@dependabot[bot])
+
 ## [17.1.0](https://github.com/npm/npm-registry-fetch/compare/v17.0.1...v17.1.0) (2024-06-12)
 
 ### Features
