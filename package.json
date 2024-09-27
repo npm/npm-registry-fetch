@@ -33,7 +33,7 @@
   "dependencies": {
     "@npmcli/redact": "^3.0.0",
     "jsonparse": "^1.3.1",
-    "make-fetch-happen": "^13.0.0",
+    "make-fetch-happen": "^14.0.0",
     "minipass": "^7.0.2",
     "minipass-fetch": "^4.0.0",
     "minizlib": "^3.0.1",
