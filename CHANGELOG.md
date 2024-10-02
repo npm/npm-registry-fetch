@@ -1,5 +1,9 @@
 # Changelog
 
+## [18.0.1](https://github.com/npm/npm-registry-fetch/compare/v18.0.0...v18.0.1) (2024-10-02)
+### Dependencies
+* [`ad9139a`](https://github.com/npm/npm-registry-fetch/commit/ad9139a8638f85ab159ba6733fae6fe763083204) [#270](https://github.com/npm/npm-registry-fetch/pull/270) bump `make-fetch-happen@14.0.0`
+
 ## [18.0.0](https://github.com/npm/npm-registry-fetch/compare/v17.1.0...v18.0.0) (2024-09-26)
 ### ⚠️ BREAKING CHANGES
 * `npm-registry-fetch` now supports node `^18.17.0 || >=20.5.0`
