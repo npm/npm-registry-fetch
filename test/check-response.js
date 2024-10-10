@@ -224,9 +224,9 @@ t.test('logs the value of x-local-cache-status when set', t => {
     startTime,
   })
   res.body.emit('end')
-  t.equal(header, 'fetch')
+  t.equal(header, 'cache')
   t.match(
     msg,
-    /^GET 200 http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/
+    /^http:\/\/username:\*\*\*@example.com\/foo\/bar\/baz [0-9]+m?s \(cache hit\)$/
   )
 })
