@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.0.2](https://github.com/npm/npm-registry-fetch/compare/v18.0.1...v18.0.2) (2024-10-16)
+### Bug Fixes
+* [`8044781`](https://github.com/npm/npm-registry-fetch/commit/80447811a5d532e917488917eea6e5b10267d843) [#273](https://github.com/npm/npm-registry-fetch/pull/273) log cache hits distinct from fetch (#273) (@mbtools)
+### Chores
+* [`99b99d2`](https://github.com/npm/npm-registry-fetch/commit/99b99d2971724518152c1121d6a672ffff111885) [#269](https://github.com/npm/npm-registry-fetch/pull/269) bump cacache from 18.0.4 to 19.0.1 (#269) (@dependabot[bot])
+* [`bd3f7d1`](https://github.com/npm/npm-registry-fetch/commit/bd3f7d1be56a884086a84a5a96194313c0ed0065) [#272](https://github.com/npm/npm-registry-fetch/pull/272) bump @npmcli/template-oss from 4.23.3 to 4.23.4 (#272) (@dependabot[bot], @npm-cli-bot)
+
 ## [18.0.1](https://github.com/npm/npm-registry-fetch/compare/v18.0.0...v18.0.1) (2024-10-02)
 ### Dependencies
 * [`ad9139a`](https://github.com/npm/npm-registry-fetch/commit/ad9139a8638f85ab159ba6733fae6fe763083204) [#270](https://github.com/npm/npm-registry-fetch/pull/270) bump `make-fetch-happen@14.0.0`
