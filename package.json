@@ -37,7 +37,7 @@
     "minipass": "^7.0.2",
     "minipass-fetch": "^4.0.0",
     "minizlib": "^3.0.1",
-    "npm-package-arg": "^12.0.0",
+    "npm-package-arg": "^13.0.0",
     "proc-log": "^5.0.0"
   },
   "devDependencies": {
