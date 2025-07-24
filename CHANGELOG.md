@@ -1,5 +1,18 @@
 # Changelog
 
+## [19.0.0](https://github.com/npm/npm-registry-fetch/compare/v18.0.2...v19.0.0) (2025-07-24)
+### ⚠️ BREAKING CHANGES
+* `npm-registry-fetch` now supports node `^20.17.0 || >=22.9.0`
+### Bug Fixes
+* [`364c6c0`](https://github.com/npm/npm-registry-fetch/commit/364c6c0278b81d106239ba1d1a0f51b96d4aa53d) [#277](https://github.com/npm/npm-registry-fetch/pull/277) align to npm 11 node engine range (@owlstronaut)
+### Dependencies
+* [`a94aa45`](https://github.com/npm/npm-registry-fetch/commit/a94aa458bdac7ef117c731580fe5775397c43ed0) [#277](https://github.com/npm/npm-registry-fetch/pull/277) `npm-package-arg@13.0.0`
+* [`743188b`](https://github.com/npm/npm-registry-fetch/commit/743188bf301d854d1cebdc8079b22f106374b038) [#277](https://github.com/npm/npm-registry-fetch/pull/277) `make-fetch-happen@15.0.0`
+### Chores
+* [`563fda6`](https://github.com/npm/npm-registry-fetch/commit/563fda6a01433bbcf60fce30f30f5961fd85c39f) [#277](https://github.com/npm/npm-registry-fetch/pull/277) `cacache@20.0.0` (@owlstronaut)
+* [`d5519d6`](https://github.com/npm/npm-registry-fetch/commit/d5519d64377a159a855f963922927fba8b5ad838) [#277](https://github.com/npm/npm-registry-fetch/pull/277) template-oss apply fix (@owlstronaut)
+* [`894f3a7`](https://github.com/npm/npm-registry-fetch/commit/894f3a7f22f73d9246c3591d171f1c3cec40e3ee) [#277](https://github.com/npm/npm-registry-fetch/pull/277) `@npmcli/template-oss@4.25.0` (@owlstronaut)
+
 ## [18.0.2](https://github.com/npm/npm-registry-fetch/compare/v18.0.1...v18.0.2) (2024-10-16)
 ### Bug Fixes
 * [`8044781`](https://github.com/npm/npm-registry-fetch/commit/80447811a5d532e917488917eea6e5b10267d843) [#273](https://github.com/npm/npm-registry-fetch/pull/273) log cache hits distinct from fetch (#273) (@mbtools)
