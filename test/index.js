@@ -371,6 +371,25 @@ t.test('pickRegistry() utility', t => {
     'https://my.scoped.registry/here/',
     'scope @ is option@l'
   )
+  t.equal(
+    pick('@user/foo@1.2.3', {
+      registry: 'https://my.registry/here/',
+      scope: 'myscope',
+      '@user/foo:registry': 'https://package.scoped.registry/',
+      '@myscope:registry': 'https://my.scoped.registry/here/',
+    }),
+    'https://package.scoped.registry/',
+    'package-specific registry'
+  )
+  t.equal(
+    pick('github/shorthand', {
+      registry: 'https://my.registry/here/',
+      scope: 'myscope',
+      '@myscope:registry': 'https://my.scoped.registry/here/',
+    }),
+    'https://my.scoped.registry/here/',
+    'scoped selection with non-package name'
+  )
   t.end()
 })
 
