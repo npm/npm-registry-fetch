@@ -450,3 +450,21 @@ t.test('miscellaneous headers not being set if not present in options', async t 
   })
   t.equal(res.status, 200, 'got successful response')
 })
+
+t.test('opts.signal', async t => {
+  const controller = new AbortController()
+  const { signal } = controller
+
+  controller.abort()
+
+  try {
+    await fetch('/hello', {
+      ...OPTS,
+      signal,
+    })
+  } catch (err) {
+    t.equal(err.name, 'AbortError')
+    return true
+  }
+  t.fail('should have thrown AbortError')
+})
