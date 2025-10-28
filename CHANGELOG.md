@@ -1,5 +1,9 @@
 # Changelog
 
+## [19.1.0](https://github.com/npm/npm-registry-fetch/compare/v19.0.0...v19.1.0) (2025-10-28)
+### Features
+* [`d8074d6`](https://github.com/npm/npm-registry-fetch/commit/d8074d6a0344085180e0acc37d1ebeb789c7de63) [#280](https://github.com/npm/npm-registry-fetch/pull/280) add signal opt (#280) (@clemgbld)
+
 ## [19.0.0](https://github.com/npm/npm-registry-fetch/compare/v18.0.2...v19.0.0) (2025-07-24)
 ### ⚠️ BREAKING CHANGES
 * `npm-registry-fetch` now supports node `^20.17.0 || >=22.9.0`
