@@ -41,7 +41,7 @@
     "proc-log": "^6.0.0"
   },
   "devDependencies": {
-    "@npmcli/eslint-config": "^5.0.0",
+    "@npmcli/eslint-config": "^6.0.0",
     "@npmcli/template-oss": "4.28.0",
     "cacache": "^20.0.0",
     "nock": "^13.2.4",
