@@ -1,5 +1,15 @@
 # Changelog
 
+## [19.1.1](https://github.com/npm/npm-registry-fetch/compare/v19.1.0...v19.1.1) (2025-11-13)
+### Dependencies
+* [`360ec4e`](https://github.com/npm/npm-registry-fetch/commit/360ec4ebb295c292b367ca6d12d22fdb370fed98) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `@npmcli/redact@4.0.0`
+* [`c703622`](https://github.com/npm/npm-registry-fetch/commit/c7036227a3dda6ff620d6a8bd423bcf0348040a8) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `minipass-fetch@5.0.0`
+* [`61662d9`](https://github.com/npm/npm-registry-fetch/commit/61662d969569aeda6ccaa368da8317ec23a01b54) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `ssri@13.0.0`
+* [`4ab8c96`](https://github.com/npm/npm-registry-fetch/commit/4ab8c96033cbb519677d1db01bed1e9cb86ea878) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `proc-log@6.0.0`
+### Chores
+* [`10ecc6a`](https://github.com/npm/npm-registry-fetch/commit/10ecc6a6b5f1bdcf443f95546bbb58c181ea3881) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `@npmcli/eslint-config@6.0.0` (@wraithgar)
+* [`139321c`](https://github.com/npm/npm-registry-fetch/commit/139321ccf72c7f72fd4bb4ddeaf07b16ea193e15) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `@npmcli/template-oss@4.28.0` (@wraithgar)
+
 ## [19.1.0](https://github.com/npm/npm-registry-fetch/compare/v19.0.0...v19.1.0) (2025-10-28)
 ### Features
 * [`d8074d6`](https://github.com/npm/npm-registry-fetch/commit/d8074d6a0344085180e0acc37d1ebeb789c7de63) [#280](https://github.com/npm/npm-registry-fetch/pull/280) add signal opt (#280) (@clemgbld)
