@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@npmcli/eslint-config": "^6.0.0",
-    "@npmcli/template-oss": "4.28.0",
+    "@npmcli/template-oss": "5.0.0",
     "cacache": "^20.0.0",
     "nock": "^13.2.4",
     "require-inject": "^1.4.4",
