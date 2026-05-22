@@ -1,5 +1,25 @@
 # Changelog
 
+## [20.0.0](https://github.com/npm/npm-registry-fetch/compare/v19.1.1...v20.0.0) (2026-05-22)
+### ⚠️ BREAKING CHANGES
+* `npm-registry-fetch` now supports node `^22.22.2 || ^24.15.0 || >=26.0.0`
+* template-oss-apply
+### Features
+* [`3082ebc`](https://github.com/npm/npm-registry-fetch/commit/3082ebc1fb9ff1f24c4d3a332f9d0b8cd0cb347f) [#298](https://github.com/npm/npm-registry-fetch/pull/298) bump to new node engine range (@owlstronaut)
+* [`1ccd309`](https://github.com/npm/npm-registry-fetch/commit/1ccd30973e05c9c2769f2703672b13a506aa9495) [#298](https://github.com/npm/npm-registry-fetch/pull/298) template-oss-apply (@owlstronaut)
+### Dependencies
+* [`726f8c2`](https://github.com/npm/npm-registry-fetch/commit/726f8c283cc2a9ed36d62e029622b9a329df235e) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `proc-log@7.0.0`
+* [`4875644`](https://github.com/npm/npm-registry-fetch/commit/487564451260438ac59ef075253d3fbc0b2fd632) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `npm-package-arg@14.0.0`
+* [`ddfa5ec`](https://github.com/npm/npm-registry-fetch/commit/ddfa5ec94834424180cc1cf9b04e91d4306236b2) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `minipass-fetch@6.0.0`
+* [`3be0797`](https://github.com/npm/npm-registry-fetch/commit/3be07979396e65fdee7c4384818921790560de5f) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `make-fetch-happen@16.0.0`
+* [`c93b239`](https://github.com/npm/npm-registry-fetch/commit/c93b239c4220398ed03d88aa88ae3536ac4cc5d7) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `@npmcli/redact@5.0.0`
+### Chores
+* [`f4862b2`](https://github.com/npm/npm-registry-fetch/commit/f4862b23aeabe5c26d25431cb1f3d7fe75337c06) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `@npmcli/eslint-config@7.0.0` (@owlstronaut)
+* [`3c07251`](https://github.com/npm/npm-registry-fetch/commit/3c07251d98b9321db962d9c7c281095c1d9ce75b) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `ssri@14.0.0` (@owlstronaut)
+* [`3331264`](https://github.com/npm/npm-registry-fetch/commit/3331264e203c471dbda0f1a1cf626e33f3a99471) [#298](https://github.com/npm/npm-registry-fetch/pull/298) `cacache@21.0.0` (@owlstronaut)
+* [`3e2c7f1`](https://github.com/npm/npm-registry-fetch/commit/3e2c7f1f108ce6d82fcef57403c3ebe0541ff342) [#298](https://github.com/npm/npm-registry-fetch/pull/298) template-oss-apply (@owlstronaut)
+* [`7ceab44`](https://github.com/npm/npm-registry-fetch/commit/7ceab44ab401deb97f2aacfaabd707c9a1ad0115) [#298](https://github.com/npm/npm-registry-fetch/pull/298) bumping @npmcli/template-oss from 4.28.0 to 5.1.0 (@owlstronaut)
+
 ## [19.1.1](https://github.com/npm/npm-registry-fetch/compare/v19.1.0...v19.1.1) (2025-11-13)
 ### Dependencies
 * [`360ec4e`](https://github.com/npm/npm-registry-fetch/commit/360ec4ebb295c292b367ca6d12d22fdb370fed98) [#282](https://github.com/npm/npm-registry-fetch/pull/282) `@npmcli/redact@4.0.0`
