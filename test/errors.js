@@ -113,6 +113,59 @@ t.test('JSON error reporing', t => {
     )
 })
 
+t.test('JSON error with `message` instead of `error`', t => {
+  // some registry routes (e.g. /-/package/:package/trust) reply with
+  // `{ message }` instead of `{ error }`, so fall back to it.
+  tnock(t, OPTS.registry)
+    .get('/needs2fa')
+    .reply(403, { message: 'Please enable 2fa for your account' })
+  return fetch('/needs2fa', OPTS)
+    .then(
+      () => {
+        throw new Error('should not have succeeded!')
+      },
+      err => t.equal(
+        err.message,
+        `403 Forbidden - GET ${OPTS.registry}needs2fa - Please enable 2fa for your account`,
+        'body.message used when body.error missing'
+      )
+    )
+})
+
+t.test('JSON error with unknown schema falls back to stringified body', t => {
+  tnock(t, OPTS.registry)
+    .get('/weird')
+    .reply(400, { code: 'WAT', detail: 'something went wrong' })
+  return fetch('/weird', OPTS)
+    .then(
+      () => {
+        throw new Error('should not have succeeded!')
+      },
+      err => t.equal(
+        err.message,
+        `400 Bad Request - GET ${OPTS.registry}weird - {"code":"WAT","detail":"something went wrong"}`,
+        'unknown shape interpolated as JSON'
+      )
+    )
+})
+
+t.test('empty JSON body produces no trailing fragment', t => {
+  tnock(t, OPTS.registry)
+    .get('/empty')
+    .reply(400, {})
+  return fetch('/empty', OPTS)
+    .then(
+      () => {
+        throw new Error('should not have succeeded!')
+      },
+      err => t.equal(
+        err.message,
+        `400 Bad Request - GET ${OPTS.registry}empty`,
+        'no body fragment when body stringifies to {}'
+      )
+    )
+})
+
 t.test('OTP error', t => {
   tnock(t, OPTS.registry)
     .get('/otplease')
