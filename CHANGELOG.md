@@ -1,5 +1,9 @@
 # Changelog
 
+## [20.0.1](https://github.com/npm/npm-registry-fetch/compare/v20.0.0...v20.0.1) (2026-06-02)
+### Bug Fixes
+* [`8d1432f`](https://github.com/npm/npm-registry-fetch/commit/8d1432f80c9e5ec946c154e2aa79a5be12add7ca) [#301](https://github.com/npm/npm-registry-fetch/pull/301) include body.message and fall back to full body in HttpErrorGeneral message (#301) (@owlstronaut)
+
 ## [20.0.0](https://github.com/npm/npm-registry-fetch/compare/v19.1.1...v20.0.0) (2026-05-22)
 ### ⚠️ BREAKING CHANGES
 * `npm-registry-fetch` now supports node `^22.22.2 || ^24.15.0 || >=26.0.0`
