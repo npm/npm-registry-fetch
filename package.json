@@ -44,7 +44,7 @@
     "@npmcli/eslint-config": "^7.0.0",
     "@npmcli/template-oss": "5.1.1",
     "cacache": "^21.0.0",
-    "nock": "^13.2.4",
+    "nock": "^14.0.17",
     "require-inject": "^1.4.4",
     "ssri": "^14.0.0",
     "tap": "^16.0.1"
