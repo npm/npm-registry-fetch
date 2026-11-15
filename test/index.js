@@ -65,6 +65,39 @@ t.test('JSON body param', t => {
     .then(json => t.same(json, { hello: 'world' }))
 })
 
+for (const [name, body] of [
+  ['JSON', { hello: 'world' }],
+  ['buffer', Buffer.from('hello')],
+]) {
+  for (const header of ['content-type', 'Content-Type', 'CONTENT-TYPE']) {
+    t.test(`${name} body with custom ${header}`, async t => {
+      const headers = { [header]: 'application/custom' }
+      tnock(t, defaultOpts.registry)
+        .matchHeader('content-type', value => {
+          t.same(value, ['application/custom'], 'uses only the custom content type')
+          return true
+        })
+        .post('/hello')
+        .reply(200)
+
+      await fetch('/hello', { ...OPTS, method: 'POST', body, headers })
+      t.same(headers, { [header]: 'application/custom' }, 'does not mutate supplied headers')
+    })
+  }
+}
+
+t.test('custom User-Agent overrides the default', async t => {
+  tnock(t, defaultOpts.registry)
+    .matchHeader('user-agent', value => {
+      t.same(value, ['custom-agent'], 'uses only the custom user agent')
+      return true
+    })
+    .get('/hello')
+    .reply(200)
+
+  await fetch('/hello', { ...OPTS, headers: { 'User-Agent': 'custom-agent' } })
+})
+
 t.test('buffer body param', t => {
   tnock(t, defaultOpts.registry)
     .matchHeader('content-type', ctype => {
