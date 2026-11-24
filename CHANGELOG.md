@@ -1,5 +1,11 @@
 # Changelog
 
+## [20.0.2](https://github.com/npm/npm-registry-fetch/compare/v20.0.1...v20.0.2) (2026-11-24)
+### Dependencies
+* [`7429a7a`](https://github.com/npm/npm-registry-fetch/commit/7429a7aeda6fe01333f1a4210d586e7dba10b8e2) [#308](https://github.com/npm/npm-registry-fetch/pull/308) `make-fetch-happen@16.0.2` (#308) (@jeffkl, @Copilot)
+### Chores
+* [`6b4159a`](https://github.com/npm/npm-registry-fetch/commit/6b4159a2519ce5aab26cc4dd8d4596a0b47781d2) [#303](https://github.com/npm/npm-registry-fetch/pull/303) bump @npmcli/template-oss from 5.1.0 to 5.1.1 (#303) (@dependabot[bot], @npm-cli-bot)
+
 ## [20.0.1](https://github.com/npm/npm-registry-fetch/compare/v20.0.0...v20.0.1) (2026-06-02)
 ### Bug Fixes
 * [`8d1432f`](https://github.com/npm/npm-registry-fetch/commit/8d1432f80c9e5ec946c154e2aa79a5be12add7ca) [#301](https://github.com/npm/npm-registry-fetch/pull/301) include body.message and fall back to full body in HttpErrorGeneral message (#301) (@owlstronaut)
